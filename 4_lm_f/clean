@@ -1,0 +1,6 @@
+#!/bin/bash
+
+\rm -rf YU* OUTPUT core* job* INPUT* .jobid 
+
+mkdir -p output/1h_2D output/3h_3D_zlev output/24h output/restart
+

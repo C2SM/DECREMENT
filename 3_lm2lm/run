@@ -1,0 +1,192 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+  WAITFORJOB=""
+else
+  WAITFORJOB="$1"
+fi
+
+# cleanup
+if [ -f .jobid ]; then
+  $(squeue -j `cat .jobid` &>/dev/null) && scancel `cat .jobid`
+  sleep 3
+  \rm .jobid 2>/dev/null
+fi
+./clean
+
+# setup namelists
+cat > INPUT <<EOF
+  &CONTRL
+  hstart=$LM_NL_HSTART, hstop=$LM_NL_HSTOP,
+  hincbound=1.0,
+  nprocx=$NQS_NXLM2LM, nprocy=$NQS_NYLM2LM, nprocio=$NQS_NIOLM2LM,
+  ydate_ini='${LM_YYYY_INI}${LM_MM_INI}${LM_DD_INI}${LM_ZZ_INI}0000',
+  ydate_bd ='${LM_YYYY_INI}${LM_MM_INI}${LM_DD_INI}${LM_ZZ_INI}0000',
+  lmixcld=.false.,
+  yinput_model = 'COSMO'
+  linitial = .TRUE.,
+  idbg_level=3,
+  luse_t_skin=.TRUE.,
+  nincwait=30,
+  nmaxwait=300,
+  lboundaries=.true.,
+  lprog_qi=.true.,
+  lprog_qr_qs=.true.,
+  lprog_rho_snow=.false.,
+  lmulti_layer_in=.true.,
+  lmulti_layer_lm=.true.,
+  itype_w_so_rel=1,
+  lforest=.TRUE.,
+  lsso=.FALSE.,
+  lvertwind_ini=.true.,
+  lvertwind_bd=.false.,
+  llbc_smooth=.true.,
+    lfilter_pp=.true.,
+  lfilter_oro=.FALSE.,
+    ilow_pass_oro=4,
+      numfilt_oro=1,
+      ilow_pass_xso=5,
+        lxso_first=.FALSE.,
+        numfilt_xso=1,
+        rxso_mask=750.0,
+    eps_filter=0.1,
+      norder_filter=5,
+    l_topo_z=.false.,
+  l_s_oro=.TRUE.,
+  rfill_valley=0.0,
+    ifill_valley=7,
+  ltime_mean=.true.,
+  lreorder=.false.,
+  lasync_io=.FALSE.,
+  lbdclim=.TRUE.,
+  itype_aerosol = 2,
+  itype_albedo = 1,
+ /END
+ &GRID_IN
+  pcontrol_fi = 30000.,
+  ie_in_tot = $LM_NL_IELM_C, je_in_tot = $LM_NL_JELM_C, ke_in_tot = $LM_NL_KELM_C,
+  startlat_in_tot = $LM_NL_STARTLAT_TOT_C, startlon_in_tot = $LM_NL_STARTLON_TOT_C,
+  pollat_in = $LM_NL_POLLATLM_C, pollon_in = $LM_NL_POLLONLM_C,
+  dlat_in = $LM_NL_DLATLM_C, dlon_in = $LM_NL_DLONLM_C,
+  endlon_in_tot=13.86, endlat_in_tot=15.51,
+  ke_soil_in=9,
+  czml_soil_in=0.005, 0.025, 0.07, 0.16, 0.34, 0.70, 1.47, 2.86, 5.74, 11.50,
+ /
+ &LMGRID
+  irefatm=2,
+  ielm_tot=$LM_NL_IELM_F, jelm_tot=$LM_NL_JELM_F, kelm_tot=$LM_NL_KELM_F,
+  ivctype=2,
+  vcflat = 17827.0,
+  vcoord_d=29798.50,28255.93,26824.04,   25497.39,   24269.35,
+     23134.03,   22081.88,   21105.64,   20207.79,   19360.60,
+     18576.52,   17827.86,   17127.98,   16451.10,   15811.52,
+     15183.53,   14581.37,   13982.04,   13400.03,   12815.37,
+     12248.19,   11678.54,   11126.48,   10572.09,   10035.43,
+      9496.58,    8975.59,    8452.55,    7947.52,    7440.55,
+      6931.96,    6442.38,    5956.41,    5498.04,    5050.84,
+      4647.96,    4261.91,    3893.26,    3542.15,    3208.52,
+      2892.23,    2593.71,    2312.95,    2049.75,    1803.89,
+      1575.57,    1364.68,    1170.90,     993.84,     833.44,
+       689.53,     561.52,     448.82,     350.95,     267.55,
+       197.67,     137.23,      87.33,      48.44,      20.00,       0.00,
+  pollat =$LM_NL_POLLATLM_F , pollon =$LM_NL_POLLONLM_F ,
+  dlon=$LM_NL_DLONLM_F , dlat=$LM_NL_DLATLM_F,
+  startlat_tot  = $LM_NL_STARTLAT_TOT_F,
+  startlon_tot  = $LM_NL_STARTLON_TOT_F,
+  ke_soil_lm=9,
+  czml_soil_lm=0.005, 0.025, 0.07, 0.16, 0.34, 0.70, 1.47, 2.86, 5.74,  11.50,
+ /
+ &DATABASE
+ /
+ &DATA
+  ylmext_form_read='ncdf',
+  yinext_form_read='ncdf',
+  yin_form_read='ncdf',
+  ylm_form_write='ncdf',
+  ie_ext=$LM_NL_EXT_IE_F, je_ext=$LM_NL_EXT_JE_
+  ylmext_lfn='../bin/$LM_NL_EXTPAR_F',
+  ylmext_cat='./',
+  yinext_lfn='lffd${LM_YYYY_INI}${LM_MM_INI}${LM_DD_INI}${LM_ZZ_INI}0000c.nc',
+  yinext_cat='input/bc',
+  yin_cat='input/bc',
+  ylm_cat= 'output',
+  nprocess_ini = 131, nprocess_bd = 132,
+  yinput_type='forecast',
+  ytunit_in='d',
+  ytunit_out='d',
+ /
+ &PRICTR
+  igp_tot = 36, 40, 48, 44, 48, 85, 77,
+  jgp_tot = 30, 94, 38, 26, 26, 96, 12,
+  lchkin=.TRUE., lchkout=.TRUE.,lprgp=.FALSE.,
+ /
+EOF
+
+# setup job
+cat > job <<EOF_job_SLURM
+#!/bin/tcsh
+#SBATCH --job-name=lm2lm
+#SBATCH --output=job.out
+#SBATCH --ntasks=${NTASKS}
+#SBATCH --partition=${QUEUE}
+#SBATCH --time=${NQS_ELAPSED_LM2LM}
+#SBATCH --account=${ACCOUNT}
+EOF_job_SLURM
+
+# setup job
+# ---------
+
+cat > job <<EOF_job_SLURM
+#!/bin/bash
+#SBATCH --job-name=lm2lm
+#SBATCH --output=job.out
+#SBATCH --ntasks=$(( ${NQS_NXLM2LM} * ${NQS_NYLM2LM} + ${NQS_NIOLM2LM} ))
+#SBATCH --ntasks-per-node=12
+#SBATCH --partition=${QUEUE}
+#SBATCH --time=${NQS_ELAPSED_LM2LM}
+#SBATCH --account=${ACCOUNT}
+EOF_job_SLURM
+
+# rest of job (actual work)
+cat >> job <<EOF_job
+
+# Initialization
+set verbose
+set echo
+
+# set environmental parameters
+export OMP_NUM_THREADS=1
+export MALLOC_MMAP_MAX_=0
+export MALLOC_TRIM_THRESHOLD_=536870912
+export MPICH_RDMA_ENABLED_CUDA=0
+export MV2_USE_CUDA=0
+
+# echo date
+date
+
+# Run LM in case directory
+${RUNCMD} -u ${EXE_INT2LM}
+
+# echo date
+date
+
+sacct -j \$SLURM_JOB_ID --format=User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPUFreq
+
+\rm -f .jobid >&/dev/null
+
+EOF_job
+
+# submit job
+if [ -z "${WAITFORJOB}" ]; then
+  jobid=`sbatch -C gpu job | sed 's/Submitted batch job //g'`
+else
+  jobid=`sbatch -C gpu --dependency=afterok:${WAITFORJOB} job | sed 's/Submitted batch job //g'`
+fi
+
+if [ $? -eq 0 -a -n "${jobid}" ]; then
+  echo "${jobid}" > .jobid
+  echo "${jobid}"
+else
+  exit 1
+fi
+

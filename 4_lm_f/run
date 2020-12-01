@@ -1,0 +1,359 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+  WAITFORJOB=""
+else
+  WAITFORJOB="$1"
+fi
+
+# cleanup
+if [ -f .jobid ]; then
+  $(squeue -j `cat .jobid` &>/dev/null) && scancel `cat .jobid`
+  sleep 3
+  \rm .jobid 2>/dev/null
+fi
+./clean
+
+cat > INPUT_ORG << EONL
+ &LMGRID
+  startlat_tot= $LM_NL_STARTLAT_TOT_F, startlon_tot= $LM_NL_STARTLON_TOT_F,
+  pollat=$LM_NL_POLLATLM_F, pollon=$LM_NL_POLLONLM_F,
+  dlon=$LM_NL_DLONLM_F, dlat=$LM_NL_DLATLM_F,
+  ie_tot= $LM_NL_IELM_F, je_tot= $LM_NL_JELM_F, ke_tot=$LM_NL_KELM_F,
+ /END
+ &RUNCTL
+  dt= 20.0,
+  hstart=$LM_NL_HSTART, hstop=$LM_NL_HSTOP,
+  ydate_ini='${LM_YYYY_INI}${LM_MM_INI}${LM_DD_INI}${LM_ZZ_INI}0000',
+  hincmxt=24.0, hincmxu=24.0,
+  itype_timing=4,
+  lreproduce=.TRUE.,
+  luseobs =.FALSE.,
+  lphys   =.TRUE.,
+  ldiagnos=.FALSE.,
+  luse_rttov=.false.,
+  ldfi=.FALSE.,
+  nprocx= $NQS_NXLM_F, nprocy= $NQS_NYLM_F, nprocio=0,
+  num_asynio_comm=$NQS_NIOLM_F,
+  num_iope_percomm=0,
+  nboundlines=3,
+  ldump_ascii = .FALSE.
+  itype_calendar = 0,
+  idbg_level = 4,
+ /END
+ &TUNING
+   tkhmin = 0.4,
+   tkmmin = 0.4,
+   mu_rain = 0.5,
+   v0snow = 20.0,
+   rlam_mom=0.0,
+   rlam_heat = 0.5249,
+   entr_sc = 0.000186,
+   rat_sea=20.0,
+   rat_lam=1.0,
+   rat_can=1.0,
+   c_lnd=2.0,
+   c_sea=1.5,
+   c_soil=1.0,
+   pat_len=500.0,
+   z0m_dia=0.2,
+   crsmin=150.0,
+   clc_diag=0.5,
+   q_crit=1.6,
+   qc0=0.0002
+   qi0=5E-6
+   uc1 = 0.0626,
+   tur_len = 100.0, ! Was 150. New tuning by C. Heim for the SA
+ /END
+EONL
+cat > INPUT_ASS << EONL
+ &NUDGING
+ /END
+EONL
+
+cat > INPUT_DIA << EONL
+ &DIACTL
+  n0meanval=0,
+  nincmeanval=1,
+ /END
+EONL
+
+cat > INPUT_DYN << EONL
+ &DYNCTL
+    lcpp_dycore=.TRUE.,
+    lspubc=.true.,
+    itype_spubc=3,
+    rdheight=13500.0
+    nrdtau=3,
+    rlwidth=50000.0,
+    ldyn_bbc=.false.,
+    itype_bbc_w=114,
+    betasw=0.4,
+    xkd=0.1,
+    epsass=0.15,
+    lcond=.true.,
+    l_diff_smag = .TRUE.,
+    l_diff_cold_pools = .False.
+    lhordiff=.true.,
+      itype_hdiff=2,
+      hd_corr_u_bd=0.75,
+      hd_corr_t_bd=0.75,
+      hd_corr_trcr_bd=0.0,
+      hd_corr_p_bd=0.75,
+      hd_corr_u_in=0.0,
+      hd_corr_t_in=0.0,
+      hd_corr_trcr_in=0.0,
+      hd_corr_p_in=0.0,
+      hd_dhmax=250.,
+    l2tls=.true.,
+      irunge_kutta=1,
+        irk_order=3,
+        iadv_order=5,
+        itheta_adv=0,
+        ltadv_limiter=.false.,
+    itype_fast_waves=2,
+      y_scalar_advect = 'BOTT2_STRANG',
+      y_vert_adv_dyn='impl2',
+        ieva_order=3,
+    itype_outflow_qrsg=2,
+    itype_lbc_qrsg=1,
+ /END
+EONL
+
+cat > INPUT_INI << EONL
+ &INICTL
+  ndfi=2,
+  tspan= 1840.0,
+  taus= 1840.0,
+  dtbak=20.0,
+  dtfwd=20.0,
+ /END
+EONL
+
+cat > INPUT_SAT << EONL
+ &SATCTL
+   num_sensors=1,
+   sat_input_01='MSG',1,'SEVIRI',8, .TRUE., .TRUE.,.TRUE., .TRUE.,
+   nchan_input_01=1,2,3,4,5,6,7,8,
+   lcon_clw=.FALSE.,
+ /END
+EONL
+
+cat > INPUT_PHY << EONL
+ &PHYCTL
+  lseaice =.false.
+  llake=.false.
+  lgsp    =.true.,
+      lgsp_first=.true.,
+      itype_gscp=4,
+      ldiniprec=.FALSE.,
+  lrad=.TRUE.,
+      hincrad = 0.25,
+      lradtopo=.false.,
+  lforest=.TRUE.,
+  ltur=.TRUE.,
+      loldtur=.true.,
+      ninctura=1,
+      itype_vdif=-1,
+      lexpcor=.false.,
+      ltmpcor=.false.,
+      lprfcor=.false.,
+      lnonloc=.false.,
+      lcpfluc=.false.,
+      itype_turb=3,
+      imode_turb=1,
+      itype_tran=2,
+      imode_tran=1,
+      limpltkediff=.TRUE.,
+    itype_wcld=2,
+      icldm_rad=4,
+      icldm_turb=2,
+      icldm_tran=0,
+      itype_synd=2,
+  lsoil=.TRUE.,
+      lmelt=.TRUE.,
+      lmelt_var=.TRUE.,
+      itype_trvg=2,
+      ke_soil=9,
+      czml_soil=0.005, 0.025, 0.07, 0.16, 0.34, 0.70, 1.47, 2.86, 5.74,  11.50,
+      czbot_w_so=8.0,
+      itype_root = 2
+      itype_heatcond=2
+      itype_evsl=4,
+    lconv=.FALSE.,
+      itype_conv=3,
+      nincconv=5,
+      lcape=.false.,
+      lconf_avg=.true.,
+    lsso=.FALSE.,
+      ltkesso=.False.,
+    itype_albedo = 1,
+    itype_aerosol = 2
+ /END
+EONL
+
+cat > INPUT_IO << EONL
+ &IOCTL
+  ldwd_grib_use=.false.,
+  yform_read='ncdf',
+  l_ke_in_gds=.TRUE.,
+  lasync_io=.false.,
+  ymode_read = 'r  ',
+  ymode_write = 'w  ',
+  nincwait=10,
+  nmaxwait=200,
+  nhour_restart=$LM_NL_HSTART,$LM_NL_HSTOP,24
+  ngribout=3,
+  itype_gather=2,
+  ydir_restart_in='output/restart',
+  ydir_restart_out='output/restart',
+  ytunit_restart='d',
+  lbdclim=.TRUE.,
+  yncglob_title = "COSMO driven by 4 km COSMO",
+  yncglob_source = "COSMO_5.08",
+ /END
+ &DATABASE
+ /END
+ &GRIBIN
+  lbdana=.FALSE.,
+  ydirini='input',
+  lchkini=.TRUE.,
+  hincbound=1.0,
+  ydirbd='input',
+  lchkbd =.FALSE.,
+  lana_qi = .FALSE.,
+  llb_qi  = .TRUE.,
+  lana_qg = .FALSE.,
+  llb_qg  = .FALSE.,
+  lana_qr_qs = .FALSE.,
+  llb_qr_qs  = .FALSE.,
+  lana_rho_snow = .FALSE.,
+  lan_lai = .TRUE., lan_rootdp = .TRUE., lan_vio3 = .TRUE., lan_plcov = .TRUE.,
+  lan_t_cl = .TRUE.,  lan_w_cl = .TRUE., lan_hmo3 = .TRUE., lan_t_so0 = .TRUE.,
+  lan_t_snow = .TRUE., lan_w_snow = .TRUE., lan_w_i = .TRUE., lan_rho_snow = .TRUE.,
+  lan_t_s = .FALSE.,
+  ytunitbd='d',
+ /END
+ &GRIBOUT
+  yform_write='ncdf',
+  hcomb=$LM_NL_HSTART,$LM_NL_HSTOP,1,
+  yvarml='U_10M', 'V_10M', 'T_2M', 'RELHUM_2M', 'PS', 'QV_2M',
+         'ALHFL_S', 'ASHFL_S', 'AUMFL_S', 'AVMFL_S',
+         'CAPE_ML', 'CIN_ML',
+         'CLCH', 'CLCM', 'CLCL', 'TOT_PREC',
+         'TQV', 'TQC', 'TQI','TQR','TQG','TQS',
+         'ASOB_T',  'ASOD_T',  'ATHB_T',
+         'ASOBC_T',            'ATHBC_T',
+         'ASOB_S', 'ASWDIFD_S','ASWDIR_S', 'ASWDIFU_S', 'ATHB_S', 'ATHD_S',
+         'ASOBC_S',            'ATHBC_S',
+  yvarpl=' ',
+  yvarzl=' ',
+  lcheck=.TRUE.,
+  luvmasspoint=.FALSE.,
+  lwrite_const=.FALSE.,
+  ydir='output/1h_2D',
+  l_z_filter=.FALSE.,l_p_filter=.FALSE.,
+  l_fi_pmsl_smooth = .FALSE.,
+  ytunit='d',
+ /END
+ &GRIBOUT
+  yform_write='ncdf',
+  hcomb=$LM_NL_HSTART,$LM_NL_HSTOP,3,
+  yvarml=' ',
+  yvarpl=' ',
+  yvarzl='U', 'V', 'W', 'T', 'P', 'QV', 'QC', 'QI',
+  zlev=100,
+       200,400,600,800,1000,1200,1400,1600,1800,2000,
+       2300,2600,2900,3200,3500,4000,4500,
+       5000,6000,7000,8000,9000,10000
+  lcheck=.FALSE.,
+  luvmasspoint=.FALSE.,
+  lwrite_const=.FALSE.,
+  ydir='output/3h_3D_zlev',
+  l_z_filter=.FALSE.,l_p_filter=.FALSE.,
+  l_fi_pmsl_smooth = .FALSE.,
+  ytunit='d',
+ /END
+ &GRIBOUT
+  yform_write='ncdf',
+  hcomb=$LM_NL_HSTART,$LM_NL_HSTOP,24,
+  yvarml='VMAX_10M', 'W_SO', 'TMIN_2M', 'TMAX_2M', 'RUNOFF_S', 'RUNOFF_G',
+  yvarpl=' ',
+  yvarzl=' ',
+  lcheck=.FALSE.,
+  luvmasspoint=.FALSE.,
+  lwrite_const=.FALSE.,
+  ydir='output/24h',
+  l_z_filter=.FALSE.,l_p_filter=.FALSE.,
+  l_fi_pmsl_smooth = .FALSE.,
+  ytunit='d',
+ /END
+
+EONL
+
+
+
+
+
+
+cat > job <<EOF_job
+#!/bin/bash
+#SBATCH --job-name=lm_f
+#SBATCH --output=job.out
+#SBATCH --nodes=$(( ${NQS_NXLM_F} * ${NQS_NYLM_F} + ${NQS_NIOLM_F} ))
+#SBATCH --ntasks-per-node=${TASKS_PER_NODE}
+#SBATCH --partition=${QUEUE}
+#SBATCH --time=${NQS_ELAPSED_LM_F}
+#SBATCH --account=${ACCOUNT}
+
+# Initialization
+set verbose
+set echo
+
+# Set this to avoid segmentation faults
+ulimit -s unlimited
+ulimit -a
+
+# set environmental parameters
+export MALLOC_MMAP_MAX_=0
+export MALLOC_TRIM_THRESHOLD_=536870912
+export COSMO_NPROC_NODEVICE=${NQS_NIOLM_F}
+export OMP_NUM_THREADS=1
+export MPICH_RDMA_ENABLED_CUDA=1
+export MPICH_G2G_PIPELINE=256
+
+# KO: Need to set path to cuda library explicitly or GPU runs fail on cuInit
+export LD_LIBRARY_PATH="\$LD_LIBRARY_PATH\:/opt/cray/nvidia/default/lib64"
+
+
+# echo date
+date
+
+# Run LM in case directory
+${RUNCMD} -u ${EXE_COSMO}
+
+# echo date
+date
+
+#Print accounting file
+sacct -j \$SLURM_JOB_ID --format=User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPUFreq
+
+\rm -f .jobid >&/dev/null
+
+EOF_job
+
+
+# submit job
+if [ -z "${WAITFORJOB}" ]; then
+  jobid=`sbatch -C gpu job | sed 's/Submitted batch job //g'`
+else
+  jobid=`sbatch -C gpu --dependency=afterok:${WAITFORJOB} job | sed 's/Submitted batch job //g'`
+fi
+
+if [ $? -eq 0 -a -n "${jobid}" ]; then
+  echo "${jobid}" > .jobid
+  echo "${jobid}"
+else
+  exit 1
+fi
+

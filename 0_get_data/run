@@ -1,0 +1,47 @@
+#!/bin/bash
+
+file=ERA5_cas_${LM_YYYY_BEGIN}_${LM_MM_BEGIN}.tar.gz
+path=$LM_NL_BC_DATA_PATH/${LM_YYYY_BEGIN}
+
+#Check if output folder exists
+mkdir -p $(readlink output)
+
+# clean
+if [ -f .jobid ]; then
+  $(squeue -j `cat .jobid` &>/dev/null) && scancel `cat .jobid`
+  sleep 3
+  \rm .jobid 2>/dev/null
+fi
+./clean
+
+# Unpack cas file for current month
+module unload xalt
+
+jobid=$( sbatch --account=$ACCOUNT -J untar_BC --output=job.out  -C gpu --partition=normal --time=3:30:00 --wrap="pushd output; pigz -dc $path/$file | tar xf - ; \rm -f .jobid >&/dev/null" | sed 's/Submitted batch job //g' )
+
+
+#If the simulation end on the first of next month on midnight, we need BCs for this as well
+if [ $(( 10#${LM_MM_END} - 1 )) == $(( 10#${LM_MM_BEGIN} )) ]; then
+
+  nextyear=$( date -d "${LM_YYYY_END}-${LM_MM_END}-${LM_DD_END}T${LM_ZZ_END}:00 + 1hour" +%Y)
+  nextmonth=$( date -d "${LM_YYYY_END}-${LM_MM_END}-${LM_DD_END}T${LM_ZZ_END}:00 + 1hour" +%m)
+  
+  #Filename
+  hincbound=$( grep -oP 'hincbound\s*=*\K\d+' run_next ) #Boundary increment
+  nextmonfile=cas$( date -d "${LM_YYYY_END}-${LM_MM_END}-${LM_DD_END}T${LM_ZZ_END}:00 +${hincbound}hours" +%Y%m%d%M%S)
+  
+  file=ERA5_cas_${nextyear}_${nextmonth}.tar.gz
+  path=$PROJECT/ERA5/${nextyear}
+  
+  jobid_nextmon=$( sbatch --account=$ACCOUNT -J untar_BC --output=job1.out  -C gpu --partition=normal --time=00:10:00 --wrap="pushd output; tar -xzf $path/$file $nextmonfile ; \rm -f .jobid >&/dev/nullfi" | sed 's/Submitted batch job //g' )
+
+fi
+
+# Save .jobid
+if [ $? -eq 0 -a -n "${jobid}" ]; then
+  echo "${jobid}" > .jobid
+  echo "${jobid}"
+else
+  exit 1
+fi
+

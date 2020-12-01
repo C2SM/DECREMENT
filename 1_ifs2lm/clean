@@ -1,0 +1,7 @@
+#!/bin/bash
+
+\rm -rf job* INPUT OUTPUT YU* core.* .jobid
+
+#Check if output folder exists
+mkdir -p $(readlink output)
+
