@@ -231,6 +231,7 @@ cat >INPUT_IO << EONL
          'ASOBC_S',            'ATHBC_S',
   yvarpl=' ',
   yvarzl=' ',
+  ireset_cells = 2,
   lcheck=.TRUE.,
   luvmasspoint=.FALSE.,
   lwrite_const=.FALSE.,
@@ -264,6 +265,8 @@ cat >INPUT_IO << EONL
   yvarml='VMAX_10M', 'W_SO', 'TMIN_2M', 'TMAX_2M', 'RUNOFF_S', 'RUNOFF_G',
   yvarpl=' ',
   yvarzl=' ',
+  ireset_winds = 2,
+  ireset_temps = 2,
   lcheck=.FALSE.,
   luvmasspoint=.FALSE.,
   lwrite_const=.FALSE.,
@@ -344,7 +347,7 @@ EOF_job
 if [ -z "${WAITFORJOB}" ]; then
   jobid=`sbatch -C gpu job | sed 's/Submitted batch job //g'`
 else
-  jobid=`sbatch -C gpu --dependency=afterok:${WAITFORJOB} job | sed 's/Submitted batch job //g'`
+  jobid=`sbatch -C gpu --dependency=after:${WAITFORJOB} job | sed 's/Submitted batch job //g'`
 fi
 
 if [ $? -eq 0 -a -n "${jobid}" ]; then
