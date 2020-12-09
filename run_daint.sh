@@ -31,8 +31,7 @@ export LM_ZZ_END=00
 export LM_NL_HSTART=$( diff_hours ${LM_YYYY_INI}-${LM_MM_INI}-${LM_DD_INI}T${LM_ZZ_INI}:00 ${LM_YYYY_BEGIN}-${LM_MM_BEGIN}-${LM_DD_BEGIN}T${LM_ZZ_BEGIN}:00 )
 export LM_NL_HSTOP=$( diff_hours ${LM_YYYY_BEGIN}-${LM_MM_BEGIN}-${LM_DD_BEGIN}T${LM_ZZ_BEGIN}:00 ${LM_YYYY_END}-${LM_MM_END}-${LM_DD_END}T${LM_ZZ_END}:00  )
 
-parts="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f"
-for part in ${parts} ; do
+for part in ${SB_PARTS} ; do
   short=`echo "${part}" | sed 's/^[0-9]*_//g'`
   echo "launching ${short}"
   mkdir -p output/${short}

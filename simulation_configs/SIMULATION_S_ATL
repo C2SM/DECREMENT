@@ -39,6 +39,9 @@ export NQS_NYLM_F=13                # number of NODEs in y direction
 export NQS_NIOLM_F=0                # number of NODEs for asyncronous IO
 export NQS_ELAPSED_LM_F=08:00:00    # maximum wall-clock time (HH:mm:ss)
 
+# Parts that will be executed. Same as folder names.
+export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f"
+
 # GLOBAL ERA5 grid
 # ----------------
 
