@@ -1,4 +1,4 @@
 .jobid
-.swp
-.tar.gz
+*.swp
+*.tar.gz
 *.out
