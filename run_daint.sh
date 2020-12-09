@@ -37,7 +37,7 @@ for part in ${SB_PARTS} ; do
   mkdir -p output/${short}
 
   cd ${part}
-  jobid=`./run ${QUEUE} ${ACCOUNT} ${jobid}`
+  jobid=`./run ${jobid}`
   
   cd - 1>/dev/null 2>/dev/null
 done
