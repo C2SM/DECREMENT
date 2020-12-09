@@ -231,7 +231,7 @@ cat >INPUT_IO << EONL
          'ASOBC_S',            'ATHBC_S',
   yvarpl=' ',
   yvarzl=' ',
-  ireset_cells = 2,
+  ireset_sums = 2,
   lcheck=.TRUE.,
   luvmasspoint=.FALSE.,
   lwrite_const=.FALSE.,
