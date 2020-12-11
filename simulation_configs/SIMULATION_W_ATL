@@ -19,29 +19,29 @@ export EXE_COSMO="./cosmo"
 export NQS_NXIFS2LM=8               # number of CPUs in x direction (12 per node on daint-gpu)
 export NQS_NYIFS2LM=12              # number of CPUs in y direction
 export NQS_NIOIFS2LM=0              # number of CPUs for asyncronous IO
-export NQS_ELAPSED_IFS2LM=06:00:00  # maximum wall-clock time (HH:mm:ss)
+export NQS_ELAPSED_IFS2LM=02:45:00  # maximum wall-clock time (HH:mm:ss)
 
 # 2_lm_c
 export NQS_NXLM_C=8                 # number of NODEs in x direction
 export NQS_NYLM_C=5                 # number of NODEs in y direction
 export NQS_NIOLM_C=0                # number of NODEs for asyncronous IO
-export NQS_ELAPSED_LM_C=10:00:00    # maximum wall-clock time (HH:mm:ss)
+export NQS_ELAPSED_LM_C=07:00:00    # maximum wall-clock time (HH:mm:ss)
 
 
 # 3_lm2lm
 export NQS_NXLM2LM=10               # number of CPUs in x direction (12 per node on daint-gpu)
 export NQS_NYLM2LM=12               # number of CPUs in y direction
 export NQS_NIOLM2LM=0               # number of CPUs for asyncronous IO
-export NQS_ELAPSED_LM2LM=12:00:00   # maximum wall-clock time (HH:mm:ss)
+export NQS_ELAPSED_LM2LM=08:30:00   # maximum wall-clock time (HH:mm:ss)
 
 # 4_lm_f
 export NQS_NXLM_F=12                # number of NODEs in x direction
 export NQS_NYLM_F=8                # number of NODEs in y direction
 export NQS_NIOLM_F=0                # number of NODEs for asyncronous IO
-export NQS_ELAPSED_LM_F=24:00:00    # maximum wall-clock time (HH:mm:ss)
+export NQS_ELAPSED_LM_F=12:00:00    # maximum wall-clock time (HH:mm:ss)
 
 # Parts that will be executed. Same as folder names.
-export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f"
+export SB_PARTS="1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f"
 
 # GLOBAL ERA5 grid
 # ----------------
