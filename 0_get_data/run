@@ -1,6 +1,6 @@
 #!/bin/bash
 
-file=ERA5_cas_${LM_YYYY_BEGIN}_${LM_MM_BEGIN}.tar.gz
+file=ERAINT_${LM_YYYY_BEGIN}_${LM_MM_BEGIN}.tar.gz
 path=$LM_NL_BC_DATA_PATH/${LM_YYYY_BEGIN}
 
 #Check if output folder exists
@@ -17,7 +17,7 @@ fi
 # Unpack cas file for current month
 module unload xalt
 
-jobid=$( sbatch --account=$ACCOUNT -J untar_BC --output=job.out  -C gpu --partition=normal --time=3:30:00 --wrap="pushd output; pigz -dc $path/$file | tar xf - ; \rm -f .jobid >&/dev/null" | sed 's/Submitted batch job //g' )
+jobid=$( sbatch --account=$ACCOUNT -J untar_BC --output=job.out  -C gpu --partition=normal --time=3:30:00 --wrap="pushd output; pigz -dc $path/$file | tar --transform 's/caf/cas/' xf - ; \rm -f .jobid >&/dev/null" | sed 's/Submitted batch job //g' )
 
 
 #If the simulation end on the first of next month on midnight, we need BCs for this as well
