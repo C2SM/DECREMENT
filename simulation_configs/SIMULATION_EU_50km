@@ -1,0 +1,88 @@
+#!/bin/bash
+#Simulation setup of C. Heim in the Southern Atlantinc
+
+  
+# Machine 
+# -------
+export QUEUE="normal"
+export ACCOUNT="pr94"
+export RUNCMD="srun"
+export CORES_PER_NODE=24
+export TASKS_PER_NODE=1
+export GPUS_PER_NODE=1
+export EXE_INT2LM="./int2lm"
+export EXE_COSMO="./cosmo"
+
+# Node config 
+# -----------
+
+# 1_ifs2lm
+export NQS_NXIFS2LM=1               # number of CPUs in x direction (12 per node on daint-gpu)
+export NQS_NYIFS2LM=1               # number of CPUs in y direction
+export NQS_NIOIFS2LM=0              # number of CPUs for asyncronous IO
+export NQS_ELAPSED_IFS2LM=02:00:00  # maximum wall-clock time (HH:mm:ss)
+
+# 2_lm_c
+export NQS_NXLM_C=1                 # number of NODEs in x direction
+export NQS_NYLM_C=2                 # number of NODEs in y direction
+export NQS_NIOLM_C=0                # number of NODEs for asyncronous IO
+export NQS_ELAPSED_LM_C=05:00:00    # maximum wall-clock time (HH:mm:ss)
+
+
+# Parts that will be executed. Same as folder names.
+export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c"
+
+# GLOBAL ERA5 grid
+# ----------------
+
+# ERA5 
+export LM_NL_BC_DATA_PATH=/project/${ACCOUNT}/ERAinterim
+export LM_NL_POLPHIIFS=90.0
+export LM_NL_POLLAMIFS=180.0
+export LM_NL_IEIFS=349
+export LM_NL_JEIFS=228
+export LM_NL_KEIFS=108
+export LM_NL_DLAMIFS=0.28125
+export LM_NL_DPHIIFS=0.28125
+export LM_NL_PHILUIFS=-31.896944
+export LM_NL_PHIROIFS=31.896944
+export LM_NL_LAMLUIFS=-70.875
+export LM_NL_LAMROIFS=27.0
+
+
+#Glbal files
+#export LM_NL_POLPHIIFS=90.0
+#export LM_NL_POLLAMIFS=180.0
+#export LM_NL_IEIFS=1280
+#export LM_NL_JEIFS=640
+#export LM_NL_KEIFS=137
+#export LM_NL_DLAMIFS=0.28125
+#export LM_NL_DPHIIFS=0.28125
+#export LM_NL_PHILUIFS=-89.784874
+#export LM_NL_PHIROIFS=89.784874
+#export LM_NL_LAMLUIFS=-180
+#export LM_NL_LAMROIFS=179.71875
+
+# LM coarse
+# ===========
+
+# Grid
+# ----
+export LM_NL_POLLATLM_C=90.0        # Latitude  of the North pole
+export LM_NL_POLLONLM_C=-180.0      # Longitude of the North pole
+export LM_NL_EXT_IE_C=1600          # Number of grid points (I: zonal, J: meridional)
+export LM_NL_EXT_JE_C=1600          # in your external parameter file (containing topology etc.)
+export LM_NL_IELM_C=1350            # Number of grid points (I: zonal, J: meridional)
+export LM_NL_JELM_C=1200            # and number of vertical levels
+export LM_NL_KELM_C=60              # of the coarse grid
+export LM_NL_DLONLM_C=0.04          # Delta longitude (in degrees)
+export LM_NL_DLATLM_C=0.04          # Delta latitude  (in degrees)
+export LM_NL_STARTLON_TOT_C=-32.00  # Starting longitude left
+export LM_NL_STARTLAT_TOT_C=-29.00  # Starting latitude south (bottom-left corner of the coarse grid)
+                                    # needs to be within the boundaries of the
+                                    # ERA5/ERAinterim data above AND co-located with the extpar data
+
+export LM_NL_EXTPAR_C=extpar_test1_4km.nc #Coarse extpar file in /bin
+
+
+
