@@ -5,7 +5,7 @@ A set of scripts used to run weather and climate simulations with COSMO. It is i
 
 1. Copy an `int2lm` executaeble and a `cosmo` executable to ./bin
 2. Link the corresponding configuration file like this: `ln -s simulation_configs/SIMULATION_S_ATL config` 
-3. Copy (dont  link) the needed Extpar files to `/bin` and adapt the corresponding `LM_NL_EXTPAR_?` variables in `config`
+3. run `./get_extpar_data.sh` to download all the external parameters  
 4. Open `./run_daint.sh`, adapt startdate and enddate of your simualtion, check that all the simulation setps you want to run are in the `parts` string.
 5. `./run_daint.sh`
 
