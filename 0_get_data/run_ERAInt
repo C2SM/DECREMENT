@@ -1,4 +1,5 @@
 #!/bin/bash
+#Copy and unpack Era-Interim data. Since these days we use ERA-I mostly for long runs, we download an entire year at once
 
 path=$LM_NL_BC_DATA_PATH/${LM_YYYY_BEGIN}
 
