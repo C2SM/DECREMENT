@@ -1,5 +1,5 @@
 #!/bin/bash
-#Simulation setup of C. Heim in the Southern Atlantinc
+#EURO-CORDEX 50km configuration
 
   
 # Machine 
@@ -32,57 +32,86 @@ export NQS_ELAPSED_LM_C=05:00:00    # maximum wall-clock time (HH:mm:ss)
 # Parts that will be executed. Same as folder names.
 export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c"
 
-# GLOBAL ERA5 grid
+# GLOBAL grid
 # ----------------
 
-# ERA5 
+# ERA-Interim 
+ln -sf run_ERAInt 0_get_data/run #Link correct copy script 
 export LM_NL_BC_DATA_PATH=/project/${ACCOUNT}/ERAinterim
 export LM_NL_POLPHIIFS=90.0
 export LM_NL_POLLAMIFS=180.0
-export LM_NL_IEIFS=349
-export LM_NL_JEIFS=228
-export LM_NL_KEIFS=108
-export LM_NL_DLAMIFS=0.28125
-export LM_NL_DPHIIFS=0.28125
-export LM_NL_PHILUIFS=-31.896944
-export LM_NL_PHIROIFS=31.896944
-export LM_NL_LAMLUIFS=-70.875
-export LM_NL_LAMROIFS=27.0
+export LM_NL_IEIFS=512
+export LM_NL_JEIFS=256
+export LM_NL_KEIFS=60
+export LM_NL_DLAMIFS=0.703125
+export LM_NL_DPHIIFS=0.703125
+export LM_NL_PHILUIFS=-89.46282
+export LM_NL_PHIROIFS=89.46282
+export LM_NL_LAMLUIFS=-180
+export LM_NL_LAMROIFS=179.2969
+export LM_NL_CZML_SOIL_IN=0.015,0.1,0.405,1.205,
 
 
-#Glbal files
-#export LM_NL_POLPHIIFS=90.0
-#export LM_NL_POLLAMIFS=180.0
-#export LM_NL_IEIFS=1280
-#export LM_NL_JEIFS=640
-#export LM_NL_KEIFS=137
-#export LM_NL_DLAMIFS=0.28125
-#export LM_NL_DPHIIFS=0.28125
-#export LM_NL_PHILUIFS=-89.784874
-#export LM_NL_PHIROIFS=89.784874
-#export LM_NL_LAMLUIFS=-180
-#export LM_NL_LAMROIFS=179.71875
+#COSMO Levels
+export LM_VCFLAT=11430.0
+export LM_VCOORD_D=22700.00,20800.00,19100.00,17550.00,16150.00,14900.00,13800.00,12785.00,11875.00,11020.00,10205.00,9440.00,8710.00,8015.00,7355.00,6725.00,6130.00,5565.00,5035.00,4530.00,4060.00,3615.00,3200.00,2815.00,2455.00,2125.00,1820.00,1545.00,1295.00,1070.00,870.00,695.00,542.00,412.00,303.00,214.00,143.00,89.00,49.00,20.00,0.00
+
 
 # LM coarse
 # ===========
 
 # Grid
 # ----
-export LM_NL_POLLATLM_C=90.0        # Latitude  of the North pole
-export LM_NL_POLLONLM_C=-180.0      # Longitude of the North pole
-export LM_NL_EXT_IE_C=1600          # Number of grid points (I: zonal, J: meridional)
-export LM_NL_EXT_JE_C=1600          # in your external parameter file (containing topology etc.)
-export LM_NL_IELM_C=1350            # Number of grid points (I: zonal, J: meridional)
-export LM_NL_JELM_C=1200            # and number of vertical levels
-export LM_NL_KELM_C=60              # of the coarse grid
-export LM_NL_DLONLM_C=0.04          # Delta longitude (in degrees)
-export LM_NL_DLATLM_C=0.04          # Delta latitude  (in degrees)
-export LM_NL_STARTLON_TOT_C=-32.00  # Starting longitude left
-export LM_NL_STARTLAT_TOT_C=-29.00  # Starting latitude south (bottom-left corner of the coarse grid)
+export LM_NL_POLLATLM_C=39.25        # Latitude  of the North pole
+export LM_NL_POLLONLM_C=-162.0      # Longitude of the North pole
+export LM_NL_EXT_IE_C=153           # Number of grid points (I: zonal, J: meridional)
+export LM_NL_EXT_JE_C=159           # in your external parameter file (containing topology etc.)
+export LM_NL_IELM_C=132             # Number of grid points (I: zonal, J: meridional)
+export LM_NL_JELM_C=129             # and number of vertical levels
+export LM_NL_KELM_C=40              # of the coarse grid
+export LM_NL_DLONLM_C=0.440         # Delta longitude (in degrees)
+export LM_NL_DLATLM_C=0.440         # Delta latitude  (in degrees)
+export LM_NL_STARTLON_TOT_C=-33.93  # Starting longitude left
+export LM_NL_STARTLAT_TOT_C=-28.93  # Starting latitude south (bottom-left corner of the coarse grid)
                                     # needs to be within the boundaries of the
                                     # ERA5/ERAinterim data above AND co-located with the extpar data
 
-export LM_NL_EXTPAR_C=extpar_test1_4km.nc #Coarse extpar file in /bin
+#RUNCTL
+export LM_NL_DT_C=300                         # Time Step
 
+#DYNCTL
+export LM_NL_Y_SCALAR_ADVECT_C=BOTTDC2
+export LM_NL_RDHEIGHT_C=1100
+export LM_NL_RLWIDTH_C=500000
+export LM_NL_NRDTAU_C=6
+export LM_NL_L_DIFF_SMAG_C=.False.
+export LM_NL_LDIFF_COLD_POOLS_C=.False.
+export LM_NL_HD_CORR_U_BD_C=0.25
+export LM_NL_HD_CORR_T_BD_C=0.0
+export LM_NL_HD_CORR_P_BD_C=0.0
+export LM_NL_HD_CORR_U_IN_C=0.25
+
+#PHYCTL
+export LM_NL_SUPERCOOL_W_C=.True.
+export LM_NL_ITYPE_AEROSOL_C=1
+export LM_NL_LCONV_C=.True.
+export LM_NL_LSSO_C=.True.
+export LM_NL_HINCRAD_C=1.0
+export LM_NL_ICO2_RAD_C=1
+export LM_NL_ITYPE_ALBEDO_C=2
+export LM_NL_ITYPE_AEROSOL_C=1
+
+#TUNING
+export LM_NL_TKHMIN_C=0.35
+export LM_NL_TKMMIN_C=1.0
+export LM_NL_TUR_LEN_C=500
+export LM_NL_Q_CRIT_C=4.0
+export LM_NL_QC0_C=0.0
+
+#GRIBIN
+export LM_NL_HINCBOUND_C=6                # Input frequency of boundary conditions
+export LM_NL_LANA_QI_C=.True.
+export LM_NL_LAN_RHO_SNOW_C=.False.
+export LM_NL_EXTPAR_C=extpar_50km_EU_CORDEX_159x153.nc #Coarse extpar file in /bin
 
 

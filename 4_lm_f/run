@@ -171,6 +171,8 @@ cat > INPUT_PHY << EONL
       icldm_tran=0,
       itype_synd=2,
   lsoil=.TRUE.,
+      itype_hydmod=1,
+        lsoil_init_fill=1,
       lmelt=.TRUE.,
       lmelt_var=.TRUE.,
       itype_trvg=2,
@@ -187,8 +189,9 @@ cat > INPUT_PHY << EONL
       lconf_avg=.true.,
     lsso=.FALSE.,
       ltkesso=.False.,
+      ltkeshs=.False.,
     itype_albedo = 1,
-    itype_aerosol = 2
+    itype_aerosol = 2,
  /END
 EONL
 
