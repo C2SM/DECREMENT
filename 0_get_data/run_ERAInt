@@ -1,5 +1,5 @@
 #!/bin/bash
-#Copy and unpack Era-Interim data. Since these days we use ERA-I mostly for long runs, we download an entire year at once
+#Copy and unpack Era-Interim data. Since these days we use ERA-I mostly for long runs, unpack an entire year at once
 
 path=$LM_NL_BC_DATA_PATH/${LM_YYYY_BEGIN}
 
@@ -18,11 +18,9 @@ fi
 # Unpack cas file for current month
 module unload xalt
 
-for MM in $( seq -w 12 ); do
-  file=ERAINT_${LM_YYYY_BEGIN}_${MM}.tar.gz
-  jobid=$( sbatch --account=$ACCOUNT -J untar_BC --output=job_${MM}.out  -C gpu --partition=normal --time=0:10:00 --wrap="pushd output; pigz -dc $path/$file | tar --transform 's/caf/cas/' --transform 's/.nc/0000.nc/' -xf - ; \rm -f .jobid >&/dev/null" | sed 's/Submitted batch job //g' )
-  sleep 3
-done
+file=ERAINT_${LM_YYYY_BEGIN}_${MM}.tar.gz
+#jobid=$( sbatch --account=$ACCOUNT -J untar_BC --output=job_${MM}.out  -C gpu --partition=normal --time=1:00:00 --wrap="pushd output; pigz -dc $path/$file | tar --transform 's/caf/cas/' --transform 's/.nc/0000.nc/' -xf - ; \rm -f .jobid >&/dev/null" | sed 's/Submitted batch job //g' )
+jobid=$( sbatch --account=$ACCOUNT -J untar_BC --output=job.out  -C gpu --partition=normal --time=1:00:00 --wrap="pushd output; find $path -name *.tar.gz -exec tar --transform 's/caf/cas/' --transform 's/.nc/0000.nc/' -xzvf {}  -C . \; ; \rm -f .jobid >&/dev/null" | sed 's/Submitted batch job //g' )
 
 
 #If the simulation ends on the first of next month on midnight, we need BCs for this as well
@@ -35,8 +33,8 @@ if [ $(( 10#${LM_MM_END} - 1 )) == $(( 10#${LM_MM_BEGIN} )) ]; then
   hincbound=$( grep -oP 'hincbound\s*=*\K\d+' run_next ) #Boundary increment
   nextmonfile=cas$( date -d "${LM_YYYY_END}-${LM_MM_END}-${LM_DD_END}T${LM_ZZ_END}:00 +${hincbound}hours" +%Y%m%d%M%S)
   
-  file=ERA5_cas_${nextyear}_${nextmonth}.tar.gz
-  path=$PROJECT/ERA5/${nextyear}
+  file=ERAINT_${nextyear}_${nextmonth}.tar.gz
+  path=$LM_NL_BC_DATA_PATH/${nextyear}
   
   jobid_nextmon=$( sbatch --account=$ACCOUNT -J untar_BC --output=job1.out  -C gpu --partition=normal --time=00:10:00 --wrap="pushd output; tar -xzf $path/$file $nextmonfile ; \rm -f .jobid >&/dev/null" | sed 's/Submitted batch job //g' )
 
