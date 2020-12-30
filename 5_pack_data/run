@@ -1,0 +1,65 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+  WAITFORJOB=""
+else
+  WAITFORJOB="$1"
+fi
+
+# cleanup
+if [ -f .jobid ]; then
+  $(squeue -j `cat .jobid` &>/dev/null) && scancel `cat .jobid`
+  sleep 3
+  \rm .jobid 2>/dev/null
+fi
+./clean
+
+#Create links of data to be compressed
+
+#Check if output folder exists
+mkdir -p $(readlink output)
+
+
+cat > job <<EOF_job
+#!/bin/bash
+#SBATCH --job-name=compress
+#SBATCH --output=job.out
+#SBATCH --nodes=1
+#SBATCH --cpus-per-task=12
+#SBATCH --ntasks=1
+#SBATCH --partition=${QUEUE}
+#SBATCH --time=${NQS_ELAPSED_COMPRESS}
+#SBATCH --account=${ACCOUNT}
+
+# Load modules
+export OMP_NUM_THREADS=$CORES_PER_NODE
+export CRAY_CUDA_MPS=1
+module load daint-gpu
+module load NCO
+
+#Loop over directories to compress
+for d in $LM_COMPRESS_DIRS; do
+  nc_compression/nczip -kv input/\${d}/*.nc
+  tar --transform='s/.nz/.nc/' -cvf -C output/\$(dirname \$d)_\$(basename \$d).tar input/\${d}/*.nz
+  rm input/\${d}/*.nz
+done
+
+
+EOF_job
+
+
+# submit job
+if [ -z "${WAITFORJOB}" ]; then
+  jobid=`sbatch -C gpu job | sed 's/Submitted batch job //g'`
+else
+  jobid=`sbatch -C gpu --dependency=afterok:${WAITFORJOB} job | sed 's/Submitted batch job //g'`
+fi
+
+if [ $? -eq 0 -a -n "${jobid}" ]; then
+  echo "${jobid}" > .jobid
+  echo "${jobid}"
+else
+  exit 1
+fi
+
+

@@ -3,7 +3,7 @@ OUTPUT
 extpar*
 job
 job.out
-YUDEBUG
+YU*
 core*
 .jobid
 *.swp

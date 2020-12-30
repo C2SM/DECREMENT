@@ -1,3 +1,3 @@
-[submodule "5_store_data/nc_compression"]
-	path = 5_store_data/nc_compression
+[submodule "5_pack_data/nc_compression"]
+	path = pakk_data/nc_compression
 	url = https://gitlab.ethz.ch/hymet/nc_compression

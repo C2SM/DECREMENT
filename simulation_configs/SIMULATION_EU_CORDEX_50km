@@ -28,9 +28,14 @@ export NQS_NYLM_C=2                 # number of NODEs in y direction
 export NQS_NIOLM_C=0                # number of NODEs for asyncronous IO
 export NQS_ELAPSED_LM_C=05:00:00    # maximum wall-clock time (HH:mm:ss)
 
+#5_pack_data
+export NQS_ELAPSED_COMPRESS=12:00:00    # maximum wall-clock time (HH:mm:ss)
+export LM_COMPRESS_DIRS='lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev' # List of output folders to compress and pack
+                                                              # use spaces between the folders. 
+
 
 # Parts that will be executed. Same as folder names.
-export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c"
+export SB_PARTS="0_get_data"
 
 # GLOBAL grid
 # ----------------
@@ -57,7 +62,7 @@ export LM_VCFLAT=11430.0
 export LM_VCOORD_D=22700.00,20800.00,19100.00,17550.00,16150.00,14900.00,13800.00,12785.00,11875.00,11020.00,10205.00,9440.00,8710.00,8015.00,7355.00,6725.00,6130.00,5565.00,5035.00,4530.00,4060.00,3615.00,3200.00,2815.00,2455.00,2125.00,1820.00,1545.00,1295.00,1070.00,870.00,695.00,542.00,412.00,303.00,214.00,143.00,89.00,49.00,20.00,0.00
 
 
-# LM coarse
+# 2_lm_c
 # ===========
 
 # Grid
