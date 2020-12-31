@@ -20,7 +20,7 @@ Each directory contains a cleaning script `./clean`. To clean the entire package
 - [ ] Improve Readme
 - [x] Add job for compressing output
 - [ ] Add mechanism for  retrys
-- [ ] Add mechanism that allows doing year-long simualtions in multiple steps (similat to Jesus solution, but less complicated. I. e. steal what works :-) )
+- [x] Add mechanism that allows doing year-long simualtions in multiple steps
 
 ## Branch
 The current branch is inteneded for COSMO-ORG.

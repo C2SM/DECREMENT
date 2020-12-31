@@ -1,0 +1,55 @@
+#!/bin/bash
+if [ -z "$4" ]; then
+  WAITFORJOB=""
+else
+  WAITFORJOB="$4"
+fi
+
+cat > job <<EOF_job
+#!/bin/bash -l
+#
+#SBATCH --job-name=chain
+#SBATCH --output=job.out
+#SBATCH --time=00:05:00
+#SBATCH --nodes=1
+#SBATCH --partition=normal
+#SBATCH --account=${ACCOUNT}
+
+#Helpers to do date calculations
+BeginDate=\$(date -d \${LM_YYYY_BEGIN}-\${LM_MM_BEGIN}-\${LM_DD_BEGIN}T\${LM_ZZ_BEGIN}:00 +%Y-%m-%dT%H:00)
+EndDate=\$(date -d \${LM_YYYY_END}-\${LM_MM_END}-\${LM_DD_END}T\${LM_ZZ_END}:00 +%Y-%m-%dT%H:00)
+sEndDate=\$(date -d \${LM_YYYY_END}-\${LM_MM_END}-\${LM_DD_END}T\${LM_ZZ_END}:00 +%s)
+FinishDate=\$(date -d \${LM_YYYY_FINISHED}-\${LM_MM_FINISHED}-\${LM_DD_FINISHED}T\${LM_ZZ_FINISHED}:00 +%s)
+
+#Check if we are done. If yes, exit
+if [ \$sEndDate -gt \$FinishDate ] ; then
+  echo "done"
+  exit 0 
+fi  
+
+#Set new BEGIN and END in run_daint.sh
+sed -i "s/export LM_YYYY_BEGIN.*/export LM_YYYY_BEGIN=\$( date -d "\$BeginDate+\$LM_CHAIN_INTERVAL" +%Y)/" ../run_daint.sh
+sed -i "s/export LM_MM_BEGIN.*/export LM_MM_BEGIN=\$( date -d "\$BeginDate+\$LM_CHAIN_INTERVAL" +%m)/" ../run_daint.sh
+sed -i "s/export LM_DD_BEGIN.*/export LM_DD_BEGIN=\$( date -d "\$BeginDate+\$LM_CHAIN_INTERVAL" +%d)/" ../run_daint.sh
+sed -i "s/export LM_ZZ_BEGIN.*/export LM_ZZ_BEGIN=\$( date -d "\$BeginDate+\$LM_CHAIN_INTERVAL" +%H)/" ../run_daint.sh
+
+sed -i "s/export LM_YYYY_END.*/export LM_YYYY_END=\$( date -d "\$EndDate+\$LM_CHAIN_INTERVAL" +%Y)/" ../run_daint.sh
+sed -i "s/export LM_MM_END.*/export LM_MM_END=\$( date -d "\$EndDate+\$LM_CHAIN_INTERVAL" +%m)/" ../run_daint.sh
+sed -i "s/export LM_DD_END.*/export LM_DD_END=\$( date -d "\$EndDate+\$LM_CHAIN_INTERVAL" +%d)/" ../run_daint.sh
+sed -i "s/export LM_ZZ_END.*/export LM_ZZ_END=\$( date -d "\$EndDate+\$LM_CHAIN_INTERVAL" +%H)/" ../run_daint.sh
+
+#./run_daint.sh
+EOF_job
+
+if [ -z "${WAITFORJOB}" ]; then
+  jobid=`sbatch -C gpu job | sed 's/Submitted batch job //g'`
+else
+  jobid=`sbatch -C gpu --dependency=afterok:${WAITFORJOB} job | sed 's/Submitted batch job //g'`
+fi
+
+if [ $? -eq 0 -a -n "${jobid}" ]; then
+  echo "${jobid}" > .jobid
+  echo "${jobid}"
+else
+  exit 1
+fi

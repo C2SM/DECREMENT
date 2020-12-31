@@ -33,11 +33,18 @@ export NQS_ELAPSED_COMPRESS=12:00:00    # maximum wall-clock time (HH:mm:ss)
 export LM_COMPRESS_DIRS='lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev' # List of output folders to compress and pack
                                                               # use spaces between the folders. 
 
+#6_chain
+export LM_CHAIN_INTERVAL=1year     #Current options: "1year", "1month", "1day".
+
 
 # Parts that will be executed. Same as folder names.
-export SB_PARTS="0_get_data"
+export SB_PARTS="6_chain"
 
-# GLOBAL grid
+# ===================================================
+#                   CONFIGURE COSMO
+# ===================================================
+
+# BC grid
 # ----------------
 
 # ERA-Interim 
