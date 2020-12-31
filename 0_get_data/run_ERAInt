@@ -19,7 +19,7 @@ fi
 module unload xalt
 
 file=ERAINT_${LM_YYYY_BEGIN}_${MM}.tar.gz
-jobid=$( sbatch --account=$ACCOUNT -J untar_BC --output=job.out  -C gpu --partition=normal --time=1:00:00 --wrap="pushd output; find $path -name *.tar.gz -exec tar --transform 's/caf/cas/' --transform 's/.nc/0000.nc/' --skip-old-files -xzvf {}  -C . \; ; \rm -f .jobid >&/dev/null" | sed 's/Submitted batch job //g' )
+jobid=$( sbatch --account=$ACCOUNT -J untar_BC --output=job.out  -C gpu --partition=normal --time=1:00:00 --wrap="pushd output >&/dev/null ; find $path -name *.tar.gz -exec tar --transform 's/caf/cas/' --transform 's/.nc/0000.nc/' --skip-old-files -xzvf {}  -C . \; ; \rm -f .jobid >&/dev/null" | sed 's/Submitted batch job //g' )
 
 
 #If the simulation ends on the first of next month on midnight, we need BCs for this as well
@@ -35,7 +35,7 @@ if [ $(( 10#${LM_MM_END} - 1 )) == $(( 10#${LM_MM_BEGIN} )) ]; then
   file=ERAINT_${nextyear}_${nextmonth}.tar.gz
   path=$LM_NL_BC_DATA_PATH/${nextyear}
   
-  jobid_nextmon=$( sbatch --account=$ACCOUNT -J untar_BC --output=job1.out  -C gpu --partition=normal --time=00:10:00 --wrap="pushd output; tar -xzf $path/$file $nextmonfile ; \rm -f .jobid >&/dev/null" | sed 's/Submitted batch job //g' )
+  jobid_nextmon=$( sbatch --account=$ACCOUNT -J untar_BC --output=job1.out  -C gpu --partition=normal --time=00:10:00 --wrap="pushd output >&/dev/null; tar -xzf $path/$file $nextmonfile ; \rm -f .jobid >&/dev/null" | sed 's/Submitted batch job //g' )
 
 fi
 
