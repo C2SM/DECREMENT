@@ -50,7 +50,7 @@ export LM_CHAIN_INTERVAL=1year     #Current options: "1year", "1month", "1day".
 
 
 # Parts that will be executed. Same as folder names.
-export SB_PARTS="1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f 5_pack_data"
+export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f 5_pack_data"
 
 # ===================================================
 #                   CONFIGURE COSMO
@@ -60,8 +60,8 @@ export SB_PARTS="1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f 5_pack_data"
 # ----------------
 
 # ERA5 
-ln -sf run_ERAInt 0_get_data/run
-export LM_NL_BC_DATA_PATH=/project/${ACCOUNT}/heimc/data/reanalyses/ERA5_new
+ln -sf run_ERA5 0_get_data/run
+export LM_NL_BC_DATA_PATH=/store/c2sm/c2sme/ERA5_int2lmready/heimc
 export LM_NL_POLPHIIFS=90.0
 export LM_NL_POLLAMIFS=180.0
 export LM_NL_IEIFS=349
@@ -91,7 +91,7 @@ export LM_NL_CZML_SOIL_IN=0.035,0.175,0.640,1.775,
 
 #COSMO Levels
 export LM_VCFLAT=17827.0
-export LM_VCOORD_D=29798.50,28255.93,26824.04, 25497.39,24269.35,23134.03,22081.88,21105.64,20207.79,19360.60,18576.52,17827.86,17127.98,16451.10,15811.52,15183.53,14581.37,13982.04,13400.03,12815.37,12248.19,11678.54,11126.48,10572.09,10035.43,9496.58,8975.59,8452.55,7947.52,7440.55,6931.96,6442.38,5956.41,5498.04,5050.84,4647.96,4261.91,3893.26,3542.15,3208.52,2892.23,2593.71,2312.95,2049.75,1803.89,1575.57,1364.68,1170.90,993.84,833.44,689.53,561.52,448.82,350.95,267.55,197.67,137.23,87.33,48.44,20.00,0.00 
+export LM_VCOORD_D=29798.50,28255.93,26824.04,25497.39,24269.35,23134.03,22081.88,21105.64,20207.79,19360.60,18576.52,17827.86,17127.98,16451.10,15811.52,15183.53,14581.37,13982.04,13400.03,12815.37,12248.19,11678.54,11126.48,10572.09,10035.43,9496.58,8975.59,8452.55,7947.52,7440.55,6931.96,6442.38,5956.41,5498.04,5050.84,4647.96,4261.91,3893.26,3542.15,3208.52,2892.23,2593.71,2312.95,2049.75,1803.89,1575.57,1364.68,1170.90,993.84,833.44,689.53,561.52,448.82,350.95,267.55,197.67,137.23,87.33,48.44,20.00,0.00 
 
 
 # LM coarse
@@ -147,7 +147,7 @@ export LM_NL_QC0_C=0.002
 #GRIBIN
 export LM_NL_HINCBOUND_C=1            # Input frequency of boundary conditions
 export LM_NL_LANA_QI_C=.False.
-export LM_NL_LAN_RHO_SNOW_C=.True.
+export LM_NL_LAN_RHO_SNOW_C=.False.
 export LM_NL_EXTPAR_C=extpar_SA_4km.nc #Coarse extpar file in /bin
 
 # Configuration
