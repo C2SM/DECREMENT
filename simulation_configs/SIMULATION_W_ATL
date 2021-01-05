@@ -50,7 +50,8 @@ export LM_CHAIN_INTERVAL=1year     #Current options: "1year", "1month", "1day".
 
 
 # Parts that will be executed. Same as folder names.
-export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f 5_pack_data"
+#export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f 5_pack_data"
+export SB_PARTS="1_ifs2lm"
 
 # ===================================================
 #                   CONFIGURE COSMO
@@ -73,7 +74,7 @@ export LM_NL_PHILUIFS=-31.896944
 export LM_NL_PHIROIFS=31.896944
 export LM_NL_LAMLUIFS=-70.875
 export LM_NL_LAMROIFS=27.0
-export LM_NL_CZML_SOIL_IN=0.035,0.175,0.640,1.775,
+export LM_NL_CZML_SOIL_IN=0.035,0.175,0.640,1.945,
 
 
 #Global files
