@@ -39,7 +39,8 @@ sed -i "s/export LM_MM_END.*/export LM_MM_END=\$( date -d "\$EndDate+\$LM_CHAIN_
 sed -i "s/export LM_DD_END.*/export LM_DD_END=\$( date -d "\$EndDate+\$LM_CHAIN_INTERVAL" +%d)/" ../run_daint.sh
 sed -i "s/export LM_ZZ_END.*/export LM_ZZ_END=\$( date -d "\$EndDate+\$LM_CHAIN_INTERVAL" +%H)/" ../run_daint.sh
 
-../run_daint.sh
+cd ..
+./run_daint.sh
 EOF_job
 
 if [ -z "${WAITFORJOB}" ]; then
