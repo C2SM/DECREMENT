@@ -6,6 +6,14 @@ else
   WAITFORJOB="$1"
 fi
 
+# cleanup
+if [ -f .jobid ]; then
+  $(squeue -j `cat .jobid` &>/dev/null) && scancel `cat .jobid`
+  sleep 3
+  \rm .jobid 2>/dev/null
+fi
+./clean
+
 cat > job <<EOF_job
 #!/bin/bash -l
 #
