@@ -14,7 +14,7 @@ source config
 # ================= 
 
 # Date of model initialization
-export LM_YYYY_INI=2010
+export LM_YYYY_INI=2011
 export LM_MM_INI=01
 export LM_DD_INI=01
 export LM_ZZ_INI=00
@@ -26,20 +26,20 @@ export LM_DD_FINISHED=01
 export LM_ZZ_FINISHED=00
 
 # Startdate of current step
-export LM_YYYY_BEGIN=2010
+export LM_YYYY_BEGIN=2013
 export LM_MM_BEGIN=01
 export LM_DD_BEGIN=01
 export LM_ZZ_BEGIN=00
 
 # Enddate of current step
-export LM_YYYY_END=2011
+export LM_YYYY_END=2014
 export LM_MM_END=01
 export LM_DD_END=01
 export LM_ZZ_END=00
 
 #Compute HSTART and HEND of the simulation
 export LM_NL_HSTART=$( diff_hours ${LM_YYYY_INI}-${LM_MM_INI}-${LM_DD_INI}T${LM_ZZ_INI}:00 ${LM_YYYY_BEGIN}-${LM_MM_BEGIN}-${LM_DD_BEGIN}T${LM_ZZ_BEGIN}:00 )
-export LM_NL_HSTOP=$( diff_hours ${LM_YYYY_BEGIN}-${LM_MM_BEGIN}-${LM_DD_BEGIN}T${LM_ZZ_BEGIN}:00 ${LM_YYYY_END}-${LM_MM_END}-${LM_DD_END}T${LM_ZZ_END}:00  )
+export LM_NL_HSTOP=$( diff_hours ${LM_YYYY_INI}-${LM_MM_INI}-${LM_DD_INI}T${LM_ZZ_INI}:00 ${LM_YYYY_END}-${LM_MM_END}-${LM_DD_END}T${LM_ZZ_END}:00  )
 
 for part in ${SB_PARTS} ; do
   short=`echo "${part}" | sed 's/^[0-9]*_//g'`
