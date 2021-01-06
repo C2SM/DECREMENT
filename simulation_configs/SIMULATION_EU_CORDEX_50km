@@ -38,7 +38,7 @@ export LM_CHAIN_INTERVAL=1year     #Current options: "1year", "1month", "1day".
 
 
 # Parts that will be executed. Same as folder names.
-export SB_PARTS="1_ifs2lm 2_lm_c 5_pack_data 6_chain"
+export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 5_pack_data 6_chain"
 
 # ===================================================
 #                   CONFIGURE COSMO
