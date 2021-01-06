@@ -118,7 +118,6 @@ export LM_NL_STARTLAT_TOT_C=-29.00           # Starting latitude south (bottom-l
 export LM_NL_DT_C=40                         # Time Step
 
 #DYNCTL
-export LM_NL_Y_SCALAR_ADVECT_C=BOTT2_STRANG
 export LM_NL_RDHEIGHT_C=13500
 export LM_NL_RLWIDTH_C=50000
 export LM_NL_NRDTAU_C=3

@@ -50,8 +50,7 @@ export LM_CHAIN_INTERVAL=1year     #Current options: "1year", "1month", "1day".
 
 
 # Parts that will be executed. Same as folder names.
-#export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f 5_pack_data"
-export SB_PARTS="1_ifs2lm"
+export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f 5_pack_data"
 
 # ===================================================
 #                   CONFIGURE COSMO
@@ -117,7 +116,6 @@ export LM_NL_STARTLON_TOT_C=-70.12
 export LM_NL_DT_C=40                         # Time Step
 
 #DYNCTL
-export LM_NL_Y_SCALAR_ADVECT_C=BOTT2_STRANG
 export LM_NL_RDHEIGHT_C=13500
 export LM_NL_RLWIDTH_C=50000
 export LM_NL_NRDTAU_C=3
