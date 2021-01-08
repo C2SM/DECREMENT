@@ -28,7 +28,7 @@ cat > INPUT <<EOF
   idbg_level=3,
   luse_t_skin=.TRUE.,
   nincwait=30,
-  nmaxwait=300,
+  nmaxwait=120,
   lboundaries=.true.,
   lprog_qi=.true.,
   lprog_qr_qs=.true.,
