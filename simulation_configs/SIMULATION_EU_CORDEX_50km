@@ -126,4 +126,9 @@ export LM_NL_LANA_QI_C=.True.
 export LM_NL_LAN_RHO_SNOW_C=.False.
 export LM_NL_EXTPAR_C=extpar_50km_EU_CORDEX_159x153.nc #Coarse extpar file in /bin
 
+#Async NetCDF I/O
+export LM_NL_LASYNC_IO_C=.False.
+export LM_NL_NUM_IOPE_PERCOMM_C=0         # 1 if async, 0 if sync I/0
+
+
 

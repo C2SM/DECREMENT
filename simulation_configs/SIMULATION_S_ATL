@@ -25,7 +25,7 @@ export NQS_ELAPSED_IFS2LM=01:30:00  # maximum wall-clock time (HH:mm:ss)
 # 2_lm_c
 export NQS_NXLM_C=8                 # number of NODEs in x direction
 export NQS_NYLM_C=8                 # number of NODEs in y direction
-export NQS_NIOLM_C=0                # number of NODEs for asyncronous IO
+export NQS_NIOLM_C=0                # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 export NQS_ELAPSED_LM_C=05:00:00    # maximum wall-clock time (HH:mm:ss)
 
 
@@ -38,7 +38,7 @@ export NQS_ELAPSED_LM2LM=06:00:00   # maximum wall-clock time (HH:mm:ss)
 # 4_lm_f
 export NQS_NXLM_F=13                # number of NODEs in x direction
 export NQS_NYLM_F=13                # number of NODEs in y direction
-export NQS_NIOLM_F=0                # number of NODEs for asyncronous IO
+export NQS_NIOLM_F=0                # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 export NQS_ELAPSED_LM_F=08:00:00    # maximum wall-clock time (HH:mm:ss)
 
 #5_pack_data
@@ -152,8 +152,9 @@ export LM_NL_LANA_QI_C=.True.
 export LM_NL_LAN_RHO_SNOW_C=.False.
 export LM_NL_EXTPAR_C=extpar_test1_4km.nc # Coarse extpar file in /bin
 
-# Configuration
-# -------------
+#Async NetCDF I/O
+export LM_NL_LASYNC_IO_C=.False.
+export LM_NL_NUM_IOPE_PERCOMM_C=0         # 1 if async, 0 if sync I/0
 
 
 # LM fine 
@@ -175,3 +176,8 @@ export LM_NL_STARTLAT_TOT_F=-24.00  # Starting latitude south (bottom-left corne
 
 
 export LM_NL_EXTPAR_F=extpar_test1_2km.nc
+
+#Async NetCDF I/O
+export LM_NL_LASYNC_IO_F=.False.
+export LM_NL_NUM_IOPE_PERCOMM_F=0         # 1 if async, 0 if sync I/0
+

@@ -36,7 +36,7 @@ cat > INPUT_ORG << EONL
   ldfi=.FALSE.,
   nprocx= $NQS_NXLM_C, nprocy= $NQS_NYLM_C, nprocio=0,
   num_asynio_comm=$NQS_NIOLM_C,
-  num_iope_percomm=0,
+  num_iope_percomm=$LM_NL_NUM_IOPE_PERCOMM_C,
   nboundlines=3,
   ldump_ascii = .FALSE.
   itype_calendar = 0,
@@ -169,6 +169,7 @@ cat >INPUT_IO << EONL
   ldwd_grib_use=.false.,
   yform_read='ncdf',
   l_ke_in_gds=.TRUE.,
+  lasync_io=$LM_NL_LASYNC_IO_C,
   ymode_read = 'r  ',
   ymode_write = 'w  ',
   nincwait=10,
@@ -355,6 +356,7 @@ else
   touch .retry
   cd .. 
   ./run_daint.sh
+  exit 1
 fi
 
 
