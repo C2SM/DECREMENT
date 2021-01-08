@@ -26,13 +26,13 @@ export LM_DD_FINISHED=01
 export LM_ZZ_FINISHED=00
 
 # Startdate of current step
-export LM_YYYY_BEGIN=2013
+export LM_YYYY_BEGIN=2011
 export LM_MM_BEGIN=01
 export LM_DD_BEGIN=01
 export LM_ZZ_BEGIN=00
 
 # Enddate of current step
-export LM_YYYY_END=2014
+export LM_YYYY_END=2012
 export LM_MM_END=01
 export LM_DD_END=01
 export LM_ZZ_END=00
