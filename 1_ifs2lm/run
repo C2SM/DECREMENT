@@ -57,8 +57,8 @@ cat > INPUT <<EOF
   lprog_rho_snow=$LM_NL_LAN_RHO_SNOW_C,
   lvertwind_ini=.TRUE.,
   lvertwind_bd=.TRUE.,
-  itype_aerosol = 2,
-  itype_albedo = 2,
+  itype_aerosol = $LM_NL_ITYPE_AEROSOL_C,
+  itype_albedo = $LM_NL_ITYPE_ALBEDO_C,
  /
  &GRID_IN
   pcontrol_fi = 30000.,
