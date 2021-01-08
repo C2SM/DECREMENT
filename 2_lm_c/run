@@ -60,7 +60,7 @@ cat > INPUT_ORG << EONL
    z0m_dia=0.2,
    crsmin=150.0,
    clc_diag=0.5,
-   q_crit=$LM_NL_TUR_LEN_C,
+   q_crit=$LM_NL_Q_CRIT_C,
    qc0=$LM_NL_QC0_C,
    qi0=5E-6,
    uc1 = 0.0626,
