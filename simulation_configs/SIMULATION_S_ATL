@@ -61,7 +61,7 @@ export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f 5_pack_data"
 
 # ERA5 
 ln -sf run_ERA5 0_get_data/run 
-export LM_NL_BC_DATA_PATH=/project/${ACCOUNT}/heimc/data/reanalyses/ERA5_new
+export LM_NL_BC_DATA_PATH=/store/c2sm/c2sme/ERA5_int2lmready/heimc/
 export LM_NL_POLPHIIFS=90.0
 export LM_NL_POLLAMIFS=180.0
 export LM_NL_IEIFS=349
