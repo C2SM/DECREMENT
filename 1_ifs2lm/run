@@ -28,7 +28,7 @@ cat > INPUT <<EOF
   ltime_mean=.TRUE.,
   luvcor=.TRUE.,
   idbg_level=3,
-  luse_t_skin=.False.,
+  luse_t_skin=$LM_NL_LUSE_T_SKIN,
   nprocx=${NQS_NXIFS2LM}, nprocy=${NQS_NYIFS2LM}, nprocio=${NQS_NIOIFS2LM},
     lfilter_pp=.true.,
   llbc_smooth=.true.,
@@ -152,6 +152,7 @@ else
   touch .retry
   cd ..
   ./run_daint.sh
+  exit 1
 fi
 
 EOF_job
