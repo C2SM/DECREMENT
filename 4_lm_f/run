@@ -346,6 +346,17 @@ sacct -j \$SLURM_JOB_ID --format=User,JobID,Jobname,partition,state,time,start,e
 
 \rm -f .jobid >&/dev/null
 
+
+# Retry if failed
+if grep -q 'CLEAN UP' job.out; then
+  \rm -f .retry >&/dev/null
+else
+  if [ -f .retry ]; then exit 1; fi
+  touch .retry
+  cd .. 
+  ./run_daint.sh
+fi
+
 EOF_job
 
 
