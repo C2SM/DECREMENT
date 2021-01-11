@@ -1,3 +1,9 @@
 input/*
 output/*
-config
+**/.retry
+**/job
+**/job.out
+**/YU*
+**/core*
+**/.jobid
+**/*.swp
