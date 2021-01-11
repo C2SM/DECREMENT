@@ -22,6 +22,12 @@ There is a mechanism that resubmits the entire simulation step, if int2lm or cos
 ## Cleanup
 Each directory contains a cleaning script `./clean`. To clean the entire package  run `./distclean.sh`
 
+## Asynchronous execution
+The individual parts are chained together by using `--dependency=afterok:JOBID` feature of [SLURM][https://slurm.schedmd.com/sbatch.html]. The option `afterok` in each `./run` means that a dependent job is started after the parent job completed successfully. For jobs to execute in paralell this can be changed to `after`. Then the dependent job is started after the parted has started running. 
+
+For certain scenarios it may make sense to move `0_get_data` and `1_ifs2lm` after `6_chain`. Then the infut for the next step is already computed while the current simulation still runs.
+
+
 ## Branch
 The current branch is inteneded for COSMO-ORG.
 
