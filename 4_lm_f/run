@@ -48,7 +48,6 @@ cat > INPUT_ORG << EONL
    v0snow = $LM_NL_V0SNOW_F,
    rlam_mom=0.0,
    rlam_heat = $LM_NL_RLAM_HEAT_F,
-   entr_sc = 0.000186,
    rat_sea=20.0,
    rat_lam=1.0,
    rat_can=1.0,
