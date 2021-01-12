@@ -22,7 +22,7 @@ cat > INPUT_ORG << EONL
   ie_tot= $LM_NL_IELM_F, je_tot= $LM_NL_JELM_F, ke_tot=$LM_NL_KELM_F,
  /END
  &RUNCTL
-  dt= 20.0,
+  dt= $LM_NL_DT_F,
   hstart=$LM_NL_HSTART, hstop=$LM_NL_HSTOP,
   ydate_ini='${LM_YYYY_INI}${LM_MM_INI}${LM_DD_INI}${LM_ZZ_INI}0000',
   hincmxt=24.0, hincmxu=24.0,
@@ -42,8 +42,8 @@ cat > INPUT_ORG << EONL
   idbg_level = 4,
  /END
  &TUNING
-   tkhmin = 0.4,
-   tkmmin = 0.4,
+   tkhmin = $LM_NL_TKHMIN_F,
+   tkmmin = $LM_NL_TKMMIN_F,
    mu_rain = 0.5,
    v0snow = 20.0,
    rlam_mom=0.0,
@@ -59,11 +59,11 @@ cat > INPUT_ORG << EONL
    z0m_dia=0.2,
    crsmin=150.0,
    clc_diag=0.5,
-   q_crit=1.6,
-   qc0=0.0002
+   q_crit=$LM_NL_Q_CRIT_F,
+   qc0=$LM_NL_QC0_F,
    qi0=5E-6
    uc1 = 0.0626,
-   tur_len = 100.0, ! Was 150. New tuning by C. Heim for the SA
+   tur_len = $LM_NL_TUR_LEN_F,
  /END
 EONL
 cat > INPUT_ASS << EONL
@@ -83,24 +83,24 @@ cat > INPUT_DYN << EONL
     lcpp_dycore=.TRUE.,
     lspubc=.true.,
     itype_spubc=3,
-    rdheight=13500.0
-    nrdtau=3,
-    rlwidth=50000.0,
+    rdheight=$LM_NL_RDHEIGHT_F,
+    nrdtau=$LM_NL_NRDTAU_F,
+    rlwidth=$LM_NL_RLWIDTH_F,
     ldyn_bbc=.false.,
     itype_bbc_w=114,
     betasw=0.4,
     xkd=0.1,
     epsass=0.15,
     lcond=.true.,
-    l_diff_smag = .TRUE.,
-    l_diff_cold_pools = .False.
+    l_diff_smag=$LM_NL_L_DIFF_SMAG_F,
+    l_diff_cold_pools = $LM_NL_LDIFF_COLD_POOLS_F,
     lhordiff=.true.,
       itype_hdiff=2,
-      hd_corr_u_bd=0.75,
-      hd_corr_t_bd=0.75,
+      hd_corr_u_bd=$LM_NL_HD_CORR_U_BD_F,
+      hd_corr_t_bd=$LM_NL_HD_CORR_T_BD_F,
       hd_corr_trcr_bd=0.0,
-      hd_corr_p_bd=0.75,
-      hd_corr_u_in=0.0,
+      hd_corr_p_bd=$LM_NL_HD_CORR_P_BD_F,
+      hd_corr_u_in=$LM_NL_HD_CORR_U_IN_F,
       hd_corr_t_in=0.0,
       hd_corr_trcr_in=0.0,
       hd_corr_p_in=0.0,
@@ -147,9 +147,11 @@ cat > INPUT_PHY << EONL
       lgsp_first=.true.,
       itype_gscp=4,
       ldiniprec=.FALSE.,
+      lsuper_coolw =$LM_NL_SUPERCOOL_W_F,
   lrad=.TRUE.,
-      hincrad = 0.25,
+      hincrad = $LM_NL_HINCRAD_F,
       lradtopo=.false.,
+      ico2_rad=$LM_NL_ICO2_RAD_F,
   lforest=.TRUE.,
   ltur=.TRUE.,
       loldtur=.true.,
@@ -182,16 +184,16 @@ cat > INPUT_PHY << EONL
       itype_root = 2
       itype_heatcond=2
       itype_evsl=4,
-    lconv=.FALSE.,
+    lconv=$LM_NL_ITYPE_AEROSOL_F,
       itype_conv=3,
       nincconv=5,
       lcape=.false.,
       lconf_avg=.true.,
-    lsso=.FALSE.,
+    lsso=$LM_NL_LSSO_F,
       ltkesso=.False.,
       ltkeshs=.False.,
-    itype_albedo = 1,
-    itype_aerosol = 2,
+    itype_albedo = $LM_NL_ITYPE_ALBEDO_F,
+    itype_aerosol = $LM_NL_ITYPE_AEROSOL_F,
  /END
 EONL
 
@@ -221,16 +223,16 @@ cat > INPUT_IO << EONL
   lbdana=.FALSE.,
   ydirini='input',
   lchkini=.TRUE.,
-  hincbound=1.0,
+  hincbound=$LM_NL_HINCBOUND_F,
   ydirbd='input',
   lchkbd =.FALSE.,
-  lana_qi = .FALSE.,
+  lana_qi = $LM_NL_LANA_QI_F,
   llb_qi  = .TRUE.,
   lana_qg = .FALSE.,
   llb_qg  = .FALSE.,
   lana_qr_qs = .FALSE.,
   llb_qr_qs  = .FALSE.,
-  lana_rho_snow = .FALSE.,
+  lana_rho_snow = $LM_NL_LAN_RHO_SNOW_F,
   lan_lai = .TRUE., lan_rootdp = .TRUE., lan_vio3 = .TRUE., lan_plcov = .TRUE.,
   lan_t_cl = .TRUE.,  lan_w_cl = .TRUE., lan_hmo3 = .TRUE., lan_t_so0 = .TRUE.,
   lan_t_snow = .TRUE., lan_w_snow = .TRUE., lan_w_i = .TRUE., lan_rho_snow = .TRUE.,

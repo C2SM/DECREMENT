@@ -117,6 +117,7 @@ cat > INPUT_PHY << EONL
   lgsp    =.true.,
       lgsp_first=.true.,
       itype_gscp=$LM_NL_ITYPE_GSCP_C,
+      lsuper_coolw =$LM_NL_SUPERCOOL_W_C,
       ldiniprec=.FALSE.,
   lrad=.TRUE.,
       hincrad = $LM_NL_HINCRAD_C,
