@@ -125,7 +125,11 @@ export LM_NL_LDIFF_COLD_POOLS_C=.False.
 export LM_NL_HD_CORR_U_BD_C=0.75
 export LM_NL_HD_CORR_T_BD_C=0.75
 export LM_NL_HD_CORR_P_BD_C=0.75
+export LM_NL_HD_CORR_TRCR_BD_C=0.0
 export LM_NL_HD_CORR_U_IN_C=0.0
+export LM_NL_HD_CORR_T_IN_C=0.0
+export LM_NL_HD_CORR_P_IN_C=0.0
+export LM_NL_HD_CORR_TRCR_IN_C=0.0
 
 #PHYCTL
 export LM_NL_SUPERCOOL_W_C=.False.
@@ -189,7 +193,12 @@ export LM_NL_LDIFF_COLD_POOLS_F=.False.
 export LM_NL_HD_CORR_U_BD_F=0.75
 export LM_NL_HD_CORR_T_BD_F=0.75
 export LM_NL_HD_CORR_P_BD_F=0.75
+export LM_NL_HD_CORR_TRCR_BD_F=0.0
 export LM_NL_HD_CORR_U_IN_F=0.0
+export LM_NL_HD_CORR_T_IN_F=0.0
+export LM_NL_HD_CORR_P_IN_F=0.0
+export LM_NL_HD_CORR_TRCR_IN_F=0.0
+
 
 #PHYCTL
 export LM_NL_SUPERCOOL_W_F=.False.
