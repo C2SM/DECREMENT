@@ -143,6 +143,7 @@ export LM_NL_TKHMIN_C=0.4
 export LM_NL_TKMMIN_C=0.4
 export LM_NL_RLAM_HEAT_C=0.5249
 export LM_NL_TUR_LEN_C=100
+export LM_NL_V0SNOW_C = 20.0
 export LM_NL_Q_CRIT_C=1.6
 export LM_NL_QC0_C=0.002
 
@@ -202,6 +203,7 @@ export LM_NL_TKHMIN_F=0.4
 export LM_NL_TKMMIN_F=0.4
 export LM_NL_RLAM_HEAT_F=0.5249
 export LM_NL_TUR_LEN_F=100
+export LM_NL_V0SNOW_F = 20.0
 export LM_NL_Q_CRIT_F=1.6
 export LM_NL_QC0_F=0.002
 

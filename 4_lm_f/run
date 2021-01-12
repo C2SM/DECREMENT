@@ -45,7 +45,7 @@ cat > INPUT_ORG << EONL
    tkhmin = $LM_NL_TKHMIN_F,
    tkmmin = $LM_NL_TKMMIN_F,
    mu_rain = 0.5,
-   v0snow = 20.0,
+   v0snow = $LM_NL_V0SNOW_F,
    rlam_mom=0.0,
    rlam_heat = $LM_NL_RLAM_HEAT_F,
    entr_sc = 0.000186,
