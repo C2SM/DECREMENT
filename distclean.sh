@@ -10,6 +10,7 @@ for part in [0-9]*_* ; do
     scancel `cat .jobid`
     sleep 3
     \rm .jobid
+    \rm .retry
   fi
   ./clean
   \rm core *.out INPUT INPUT_* job *.swp 2>/dev/null
