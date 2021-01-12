@@ -132,6 +132,7 @@ export LM_NL_HD_CORR_P_IN_C=0.0
 export LM_NL_HD_CORR_TRCR_IN_C=0.0
 
 #PHYCTL
+export LM_NL_ITYPE_GSCP_C=4
 export LM_NL_SUPERCOOL_W_C=.False.
 export LM_NL_LCONV_C=.False.
 export LM_NL_LSSO_C=.False.
@@ -201,6 +202,7 @@ export LM_NL_HD_CORR_TRCR_IN_F=0.0
 
 
 #PHYCTL
+export LM_NL_ITYPE_GSCP_F=4
 export LM_NL_SUPERCOOL_W_F=.False.
 export LM_NL_LCONV_F=.False.
 export LM_NL_LSSO_F=.False.
