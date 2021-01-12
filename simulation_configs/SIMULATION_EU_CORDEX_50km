@@ -109,7 +109,6 @@ export LM_NL_HD_CORR_TRCR_IN_C=0.0
 
 #PHYCTL
 export LM_NL_ITYPE_GSCP_C=3
-export LM_NL_SUPERCOOL_W_C=.True.
 export LM_NL_LCONV_C=.True.
 export LM_NL_LSSO_C=.True.
 export LM_NL_HINCRAD_C=1.0
