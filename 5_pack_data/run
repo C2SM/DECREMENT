@@ -39,7 +39,7 @@ module load NCO
 
 #Loop over directories to compress
 for d in $LM_COMPRESS_DIRS; do
-  nc_compression/nczip -kv input/\${d}/l{?,??}fd\${LM_YYYY_BEGIN}*.nc 
+  ./nczip -kv input/\${d}/l{?,??}fd\${LM_YYYY_BEGIN}*.nc 
   tar --transform='s/.nz/.nc/' -cvf output/\$(dirname \$d)_\$(basename \$d)_\${LM_YYYY_BEGIN}.tar input/\$(dirname \$d)/\$(basename \$d)/*.nz
   rm input/\$(dirname \$d)/\$(basename \$d)/*.nz
 done
