@@ -182,7 +182,7 @@ cat > INPUT_PHY << EONL
       itype_root = 2
       itype_heatcond=2
       itype_evsl=4,
-    lconv=$LM_NL_ITYPE_AEROSOL_F,
+    lconv=$LM_NL_LCONV_F,
       itype_conv=3,
       nincconv=5,
       lcape=.false.,
