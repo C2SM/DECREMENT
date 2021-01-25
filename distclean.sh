@@ -9,8 +9,8 @@ for part in [0-9]*_* ; do
     echo "killing job `cat .jobid`"
     scancel `cat .jobid`
     sleep 3
-    \rm .jobid
-    \rm .retry
+    \rm .jobid 2>/dev/null
+    \rm .retry 2>/dev/null
   fi
   ./clean
   \rm core *.out INPUT INPUT_* job *.swp 2>/dev/null
