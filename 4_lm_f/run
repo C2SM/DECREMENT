@@ -254,7 +254,7 @@ cat > INPUT_IO << EONL
   ireset_sums = 2,
   lcheck=.TRUE.,
   luvmasspoint=.FALSE.,
-  lwrite_const=.FALSE.,
+  lwrite_const=.TRUE.,
   ydir='output/1h_2D',
   l_z_filter=.FALSE.,l_p_filter=.FALSE.,
   l_fi_pmsl_smooth = .FALSE.,
