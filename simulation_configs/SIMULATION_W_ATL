@@ -182,7 +182,7 @@ export LM_NL_STARTLAT_TOT_F=-7.77
 export LM_NL_STARTLON_TOT_F=-65.625
 
 #RUNCTL
-export LM_NL_DT_F=40                         # Time Step
+export LM_NL_DT_F=20                         # Time Step
 
 #DYNCTL
 export LM_NL_RDHEIGHT_F=13500
@@ -212,10 +212,11 @@ export LM_NL_ITYPE_AEROSOL_F=2
 #TUNING
 export LM_NL_TKHMIN_F=0.4
 export LM_NL_TKMMIN_F=0.4
+export LM_NL_RLAM_HEAT_F=1.0
 export LM_NL_TUR_LEN_F=100
 export LM_NL_V0SNOW_F=20.0
 export LM_NL_Q_CRIT_F=1.6
-export LM_NL_QC0_F=0.002
+export LM_NL_QC0_F=0.0002
 
 #GRIBIN
 export LM_NL_HINCBOUND_F=1                # Input frequency of boundary conditions
