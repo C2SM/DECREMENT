@@ -1,5 +1,5 @@
 #!/bin/bash
-#North-central Atlantic Trade winds, but driven by ERA5 and with a 4 km intermediate nest
+#Simulation of the North Central Atlantntic trade winds, with a 4 km intermediate nest
   
 # Machine 
 # -------
@@ -50,7 +50,7 @@ export LM_CHAIN_INTERVAL=1year     #Current options: "1year", "1month", "1day".
 
 
 # Parts that will be executed. Same as folder names.
-export SB_PARTS="4_lm_f"
+export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f"
 
 # ===================================================
 #                   CONFIGURE COSMO
@@ -138,7 +138,7 @@ export LM_NL_LSSO_C=.False.
 export LM_NL_HINCRAD_C=0.25
 export LM_NL_ICO2_RAD_C=0
 export LM_NL_ITYPE_ALBEDO_C=1
-export LM_NL_ITYPE_AEROSOL_C=2
+export LM_NL_ITYPE_AEROSOL_C=1
 
 #TUNING
 export LM_NL_TKHMIN_C=0.4
@@ -207,7 +207,7 @@ export LM_NL_LSSO_F=.False.
 export LM_NL_HINCRAD_F=0.25
 export LM_NL_ICO2_RAD_F=0
 export LM_NL_ITYPE_ALBEDO_F=1
-export LM_NL_ITYPE_AEROSOL_F=2
+export LM_NL_ITYPE_AEROSOL_F=1
 
 #TUNING
 export LM_NL_TKHMIN_F=0.4
@@ -220,7 +220,7 @@ export LM_NL_QC0_F=0.0002
 
 #GRIBIN
 export LM_NL_HINCBOUND_F=1                # Input frequency of boundary conditions
-export LM_NL_LANA_QI_F=.True.
+export LM_NL_LANA_QI_F=.False.
 export LM_NL_LAN_RHO_SNOW_F=.False.
 export LM_NL_EXTPAR_F=extpar_atlantic_2km.nc
 
