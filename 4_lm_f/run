@@ -306,7 +306,7 @@ cat > job <<EOF_job
 #!/bin/bash
 #SBATCH --job-name=lm_f
 #SBATCH --output=job.out
-#SBATCH --nodes=$(( ${NQS_NXLM_F} * ${NQS_NYLM_F} + ${NQS_NIOLM_F} ))
+#SBATCH --nodes=$(( (${NQS_NXLM_C} * ${NQS_NYLM_C} + ${NQS_NIOLM_C}) / ${TASKS_PER_NODE} ))
 #SBATCH --ntasks-per-node=${TASKS_PER_NODE}
 #SBATCH --partition=${QUEUE}
 #SBATCH --time=${NQS_ELAPSED_LM_F}

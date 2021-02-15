@@ -8,8 +8,13 @@ export QUEUE="normal"
 export ACCOUNT="pr94"
 export RUNCMD="srun"
 export CORES_PER_NODE=24
-export TASKS_PER_NODE=1
 export GPUS_PER_NODE=1
+COSMO_TARGET="gpu"
+if [[ $COSMO_TARGET == "cpu" ]]; then
+    export TASKS_PER_NODE=12
+else
+    export TASKS_PER_NODE=1
+fi
 export EXE_INT2LM="./int2lm"
 export EXE_COSMO="./cosmo"
 
@@ -23,8 +28,13 @@ export NQS_NIOIFS2LM=0              # number of CPUs for asyncronous IO
 export NQS_ELAPSED_IFS2LM=01:30:00  # maximum wall-clock time (HH:mm:ss)
 
 # 2_lm_c
-export NQS_NXLM_C=8                 # number of NODEs in x direction
-export NQS_NYLM_C=8                 # number of NODEs in y direction
+if [[ $COSMO_TARGET == "cpu" ]]; then
+    export NQS_NXLM_C=24               # number of CPUs in x direction (12 per node on daint-gpu)
+    export NQS_NYLM_C=32               # number of CPUs in y direction
+else
+    export NQS_NXLM_C=8               # number of CPUs in x direction (12 per node on daint-gpu)
+    export NQS_NYLM_C=8               # number of CPUs in y direction
+fi
 export NQS_NIOLM_C=0                # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 export NQS_ELAPSED_LM_C=05:00:00    # maximum wall-clock time (HH:mm:ss)
 
@@ -75,6 +85,11 @@ export LM_NL_LAMLUIFS=-70.875
 export LM_NL_LAMROIFS=27.0
 export LM_NL_CZML_SOIL_IN=0.035,0.175,0.640,1.945,
 export LM_NL_LUSE_T_SKIN=.True.
+if [[ $COSMO_TARGET == "cpu" ]]; then
+    export LM_NL_LCPP_DYCORE=.False.
+else
+    export LM_NL_LCPP_DYCORE=.True.
+fi
 
 
 #Global files
