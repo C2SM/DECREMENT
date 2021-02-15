@@ -69,7 +69,7 @@ EONL
 
 cat > INPUT_DYN << EONL
  &DYNCTL
-    lcpp_dycore=.TRUE.,
+    lcpp_dycore=${LM_NL_LCPP_DYCORE},
     lspubc=.true.,
     itype_spubc=3,
     rdheight=$LM_NL_RDHEIGHT_C,
@@ -296,6 +296,7 @@ EONL
 
 cat > INPUT_INI << EONL
  &INICTL
+ /END
 EONL
 
 cat > INPUT_SAT << EONL
@@ -307,7 +308,7 @@ cat > job <<EOF_job
 #!/bin/bash
 #SBATCH --job-name=lm_c
 #SBATCH --output=job.out
-#SBATCH --nodes=$(( ${NQS_NXLM_C} * ${NQS_NYLM_C} + ${NQS_NIOLM_C} ))
+#SBATCH --nodes=$(( (${NQS_NXLM_C} * ${NQS_NYLM_C} + ${NQS_NIOLM_C}) / ${TASKS_PER_NODE} ))
 #SBATCH --ntasks-per-node=${TASKS_PER_NODE}
 #SBATCH --partition=${QUEUE}
 #SBATCH --time=${NQS_ELAPSED_LM_C}
@@ -326,13 +327,18 @@ export MALLOC_MMAP_MAX_=0
 export MALLOC_TRIM_THRESHOLD_=536870912
 export COSMO_NPROC_NODEVICE=${NQS_NIOLM_C}
 export OMP_NUM_THREADS=1
-export MPICH_RDMA_ENABLED_CUDA=1
-export MPICH_G2G_PIPELINE=256
+EOF_job
 
-# KO: Need to set path to cuda library explicitly or GPU runs fail on cuInit
-export LD_LIBRARY_PATH="\$LD_LIBRARY_PATH\:/opt/cray/nvidia/default/lib64"
+if [[ $COSMO_TARGET == "gpu" ]]; then
+    cat >> job <<EOF_job
+    export MPICH_RDMA_ENABLED_CUDA=1
+    export MPICH_G2G_PIPELINE=256
+    # KO: Need to set path to cuda library explicitly or GPU runs fail on cuInit
+    # export LD_LIBRARY_PATH="\$LD_LIBRARY_PATH\:/opt/cray/nvidia/default/lib64"
+EOF_job
+fi
 
-
+cat >> job <<EOF_job
 # echo date
 date
 
