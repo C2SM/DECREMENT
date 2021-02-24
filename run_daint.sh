@@ -10,6 +10,11 @@ diff_hours() {
 #Read grids and simualtion config
 source config 
 
+# Ensemble settings
+export LM_C_ENS_MODE=true
+export LM_C_ENS_NUMBER=100
+export LM_C_ENS_PERT=0.00001
+
 # Set Start and end
 # ================= 
 
@@ -42,11 +47,20 @@ export LM_NL_HSTART=$( diff_hours ${LM_YYYY_INI}-${LM_MM_INI}-${LM_DD_INI}T${LM_
 export LM_NL_HSTOP=$( diff_hours ${LM_YYYY_INI}-${LM_MM_INI}-${LM_DD_INI}T${LM_ZZ_INI}:00 ${LM_YYYY_END}-${LM_MM_END}-${LM_DD_END}T${LM_ZZ_END}:00  )
 
 for part in ${SB_PARTS} ; do
-  short=`echo "${part}" | sed 's/^[0-9]*_//g'`
-  echo "launching ${short}"
-  mkdir -p output/${short}
 
+  short=`echo "${part}" | sed 's/^[0-9]*_//g'`
+  mkdir -p output/${short}
   cd ${part}
+  
+  # Ensemble execution
+  if [ "${part}" = "2_lm_c" ] && [ "${LM_C_ENS_MODE}" = true ]; then
+    echo "running ${short} in ensemble mode with ${LM_C_ENS_NUMBER} realizations"
+    jobid=`./run_ensemble ${jobid}`
+    continue
+  fi
+
+  # Normal execution
+  echo "launching ${short}"
   jobid=`./run ${jobid}`
   
   cd - 1>/dev/null 2>/dev/null

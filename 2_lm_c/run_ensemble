@@ -1,0 +1,30 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+  WAITFORJOB=""
+else
+  WAITFORJOB="$1"
+fi
+
+# add ensemble stuff to run
+sed "s/\&RUNCTL/\&RUNCTL\n  itype_pert = 1,\n  rperturb = ${LM_C_ENS_PERT},/" run > run_ens
+
+# prepare and execute ensemble runs 
+for i in $(seq -f "%04g" 1 ${LM_C_ENS_NUMBER}) ; do
+  
+  # delete old folders (if exist) and create new ones
+  rm -rf $i && mkdir $i
+  rm -rf output/$i && mkdir output/$i
+  
+  # enter directory, clean up, and run the run
+  cd $i
+  rm -f run clean output input cosmo
+  cp ../run_ens run
+  chmod +x run
+  cp ../clean .
+  ln -s ../output/$i output
+  ln -s ../input input
+  ln -s ../cosmo cosmo
+  ./run ${WAITFORJOB}
+  cd ..
+done
