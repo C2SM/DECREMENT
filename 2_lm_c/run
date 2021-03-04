@@ -173,7 +173,7 @@ cat >INPUT_IO << EONL
   ymode_write = 'w  ',
   nincwait=10,
   nmaxwait=200,
-  nhour_restart=$LM_NL_HSTART,$LM_NL_HSTOP,$(( $LM_NL_HSTOP - $LM_NL_HSTART ))
+  nhour_restart=0.0,$LM_NL_HSTOP,$(( $LM_NL_HSTOP - $LM_NL_HSTART ))
   ngribout=4,
   itype_gather=2,
   ydir_restart_in='output/restart'
@@ -207,7 +207,7 @@ cat >INPUT_IO << EONL
  /END
  &GRIBOUT
   yform_write='ncdf',
-  hcomb=$LM_NL_HSTART,$LM_NL_HSTOP,1,
+  hcomb=0.0,$LM_NL_HSTOP,1,
   yvarml='U','V','W','T','PP',
      'QV','QC', 'QS','QR','QI','QG',
      'VIO3','HMO3',
@@ -225,7 +225,7 @@ cat >INPUT_IO << EONL
  /END
  &GRIBOUT
   yform_write='ncdf',
-  hcomb=$LM_NL_HSTART,$LM_NL_HSTOP,1,
+  hcomb=0.0,$LM_NL_HSTOP,1,
   yvarml='U_10M', 'V_10M', 'T_2M', 'RELHUM_2M', 'PS', 'QV_2M',
          'ALHFL_S', 'ASHFL_S', 'AUMFL_S', 'AVMFL_S',
          'CAPE_ML', 'CIN_ML',
@@ -248,7 +248,7 @@ cat >INPUT_IO << EONL
  /END
  &GRIBOUT
   yform_write='ncdf',
-  hcomb=$LM_NL_HSTART,$LM_NL_HSTOP,3,
+  hcomb=0.0,$LM_NL_HSTOP,3,
   yvarml=' ',
   yvarpl=' ',
   yvarzl='U', 'V', 'W', 'T', 'P', 'QV', 'QC', 'QI',
@@ -267,7 +267,7 @@ cat >INPUT_IO << EONL
  /END
  &GRIBOUT
   yform_write='ncdf',
-  hcomb=$LM_NL_HSTART,$LM_NL_HSTOP,24,
+  hcomb=0.0,$LM_NL_HSTOP,24,
   yvarml='VMAX_10M', 'W_SO', 'TMIN_2M', 'TMAX_2M', 'RUNOFF_S', 'RUNOFF_G',
   yvarpl=' ',
   yvarzl=' ',
