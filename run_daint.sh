@@ -37,6 +37,9 @@ export LM_MM_END=01
 export LM_DD_END=01
 export LM_ZZ_END=00
 
+#Set if cpus or gpus will be used
+export COSMO_TARGET="gpu"
+
 #Compute HSTART and HEND of the simulation
 export LM_NL_HSTART=$( diff_hours ${LM_YYYY_INI}-${LM_MM_INI}-${LM_DD_INI}T${LM_ZZ_INI}:00 ${LM_YYYY_BEGIN}-${LM_MM_BEGIN}-${LM_DD_BEGIN}T${LM_ZZ_BEGIN}:00 )
 export LM_NL_HSTOP=$( diff_hours ${LM_YYYY_INI}-${LM_MM_INI}-${LM_DD_INI}T${LM_ZZ_INI}:00 ${LM_YYYY_END}-${LM_MM_END}-${LM_DD_END}T${LM_ZZ_END}:00  )
