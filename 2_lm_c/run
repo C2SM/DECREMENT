@@ -37,6 +37,7 @@ cat > INPUT_ORG << EONL
   nprocx= $NQS_NXLM_C, nprocy= $NQS_NYLM_C, nprocio=0,
   num_asynio_comm=$NQS_NIOLM_C,
   num_iope_percomm=$LM_NL_NUM_IOPE_PERCOMM_C,
+  asynio_block_size = 20,
   nboundlines=3,
   ldump_ascii = .FALSE.
   itype_calendar = 0,
