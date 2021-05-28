@@ -80,7 +80,7 @@ EONL
 
 cat > INPUT_DYN << EONL
  &DYNCTL
-    lcpp_dycore=.TRUE.,
+    lcpp_dycore=${LM_NL_LCPP_DYCORE},
     lspubc=.true.,
     itype_spubc=3,
     rdheight=$LM_NL_RDHEIGHT_F,
@@ -326,13 +326,18 @@ export MALLOC_MMAP_MAX_=0
 export MALLOC_TRIM_THRESHOLD_=536870912
 export COSMO_NPROC_NODEVICE=${NQS_NIOLM_F}
 export OMP_NUM_THREADS=1
-export MPICH_RDMA_ENABLED_CUDA=1
-export MPICH_G2G_PIPELINE=256
+EOF_job
 
-# KO: Need to set path to cuda library explicitly or GPU runs fail on cuInit
-export LD_LIBRARY_PATH="\$LD_LIBRARY_PATH\:/opt/cray/nvidia/default/lib64"
+if [[ $COSMO_TARGET == "gpu" ]]; then
+    cat >> job <<EOF_job
+    export MPICH_RDMA_ENABLED_CUDA=1
+    export MPICH_G2G_PIPELINE=256
+    # KO: Need to set path to cuda library explicitly or GPU runs fail on cuInit
+    # export LD_LIBRARY_PATH="\$LD_LIBRARY_PATH\:/opt/cray/nvidia/default/lib64"
+EOF_job
+fi
 
-
+cat >> job <<EOF_job
 # echo date
 date
 
