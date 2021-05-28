@@ -8,11 +8,6 @@ export ACCOUNT="pr94"
 export RUNCMD="srun"
 export CORES_PER_NODE=24
 export GPUS_PER_NODE=1
-if [[ $COSMO_TARGET == "cpu" ]]; then
-    export TASKS_PER_NODE=12
-else
-    export TASKS_PER_NODE=1
-fi
 export EXE_INT2LM="./int2lm"
 export EXE_COSMO="./cosmo"
 

@@ -39,6 +39,11 @@ export LM_ZZ_END=00
 
 #Set if cpus or gpus will be used
 export COSMO_TARGET="gpu"
+if [[ $COSMO_TARGET == "cpu" ]]; then
+    export TASKS_PER_NODE=12
+else
+    export TASKS_PER_NODE=1
+fi
 
 #Compute HSTART and HEND of the simulation
 export LM_NL_HSTART=$( diff_hours ${LM_YYYY_INI}-${LM_MM_INI}-${LM_DD_INI}T${LM_ZZ_INI}:00 ${LM_YYYY_BEGIN}-${LM_MM_BEGIN}-${LM_DD_BEGIN}T${LM_ZZ_BEGIN}:00 )
