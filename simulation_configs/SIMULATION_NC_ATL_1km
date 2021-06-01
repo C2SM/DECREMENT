@@ -20,8 +20,8 @@ export EXE_COSMO="./cosmo"
 # -----------
 
 # 1_ifs2lm
-export NQS_NXIFS2LM=6               # number of CPUs in x direction (12 per node on daint-gpu)
-export NQS_NYIFS2LM=8               # number of CPUs in y direction
+export NQS_NXIFS2LM=8               # number of CPUs in x direction (12 per node on daint-gpu)
+export NQS_NYIFS2LM=12              # number of CPUs in y direction
 export NQS_NIOIFS2LM=0              # number of CPUs for asyncronous IO
 export NQS_ELAPSED_IFS2LM=02:45:00  # maximum wall-clock time (HH:mm:ss)
 
@@ -165,7 +165,7 @@ export LM_NL_QC0_C=0.0002
 
 #GRIBIN
 export LM_NL_HINCBOUND_C=1            # Input frequency of boundary conditions
-export LM_NL_LANA_QI_C=.False.
+export LM_NL_LANA_QI_C=.True.
 export LM_NL_LAN_RHO_SNOW_C=.False.
 export LM_NL_EXTPAR_C=extpar_SA_4km.nc #Coarse extpar file in /bin
 
