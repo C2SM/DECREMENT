@@ -14,4 +14,4 @@ cp /project/pr94/jcanton/extpar_files/test1_4km/extpar_test1_4km.nc bin/
 cp /project/pr94/jcanton/extpar_files/test1_2km/extpar_test1_2km.nc bin/
 
 #For simulation SIMULAITON_NC_ATL
-cp /project/pr94/davidle/extpar/extpar_1km_NCA.nc
+cp /project/pr94/davidle/extpar/extpar_1km_NCA.nc bin/
