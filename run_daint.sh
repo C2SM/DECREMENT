@@ -7,8 +7,10 @@ diff_hours() {
   echo $(( ($d2 - $d1) / 3600 ))
 }
 
+export COSMO_TARGET="gpu"
+
 #Read grids and simualtion config
-source config 
+source config
 
 # Set Start and end
 # ================= 
@@ -38,7 +40,6 @@ export LM_DD_END=01
 export LM_ZZ_END=00
 
 #Set if cpus or gpus will be used
-export COSMO_TARGET="gpu"
 if [[ $COSMO_TARGET == "cpu" ]]; then
     export TASKS_PER_NODE=12
 else
