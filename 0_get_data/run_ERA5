@@ -21,7 +21,7 @@ module unload xalt
 jobid=$( sbatch --account=$ACCOUNT -J untar_BC --output=job.out  -C gpu --partition=normal --time=3:30:00 --wrap="pushd output >&/dev/null; tar -xvf $path/$file; \rm -f .jobid >&/dev/null" | sed 's/Submitted batch job //g' )
 
 
-#If the simulation end on the first of next month on midnight, we need BCs for this as well
+#If the simulation ends on the first of next month on midnight, we need BCs for this as well
 if [ $(( 10#${LM_MM_END} - 1 )) == $(( 10#${LM_MM_BEGIN} )) ]; then
 
   nextyear=$( date -d "${LM_YYYY_END}-${LM_MM_END}-${LM_DD_END}T${LM_ZZ_END}:00 + 1hour" +%Y)
