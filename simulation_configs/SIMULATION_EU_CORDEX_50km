@@ -1,19 +1,10 @@
 #!/bin/bash
 #EURO-CORDEX 50km configuration
 
-  
-# Machine 
-# -------
-export QUEUE="normal"
-export ACCOUNT="pr94"
-export RUNCMD="srun"
-export CORES_PER_NODE=24
-export GPUS_PER_NODE=1
-export EXE_INT2LM="./int2lm"
-export EXE_COSMO="./cosmo"
 
-# Node config 
-# -----------
+# ===================================================
+#                   NODES AND WALL TIME
+# ===================================================
 
 # 1_ifs2lm
 export NQS_NXIFS2LM=1               # number of CPUs in x direction (12 per node on daint-gpu)
@@ -30,19 +21,11 @@ else
     export NQS_NYLM_C=1               # number of CPUs in y direction
 fi
 export NQS_NIOLM_C=0                # number of NODEs for asyncronous IO
-export NQS_ELAPSED_LM_C=05:00:00    # maximum wall-clock time (HH:mm:ss)
+export NQS_ELAPSED_LM_C=00:30:00    # maximum wall-clock time (HH:mm:ss)
 
 #5_pack_data
 export NQS_ELAPSED_COMPRESS=12:00:00    # maximum wall-clock time (HH:mm:ss)
-export LM_COMPRESS_DIRS='lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev' # List of output folders to compress and pack
-                                                              # use spaces between the folders. 
 
-#6_chain
-export LM_CHAIN_INTERVAL=1year     #Current options: "1year", "1month", "1day".
-
-
-# Parts that will be executed. Same as folder names.
-export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 5_pack_data 6_chain"
 
 # ===================================================
 #                   CONFIGURE COSMO
