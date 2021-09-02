@@ -23,8 +23,8 @@ fi
 # Spack Executables
 # =================
 
-[[-z ${LM_INT2LM_SPEC} ]] || rsync -av $(spack location -i ${INT2LM_SPEC})/bin ./bin/$(basename ${EXE_INT2LM})
-[[-z ${LM_COSMO_SPEC} ]] || rsync -av $(spack location -i ${COSMO_SPEC})/bin/cosmo_${COSMO_TARGET} ./bin/$(basename ${EXE_COSMO})
+[[ -z ${LM_INT2LM_SPEC} ]] || rsync -av $(spack location -i ${INT2LM_SPEC})/bin ./bin/$(basename ${EXE_INT2LM})
+[[ -z ${LM_COSMO_SPEC} ]] || rsync -av $(spack location -i ${COSMO_SPEC})/bin/cosmo_${COSMO_TARGET} ./bin/$(basename ${EXE_COSMO})
 
 
 # Read simualtion config
