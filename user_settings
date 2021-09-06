@@ -15,7 +15,7 @@ export EXE_COSMO="./cosmo"
 export LM_INT2LM_SPEC=""
 export LM_COSMO_SPEC=""
 
-# Global Simulation Dates initialization date (YYYY-MM-DDTHH:00)
+# Global Simulation Dates (YYYY-MM-DDTHH:00)
 export LM_INI_DATE="2011-01-01T00:00"
 export LM_FIN_DATE="2012-01-01T00:00"
 
