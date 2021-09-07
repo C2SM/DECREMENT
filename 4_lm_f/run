@@ -80,7 +80,7 @@ EONL
 
 cat > INPUT_DYN << EONL
  &DYNCTL
-    lcpp_dycore=.TRUE.,
+    lcpp_dycore=${LM_NL_LCPP_DYCORE},
     lspubc=.true.,
     itype_spubc=3,
     rdheight=$LM_NL_RDHEIGHT_F,
@@ -326,13 +326,18 @@ export MALLOC_MMAP_MAX_=0
 export MALLOC_TRIM_THRESHOLD_=536870912
 export COSMO_NPROC_NODEVICE=${NQS_NIOLM_F}
 export OMP_NUM_THREADS=1
-export MPICH_RDMA_ENABLED_CUDA=1
-export MPICH_G2G_PIPELINE=256
+EOF_job
 
-# KO: Need to set path to cuda library explicitly or GPU runs fail on cuInit
-export LD_LIBRARY_PATH="\$LD_LIBRARY_PATH\:/opt/cray/nvidia/default/lib64"
+if [[ $COSMO_TARGET == "gpu" ]]; then
+    cat >> job <<EOF_job
+    export MPICH_RDMA_ENABLED_CUDA=1
+    export MPICH_G2G_PIPELINE=256
+    # KO: Need to set path to cuda library explicitly or GPU runs fail on cuInit
+    # export LD_LIBRARY_PATH="\$LD_LIBRARY_PATH\:/opt/cray/nvidia/default/lib64"
+EOF_job
+fi
 
-
+cat >> job <<EOF_job
 # echo date
 date
 
@@ -346,7 +351,6 @@ date
 sacct -j \$SLURM_JOB_ID --format=User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPUFreq
 
 \rm -f .jobid >&/dev/null
-
 
 # Retry if failed
 if grep -q 'CLEAN UP' job.out; then
@@ -364,9 +368,9 @@ EOF_job
 
 # submit job
 if [ -z "${WAITFORJOB}" ]; then
-  jobid=`sbatch -C gpu job | sed 's/Submitted batch job //g'`
+  jobid=$(sbatch --parsable -C gpu job)
 else
-  jobid=`sbatch -C gpu --dependency=afterok:${WAITFORJOB} job | sed 's/Submitted batch job //g'`
+  jobid=$(batch --parsable -C gpu --dependency=afterok:${WAITFORJOB} job)
 fi
 
 if [ $? -eq 0 -a -n "${jobid}" ]; then
