@@ -1,10 +1,12 @@
 # COSMO sandbox
 A set of scripts used to run weather and climate simulations with COSMO. It is is intended to be simple and easy to extend. For more comprehensive solution consider using the LM Package.
 
-## Basic usage
+## How settings are prescribed
+The scripts are loading settings from 2 different files. The first one contains everything related to the simulation configuration (domain, physical parametrizations, etc). It must be the `config` file in the root directory. Either link a stock configuration `ln -sf simulation_configs/SIMULATION_EU_CORDEX_50km config` or create one for your own case. The second one is the `user_settings` file. It contains some dedicated settings but you can also overwrite there any setting specified in the config file (like dates, chaining interval, nodes distribution, wall time, ...). Anything in `user_config` will take precedence over the config file. The idea being to leave the config file untouched for cleaner workflow and easier git tracking.
 
-1. Copy an `int2lm` executaeble and a `cosmo` executable to ./bin. If you want to run a stock simulation, you can get the external parameter data by runnng `./get_extpar_data.sh`. Otherwise you need to copy them to `/bin` as well an adapt the corresponding `LM_NL_EXTPAR_?` env. variable.
-2. Link the corresponding configuration file like this: `ln -s simulation_configs/SIMULATION_S_ATL config` 
+## Basic usage
+1. Copy an `int2lm` executaeble and a `cosmo` executable to ./bin or specify the `LM_INT2LM_SPEC` and `LM_COSMO_SPEC` in the `user_settings` file if you want the scripts to get the executables for you. If you want to run a stock simulation, you can get the external parameter data by runnng `./get_extpar_data.sh`. Otherwise you need to copy them to `/bin` as well and adapt the corresponding `LM_NL_EXTPAR_?` env. variable.
+2. Link the corresponding configuration file like this: `ln -sf simulation_configs/SIMULATION_EU_CORDEX_50km config` 
 4. Open `./run_daint.sh`, adapt startdate and enddate of your simualtion, check that all the simulation setps you want to run are in the `parts` string.
 5. Adapt the output variables in GRIBOUT, you might want to adapt the respektive `mkdir` in `./clean` 
 6. Run the simulation: `./run_daint.sh`
