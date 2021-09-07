@@ -32,6 +32,9 @@ fi
 
 source config
 
+# Source user settings again so that they take precedence over the default simulation config
+source user_settings
+
 
 # Set Start and end
 # =================

@@ -1,5 +1,23 @@
 #!/bin/bash
 #Simulation of the North Central Atlantntic trade winds, with a 4 km intermediate nest
+
+
+# ===================================================
+#                   GENERAL SETTINGS
+# ===================================================
+
+# Global Simulation Dates (YYYY-MM-DDTHH:00)
+export LM_INI_DATE="2011-01-01T00:00"
+export LM_FIN_DATE="2012-01-01T00:00"
+
+# Chaining interval
+export LM_CHAIN_INTERVAL=1month     #Current options: "1year", "1month", "1day".
+
+# Parts that will be executed. Same as folder names.
+export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f 6_chain"
+
+# List of output folders to compress and pack (use spaces between the folders)
+export LM_COMPRESS_DIRS="lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev lm_f/1h_2D lm_f/24h lm_f/3h_3D_zlev"
   
 
 # ===================================================
@@ -63,11 +81,6 @@ export LM_NL_LAMLUIFS=-70.875
 export LM_NL_LAMROIFS=27.0
 export LM_NL_CZML_SOIL_IN=0.035,0.175,0.640,1.945,
 export LM_NL_LUSE_T_SKIN=.True.
-if [[ $COSMO_TARGET == "cpu" ]]; then
-    export LM_NL_LCPP_DYCORE=.False.
-else
-    export LM_NL_LCPP_DYCORE=.True.
-fi
 
 
 #Global files
