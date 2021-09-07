@@ -23,9 +23,9 @@ export ACCOUNT="pr94"
 export EXE_INT2LM="./int2lm"
 export EXE_COSMO="./cosmo"
 
-# Spack specifications. Leave empty if executables are manually copied
-export LM_INT2LM_SPEC=""
-export LM_COSMO_SPEC=""
+# Spack specifications. Leave commented if executables are manually copied
+# export LM_INT2LM_SPEC="int2lm@c2sm_master %gcc slave=daint"
+# export LM_COSMO_SPEC="cosmo@c2sm %pgi slave=daint real_type=double cosmo_target=gpu"
 
 # Global Simulation Dates (YYYY-MM-DDTHH:00)
 # export LM_INI_DATE="2011-01-01T00:00"
