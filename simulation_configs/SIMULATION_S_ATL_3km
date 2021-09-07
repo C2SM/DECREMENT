@@ -1,5 +1,5 @@
 #!/bin/bash
-#Simulation setup of C. Heim in the Southern Atlantinc
+# Simulation setup of C. Heim. A 3km simulation over the South Atlantic, driven directly by ERA5
 
 
 # ===================================================
@@ -14,10 +14,10 @@ export LM_FIN_DATE="2012-01-01T00:00"
 export LM_CHAIN_INTERVAL=1month     #Current options: "1year", "1month", "1day".
 
 # Parts that will be executed. Same as folder names.
-export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f 5_pack_data 6_chain"
+export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 5_pack_data 6_chain"
 
 # List of output folders to compress and pack (use spaces between the folders)
-export LM_COMPRESS_DIRS="lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev lm_f/1h_2D lm_f/24h lm_f/3h_3D_zlev"
+export LM_COMPRESS_DIRS="lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev"
 
 
 # ===================================================
@@ -40,19 +40,6 @@ else
 fi
 export NQS_NIOLM_C=0                # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 export NQS_ELAPSED_LM_C=05:00:00    # maximum wall-clock time (HH:mm:ss)
-
-
-# 3_lm2lm
-export NQS_NXLM2LM=10               # number of CPUs in x direction (12 per node on daint-gpu)
-export NQS_NYLM2LM=12               # number of CPUs in y direction
-export NQS_NIOLM2LM=0               # number of CPUs for asyncronous IO
-export NQS_ELAPSED_LM2LM=06:00:00   # maximum wall-clock time (HH:mm:ss)
-
-# 4_lm_f
-export NQS_NXLM_F=13                # number of NODEs in x direction
-export NQS_NYLM_F=13                # number of NODEs in y direction
-export NQS_NIOLM_F=0                # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
-export NQS_ELAPSED_LM_F=08:00:00    # maximum wall-clock time (HH:mm:ss)
 
 
 # ===================================================
@@ -149,68 +136,3 @@ export LM_NL_EXTPAR_C=extpar_SA_3km_new_albedoCON_soil_landuse.nc # Coarse extpa
 #Async NetCDF I/O
 export LM_NL_LASYNC_IO_C=.True.
 export LM_NL_NUM_IOPE_PERCOMM_C=1         # 1 if async, 0 if sync I/0
-
-
-# LM fine 
-# =======
-
-# Grid
-# ----
-export LM_NL_POLLATLM_F=90.0        # Latitude  of the North pole
-export LM_NL_POLLONLM_F=-180.0      # Longitude of the North pole
-export LM_NL_EXT_IE_F=2500          # Number of grid points (I: zonal, J: meridional)
-export LM_NL_EXT_JE_F=1730          # in your external parameter file (containing topology etc.)
-export LM_NL_IELM_F=2100            # Number of grid points (I: zonal, J: meridional)
-export LM_NL_JELM_F=1180            # and number of vertical levels
-export LM_NL_KELM_F=60              # of the fine grid
-export LM_NL_DLONLM_F=0.02          # Delta longitude (in degrees)
-export LM_NL_DLATLM_F=0.02          # Delta latitude  (in degrees)
-export LM_NL_STARTLON_TOT_F=-24.00  # Starting longitude left
-export LM_NL_STARTLAT_TOT_F=-24.00  # Starting latitude south (bottom-left corner of the fine grid)
-
-#RUNCTL
-export LM_NL_DT_F=20                         # Time Step
-
-#DYNCTL
-export LM_NL_RDHEIGHT_F=13500
-export LM_NL_RLWIDTH_F=50000
-export LM_NL_NRDTAU_F=3
-export LM_NL_L_DIFF_SMAG_F=.True.
-export LM_NL_LDIFF_COLD_POOLS_F=.False.
-export LM_NL_HD_CORR_U_BD_F=0.75
-export LM_NL_HD_CORR_T_BD_F=0.75
-export LM_NL_HD_CORR_P_BD_F=0.75
-export LM_NL_HD_CORR_TRCR_BD_F=0.0
-export LM_NL_HD_CORR_U_IN_F=0.0
-export LM_NL_HD_CORR_T_IN_F=0.0
-export LM_NL_HD_CORR_P_IN_F=0.0
-export LM_NL_HD_CORR_TRCR_IN_F=0.0
-
-
-#PHYCTL
-export LM_NL_ITYPE_GSCP_F=4
-export LM_NL_LCONV_F=.False.
-export LM_NL_LSSO_F=.False.
-export LM_NL_HINCRAD_F=0.25
-export LM_NL_ICO2_RAD_F=0
-export LM_NL_ITYPE_ALBEDO_F=2
-export LM_NL_ITYPE_AEROSOL_F=2
-
-#TUNING
-export LM_NL_TKHMIN_F=0.4
-export LM_NL_TKMMIN_F=0.4
-export LM_NL_RLAM_HEAT_F=0.5249
-export LM_NL_TUR_LEN_F=100
-export LM_NL_V0SNOW_F=20.0
-export LM_NL_Q_CRIT_F=1.6
-export LM_NL_QC0_F=0.0002
-
-#GRIBIN
-export LM_NL_HINCBOUND_F=1                # Input frequency of boundary conditions
-export LM_NL_LANA_QI_F=.False.
-export LM_NL_LAN_RHO_SNOW_F=.False.
-export LM_NL_EXTPAR_F=extpar_SA_2km_orosmooth_n20_s10.nc   # old albedo, soil and landues + probably too smoothed
-
-#Async NetCDF I/O
-export LM_NL_LASYNC_IO_F=.True.
-export LM_NL_NUM_IOPE_PERCOMM_F=1         # 1 if async, 0 if sync I/0
