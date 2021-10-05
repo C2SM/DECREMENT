@@ -16,7 +16,7 @@ rsync -av /project/pr94/jcanton/extpar_files/test1_2km/extpar_test1_2km.nc bin/
 #For simulation SIMULAITON_NC_ATL
 rsync -av /project/pr94/davidle/extpar/extpar_1km_NCA.nc bin/
 
-# For SIMULATION_S_ATL_3km_2km
+# For SIMULATION_S_ATL_3km
 rsync -av /project/pr94/leclairm/cosmo-org_crclim_testsuite_input/S_ATL_3km_2km/extpar/extpar_SA_3km_new_albedoCON_soil_landuse.nc bin/
 rsync -av /project/pr94/leclairm/cosmo-org_crclim_testsuite_input/S_ATL_3km_2km/extpar/extpar_SA_2km_orosmooth_n20_s10.nc bin/
 
