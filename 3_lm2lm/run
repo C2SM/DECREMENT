@@ -59,8 +59,8 @@ cat > INPUT <<EOF
   lreorder=.false.,
   lasync_io=.FALSE.,
   lbdclim=.TRUE.,
-  itype_aerosol = 2,
-  itype_albedo = 1,
+  itype_aerosol = ${LM_NL_ITYPE_AEROSOL_F},
+  itype_albedo = ${LM_NL_ITYPE_ALBEDO_F},
  /END
  &GRID_IN
   pcontrol_fi = 30000.,
