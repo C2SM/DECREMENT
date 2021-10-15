@@ -194,7 +194,7 @@ cat >INPUT_IO << EONL
   ydirbd='input',
   lchkbd =.TRUE.,
   lana_qi = $LM_NL_LANA_QI_C,
-  llb_qi  = .TRUE.,
+  llb_qi  = $LM_NL_LANA_QI_C,
   lana_qg = .FALSE.,
   llb_qg  = .FALSE.,
   lana_qr_qs = .FALSE.,
