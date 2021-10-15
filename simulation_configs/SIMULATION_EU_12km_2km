@@ -142,7 +142,7 @@ export LM_NL_QC0_C=0.0
 
 #GRIBIN
 export LM_NL_HINCBOUND_C=6.0                # Input frequency of boundary conditions
-export LM_NL_LANA_QI_C=.False.
+export LM_NL_LANA_QI_C=.True.
 export LM_NL_LAN_RHO_SNOW_C=.False.
 export LM_NL_EXTPAR_C=extpar_12km_europe_771x771.nc # Coarse extpar file in /bin
 
