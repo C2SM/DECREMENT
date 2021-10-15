@@ -39,7 +39,7 @@ export LM_DD_INI=$(date -d "${LM_INI_DATE}" +%d)
 export LM_ZZ_INI=$(date -d "${LM_INI_DATE}" +%H)
 
 # Startdate of current step
-export LM_BEGIN_DATE=${LM_END_DATE:-${LM_INI_DATE}}
+export LM_BEGIN_DATE=${LM_BEGIN_DATE:-${LM_INI_DATE}}
 export LM_YYYY_BEGIN=$(date -d "${LM_BEGIN_DATE}" +%Y)
 export LM_MM_BEGIN=$(date -d "${LM_BEGIN_DATE}" +%m)
 export LM_DD_BEGIN=$(date -d "${LM_BEGIN_DATE}" +%d)   # - ML - unused
@@ -60,7 +60,6 @@ diff_hours() {
 }
 export LM_NL_HSTART=$(diff_hours ${LM_INI_DATE} ${LM_BEGIN_DATE})
 export LM_NL_HSTOP=$(diff_hours ${LM_INI_DATE} ${LM_END_DATE})
-
 
 # Submit jobs
 # ===========
