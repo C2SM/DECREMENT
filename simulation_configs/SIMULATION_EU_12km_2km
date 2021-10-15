@@ -48,9 +48,9 @@ export NQS_NIOLM2LM=0               # number of CPUs for asyncronous IO
 export NQS_ELAPSED_LM2LM=07:00:00   # maximum wall-clock time (HH:mm:ss)
 
 # 4_lm_f
-export NQS_NXLM_F=9                 # number of NODEs in x direction
-export NQS_NYLM_F=9                 # number of NODEs in y direction
-export NQS_NIOLM_F=3                # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
+export NQS_NXLM_F=10                 # number of NODEs in x direction
+export NQS_NYLM_F=10                 # number of NODEs in y direction
+export NQS_NIOLM_F=4                # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 export NQS_ELAPSED_LM_F=08:00:00    # maximum wall-clock time (HH:mm:ss)
 
 #5_pack_data
@@ -148,6 +148,7 @@ export LM_NL_EXTPAR_C=extpar_12km_europe_771x771.nc # Coarse extpar file in /bin
 
 #Async NetCDF I/O
 export LM_NL_LASYNC_IO_C=.False.
+export LM_NL_LPREFETCH_C=.False.           # Needs async IO, uses one additional IO node
 export LM_NL_NUM_IOPE_PERCOMM_C=0         # 1 if async, 0 if sync I/0
 
 
@@ -213,4 +214,5 @@ export LM_NL_EXTPAR_F=extpar_2km_europe_2313x2313.nc
 
 #Async NetCDF I/O
 export LM_NL_LASYNC_IO_F=.True.
+export LM_NL_LPREFETCH_F=.True.           # Needs async IO, uses one additional IO node
 export LM_NL_NUM_IOPE_PERCOMM_F=1         # 1 if async, 0 if sync I/0
