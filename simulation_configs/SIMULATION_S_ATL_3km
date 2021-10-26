@@ -129,7 +129,7 @@ export LM_NL_QC0_C=0.0002
 
 #GRIBIN
 export LM_NL_HINCBOUND_C=3                # Input frequency of boundary conditions
-export LM_NL_LANA_QI_C=.False.
+export LM_NL_LANA_QI_C=.True.
 export LM_NL_LAN_RHO_SNOW_C=.False.
 export LM_NL_EXTPAR_C=extpar_SA_3km_new_albedoCON_soil_landuse.nc # Coarse extpar file in /bin
 
