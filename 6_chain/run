@@ -32,6 +32,7 @@ if [ \$sEndDate -ge \$sFinDate ] ; then
   exit 0 
 fi
 
+export LM_BEGIN_DATE=\${LM_END_DATE}
 cd ..
 ./run_daint.sh
 EOF_job
