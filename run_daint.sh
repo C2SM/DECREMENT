@@ -71,7 +71,6 @@ diff_hours() {
 export LM_NL_HSTART=$(diff_hours ${LM_INI_DATE} ${LM_BEGIN_DATE})
 export LM_NL_HSTOP=$(diff_hours ${LM_INI_DATE} ${LM_END_DATE})
 
-
 # Submit jobs
 # ===========
 

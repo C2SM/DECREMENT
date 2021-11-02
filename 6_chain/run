@@ -32,9 +32,11 @@ if [ \$sEndDate -ge \$sFinDate ] ; then
   exit 0 
 fi
 
+# Swap dates
 export LM_BEGIN_DATE=\${LM_END_DATE}
 cd ..
 ./run_daint.sh
+
 EOF_job
 
 if [ -z "${WAITFORJOB}" ]; then

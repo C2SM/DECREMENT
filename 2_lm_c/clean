@@ -1,6 +1,6 @@
 #!/bin/bash
 
-\rm -rf YU* OUTPUT core* job* INPUT* .jobid 
+\rm -rf YU* OUTPUT core* job* INPUT* .jobid spack.log 
 
 mkdir -p output/bc output/1h_2D output/3h_3D_zlev output/24h output/restart
 

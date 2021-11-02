@@ -29,11 +29,13 @@ export EXE_COSMO="./cosmo"
 # export LM_COSMO_SPEC="cosmo@c2sm %pgi slave=daint real_type=double cosmo_target=gpu"
 
 # Global Simulation Dates (YYYY-MM-DDTHH:00)
-# export LM_INI_DATE="2011-01-01T00:00"
-# export LM_FIN_DATE="2012-01-01T00:00"
+# export LM_INI_DATE="2011-01-01T00:00"   # Initial date of simualtion
+# export LM_BEGIN_DATE="2011-01-01T00:00" # Startdate of the current step
+#                                         # use if you dont want to start a step from the initdate
+# export LM_FIN_DATE="2011-01-03T00:00"   # Overall end of simulation
 
-# Chaining interval
-# export LM_CHAIN_INTERVAL=1month     #Current options: "1year", "1month", "1day".
+# Chaining interval, i.e., how long one simualtion step will be
+# export LM_CHAIN_INTERVAL=1day     #Current options: "1year", "1month", "1day".
 
 # List of output folders to compress and pack (use spaces between the folders)
 # export LM_COMPRESS_DIRS="lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev lm_f/1h_2D lm_f/24h lm_f/3h_3D_zlev"

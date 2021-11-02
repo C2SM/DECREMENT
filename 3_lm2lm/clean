@@ -1,6 +1,6 @@
 #!/bin/bash
 
-\rm -rf job* INPUT OUTPUT YU* core.* .jobid
+\rm -rf job* INPUT OUTPUT YU* core.* .jobid spack.log
 
 #Check if output folder exists
 mkdir -p $(readlink output)

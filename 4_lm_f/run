@@ -202,6 +202,7 @@ cat > INPUT_IO << EONL
   yform_read='ncdf',
   l_ke_in_gds=.TRUE.,
   lasync_io=$LM_NL_LASYNC_IO_F,
+  lprefetch_io=${LM_NL_LPREFETCH_F:-".FALSE."},
   ymode_read = 'r  ',
   ymode_write = 'w  ',
   nincwait=10,
@@ -226,7 +227,7 @@ cat > INPUT_IO << EONL
   ydirbd='input',
   lchkbd =.FALSE.,
   lana_qi = $LM_NL_LANA_QI_F,
-  llb_qi  = .TRUE.,
+  llb_qi  = $LM_NL_LANA_QI_F,
   lana_qg = .FALSE.,
   llb_qg  = .FALSE.,
   lana_qr_qs = .FALSE.,
@@ -368,15 +369,15 @@ EOF_job
 
 # submit job
 if [ -n "${LM_COSMO_SPEC}" ]; then
-    spack load ${LM_COSMO_SPEC} >> spack.log
+  spack load ${LM_COSMO_SPEC} >> spack.log
 fi
 if [ -z "${WAITFORJOB}" ]; then
   jobid=$(sbatch --parsable -C gpu job)
 else
-    jobid=$(sbatch --parsable -C gpu --dependency=afterok:${WAITFORJOB} job)
+  jobid=$(sbatch --parsable -C gpu --dependency=afterok:${WAITFORJOB} job)
 fi
 if [ -n "${LM_COSMO_SPEC}" ]; then
-    spack unload ${LM_COSMO_SPEC} >> spack.log
+  spack unload ${LM_COSMO_SPEC} >> spack.log
 fi
 
 if [ $? -eq 0 -a -n "${jobid}" ]; then

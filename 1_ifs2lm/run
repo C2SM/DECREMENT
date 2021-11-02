@@ -128,8 +128,16 @@ set echo
 export OMP_NUM_THREADS=1
 export MALLOC_MMAP_MAX_=0
 export MALLOC_TRIM_THRESHOLD_=536870912
-export MPICH_RDMA_ENABLED_CUDA=0
+export MV2_ENABLE_AFFINITY=0
+
+# Set this to avoid segmentation faults
+ulimit -s unlimited
+ulimit -a
+
+unset G2G
 export MV2_USE_CUDA=0
+export MV2_USE_GPUDIRECT=0
+export MV2_USE_GPUDIRECT_GDRCOPY=0
 
 # echo date
 date
@@ -159,7 +167,7 @@ EOF_job
 
 # submit job
 if [ -n "${LM_INT2LM_SPEC}" ]; then
-    spack load ${LM_INT2LM_SPEC} >> spack.log
+  spack load ${LM_INT2LM_SPEC} >> spack.log
 fi
 if [ -z "${WAITFORJOB}" ]; then
   jobid=$(sbatch --parsable -C gpu job)
@@ -167,7 +175,7 @@ else
   jobid=$(sbatch --parsable -C gpu --dependency=afterok:${WAITFORJOB} job)
 fi
 if [ -n "${LM_INT2LM_SPEC}" ]; then
-    spack unload ${LM_INT2LM_SPEC} >> spack.log
+  spack unload ${LM_INT2LM_SPEC} >> spack.log
 fi
 
 

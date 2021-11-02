@@ -14,12 +14,6 @@ if [ -f .jobid ]; then
 fi
 ./clean
 
-#Create links of data to be compressed
-
-#Check if output folder exists
-mkdir -p $(readlink output)
-
-
 cat > job <<EOF_job
 #!/bin/bash
 #SBATCH --job-name=compress

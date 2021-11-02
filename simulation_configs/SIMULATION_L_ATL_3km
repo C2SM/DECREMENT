@@ -41,6 +41,8 @@ fi
 export NQS_NIOLM_C=0                # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 export NQS_ELAPSED_LM_C=05:00:00    # maximum wall-clock time (HH:mm:ss)
 
+export NQS_ELAPSED_COMPRESS=12:00:00    # maximum wall-clock time (HH:mm:ss) for compression
+
 
 # ===================================================
 #                   CONFIGURE COSMO
