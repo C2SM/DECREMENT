@@ -39,6 +39,7 @@ export LM_DD_INI=$(date -d "${LM_INI_DATE}" +%d)
 export LM_ZZ_INI=$(date -d "${LM_INI_DATE}" +%H)
 
 # Startdate of current step
+# If set in 6_chain/run, keep the value otherwise initialize with absolute start date
 export LM_BEGIN_DATE=${LM_BEGIN_DATE:-${LM_INI_DATE}}
 export LM_YYYY_BEGIN=$(date -d "${LM_BEGIN_DATE}" +%Y)
 export LM_MM_BEGIN=$(date -d "${LM_BEGIN_DATE}" +%m)
@@ -46,7 +47,16 @@ export LM_DD_BEGIN=$(date -d "${LM_BEGIN_DATE}" +%d)   # - ML - unused
 export LM_ZZ_BEGIN=$(date -d "${LM_BEGIN_DATE}" +%H)   # - ML - unused
 
 # Enddate of current step
-export LM_END_DATE=$(date -d "${LM_BEGIN_DATE}+${LM_CHAIN_INTERVAL}" +%Y-%m-%dT%H:00)
+if [[ -z "${LM_CHAIN_INTERVAL}" ]]; then
+    export LM_END_DATE=${LM_FIN_DATE}
+else
+    END_DATE=$(date -d "${LM_BEGIN_DATE}+${LM_CHAIN_INTERVAL}" +%Y-%m-%dT%H:00)
+    if (( $(date -d "$END_DATE" +%s) > $(date -d "$LM_FIN_DATE" +%s) )); then
+        export LM_END_DATE=${LM_FIN_DATE}
+    else
+        export LM_END_DATE=${END_DATE}
+    fi
+fi
 export LM_YYYY_END=$(date -d "${LM_END_DATE}" +%Y)
 export LM_MM_END=$(date -d "${LM_END_DATE}" +%m)
 export LM_DD_END=$(date -d "${LM_END_DATE}" +%d)

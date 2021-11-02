@@ -32,9 +32,8 @@ if [ \$sEndDate -ge \$sFinDate ] ; then
   exit 0 
 fi
 
-#Set new BEGIN and END in run_daint.sh
-LM_BEGIN_DATE=$LM_END_DATE
-
+# Swap dates
+export LM_BEGIN_DATE=\${LM_END_DATE}
 cd ..
 ./run_daint.sh
 

@@ -48,8 +48,13 @@ export NQS_NIOLM2LM=0               # number of CPUs for asyncronous IO
 export NQS_ELAPSED_LM2LM=07:00:00   # maximum wall-clock time (HH:mm:ss)
 
 # 4_lm_f
-export NQS_NXLM_F=10                 # number of NODEs in x direction
-export NQS_NYLM_F=10                 # number of NODEs in y direction
+if [[ $COSMO_TARGET == "cpu" ]]; then
+    export NQS_NXLM_F=27                 # number of NODEs in x direction
+    export NQS_NYLM_F=36                 # number of NODEs in y direction
+else
+    export NQS_NXLM_F=10                 # number of NODEs in x direction
+    export NQS_NYLM_F=10                 # number of NODEs in y direction
+fi
 export NQS_NIOLM_F=4                # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 export NQS_ELAPSED_LM_F=08:00:00    # maximum wall-clock time (HH:mm:ss)
 
@@ -208,7 +213,7 @@ export LM_NL_QC0_F=0.0002
 
 #GRIBIN
 export LM_NL_HINCBOUND_F=1.0              # Input frequency of boundary conditions
-export LM_NL_LANA_QI_F=.False.
+export LM_NL_LANA_QI_F=.True.
 export LM_NL_LAN_RHO_SNOW_F=.False.
 export LM_NL_EXTPAR_F=extpar_2km_europe_2313x2313.nc
 

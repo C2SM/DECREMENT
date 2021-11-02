@@ -167,7 +167,7 @@ EOF_job
 
 # submit job
 if [ -n "${LM_INT2LM_SPEC}" ]; then
-    spack load ${LM_INT2LM_SPEC} >> spack.log
+  spack load ${LM_INT2LM_SPEC} >> spack.log
 fi
 if [ -z "${WAITFORJOB}" ]; then
   jobid=$(sbatch --parsable -C gpu job)
@@ -175,7 +175,7 @@ else
   jobid=$(sbatch --parsable -C gpu --dependency=afterok:${WAITFORJOB} job)
 fi
 if [ -n "${LM_INT2LM_SPEC}" ]; then
-    spack unload ${LM_INT2LM_SPEC} >> spack.log
+  spack unload ${LM_INT2LM_SPEC} >> spack.log
 fi
 
 
