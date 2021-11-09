@@ -34,7 +34,7 @@ export EXE_COSMO="./cosmo"
 #                                         # use if you dont want to start a step from the initdate
 # export LM_FIN_DATE="2011-01-03T00:00"   # Overall end of simulation
 
-# Chaining interval, i.e., how long one simualtion step will be
+# Chaining interval, i.e., how long one simualtion step will be. If unset, run in one chunk
 # export LM_CHAIN_INTERVAL=1day     #Current options: "1year", "1month", "1day".
 
 # List of output folders to compress and pack (use spaces between the folders)
