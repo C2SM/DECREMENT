@@ -13,11 +13,8 @@ export QUEUE="normal"
 export RUNCMD="srun"
 export CORES_PER_NODE=24
 export GPUS_PER_NODE=1
-if [[ $COSMO_TARGET == "cpu" ]]; then
-    export TASKS_PER_NODE=12
-else
-    export TASKS_PER_NODE=1
-fi
+[[ $COSMO_TARGET == "cpu" ]] && export LM_NTASKS_PER_NODE_COSMO=12 || export LM_NTASKS_PER_NODE_COSMO=1
+export LM_NTASKS_PER_NODE_INT2LM=12
 
 
 # Read simualtion config
@@ -48,14 +45,14 @@ export LM_ZZ_BEGIN=$(date -d "${LM_BEGIN_DATE}" +%H)   # - ML - unused
 
 # Enddate of current step
 if [[ -z "${LM_CHAIN_INTERVAL}" ]]; then
-    export LM_END_DATE=${LM_FIN_DATE}
+  export LM_END_DATE=${LM_FIN_DATE}
 else
-    END_DATE=$(date -d "${LM_BEGIN_DATE}+${LM_CHAIN_INTERVAL}" +%Y-%m-%dT%H:00)
-    if (( $(date -d "$END_DATE" +%s) > $(date -d "$LM_FIN_DATE" +%s) )); then
-        export LM_END_DATE=${LM_FIN_DATE}
-    else
-        export LM_END_DATE=${END_DATE}
-    fi
+  END_DATE=$(date -d "${LM_BEGIN_DATE}+${LM_CHAIN_INTERVAL}" +%Y-%m-%dT%H:00)
+  if (( $(date -d "$END_DATE" +%s) > $(date -d "$LM_FIN_DATE" +%s) )); then
+    export LM_END_DATE=${LM_FIN_DATE}
+  else
+    export LM_END_DATE=${END_DATE}
+  fi
 fi
 export LM_YYYY_END=$(date -d "${LM_END_DATE}" +%Y)
 export LM_MM_END=$(date -d "${LM_END_DATE}" +%m)
@@ -84,5 +81,3 @@ for part in ${SB_PARTS} ; do
   
   cd - 1>/dev/null 2>/dev/null
 done
-
-

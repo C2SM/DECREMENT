@@ -1,12 +1,7 @@
 #!/bin/bash
 
-if [ -z "$1" ]; then
-  WAITFORJOB=""
-else
-  WAITFORJOB="$1"
-fi
-
 # cleanup
+# -------
 if [ -f .jobid ]; then
   $(squeue -j `cat .jobid` &>/dev/null) && scancel `cat .jobid`
   sleep 3
@@ -14,6 +9,8 @@ if [ -f .jobid ]; then
 fi
 ./clean
 
+# setup namelists
+# ---------------
 cat > INPUT_ORG << EONL
  &LMGRID
   startlat_tot= $LM_NL_STARTLAT_TOT_F, startlon_tot= $LM_NL_STARTLON_TOT_F,
@@ -43,29 +40,30 @@ cat > INPUT_ORG << EONL
   idbg_level = 4,
  /END
  &TUNING
-   tkhmin = $LM_NL_TKHMIN_F,
-   tkmmin = $LM_NL_TKMMIN_F,
-   mu_rain = 0.5,
-   v0snow = $LM_NL_V0SNOW_F,
-   rlam_mom=0.0,
-   rlam_heat = $LM_NL_RLAM_HEAT_F,
-   rat_sea=20.0,
-   rat_lam=1.0,
-   rat_can=1.0,
-   c_lnd=2.0,
-   c_sea=1.5,
-   c_soil=1.0,
-   pat_len=500.0,
-   z0m_dia=0.2,
-   crsmin=150.0,
-   clc_diag=0.5,
-   q_crit=$LM_NL_Q_CRIT_F,
-   qc0=$LM_NL_QC0_F,
-   qi0=5E-6
-   uc1 = 0.0626,
-   tur_len = $LM_NL_TUR_LEN_F,
+  tkhmin = $LM_NL_TKHMIN_F,
+  tkmmin = $LM_NL_TKMMIN_F,
+  mu_rain = 0.5,
+  v0snow = $LM_NL_V0SNOW_F,
+  rlam_mom=0.0,
+  rlam_heat = $LM_NL_RLAM_HEAT_F,
+  rat_sea=20.0,
+  rat_lam=1.0,
+  rat_can=1.0,
+  c_lnd=2.0,
+  c_sea=1.5,
+  c_soil=1.0,
+  pat_len=500.0,
+  z0m_dia=0.2,
+  crsmin=150.0,
+  clc_diag=0.5,
+  q_crit=$LM_NL_Q_CRIT_F,
+  qc0=$LM_NL_QC0_F,
+  qi0=5E-6
+  uc1 = 0.0626,
+  tur_len = $LM_NL_TUR_LEN_F,
  /END
 EONL
+
 cat > INPUT_ASS << EONL
  &NUDGING
  /END
@@ -80,43 +78,43 @@ EONL
 
 cat > INPUT_DYN << EONL
  &DYNCTL
-    lcpp_dycore=${LM_NL_LCPP_DYCORE},
-    lspubc=.true.,
-    itype_spubc=3,
-    rdheight=$LM_NL_RDHEIGHT_F,
-    nrdtau=$LM_NL_NRDTAU_F,
-    rlwidth=$LM_NL_RLWIDTH_F,
-    ldyn_bbc=.false.,
-    itype_bbc_w=114,
-    betasw=0.4,
-    xkd=0.1,
-    epsass=0.15,
-    lcond=.true.,
-    l_diff_smag=$LM_NL_L_DIFF_SMAG_F,
-    l_diff_cold_pools = $LM_NL_LDIFF_COLD_POOLS_F,
-    lhordiff=.true.,
-      itype_hdiff=2,
-      hd_corr_u_bd=$LM_NL_HD_CORR_U_BD_F,
-      hd_corr_t_bd=$LM_NL_HD_CORR_T_BD_F,
-      hd_corr_trcr_bd=$LM_NL_HD_CORR_TRCR_BD_F,
-      hd_corr_p_bd=$LM_NL_HD_CORR_P_BD_F,
-      hd_corr_u_in=$LM_NL_HD_CORR_U_IN_F,
-      hd_corr_t_in=$LM_NL_HD_CORR_T_IN_F,
-      hd_corr_trcr_in=$LM_NL_HD_CORR_TRCR_IN_F,
-      hd_corr_p_in=$LM_NL_HD_CORR_P_IN_F,
-      hd_dhmax=250.,
-    l2tls=.true.,
-      irunge_kutta=1,
-        irk_order=3,
-        iadv_order=5,
-        itheta_adv=0,
-        ltadv_limiter=.false.,
-    itype_fast_waves=2,
-      y_scalar_advect = 'BOTT2_STRANG',
-      y_vert_adv_dyn='impl2',
-        ieva_order=3,
-    itype_outflow_qrsg=2,
-    itype_lbc_qrsg=1,
+  lcpp_dycore=${LM_NL_LCPP_DYCORE},
+  lspubc=.true.,
+  itype_spubc=3,
+  rdheight=$LM_NL_RDHEIGHT_F,
+  nrdtau=$LM_NL_NRDTAU_F,
+  rlwidth=$LM_NL_RLWIDTH_F,
+  ldyn_bbc=.false.,
+  itype_bbc_w=114,
+  betasw=0.4,
+  xkd=0.1,
+  epsass=0.15,
+  lcond=.true.,
+  l_diff_smag=$LM_NL_L_DIFF_SMAG_F,
+  l_diff_cold_pools = $LM_NL_LDIFF_COLD_POOLS_F,
+  lhordiff=.true.,
+  itype_hdiff=2,
+  hd_corr_u_bd=$LM_NL_HD_CORR_U_BD_F,
+  hd_corr_t_bd=$LM_NL_HD_CORR_T_BD_F,
+  hd_corr_trcr_bd=$LM_NL_HD_CORR_TRCR_BD_F,
+  hd_corr_p_bd=$LM_NL_HD_CORR_P_BD_F,
+  hd_corr_u_in=$LM_NL_HD_CORR_U_IN_F,
+  hd_corr_t_in=$LM_NL_HD_CORR_T_IN_F,
+  hd_corr_trcr_in=$LM_NL_HD_CORR_TRCR_IN_F,
+  hd_corr_p_in=$LM_NL_HD_CORR_P_IN_F,
+  hd_dhmax=250.,
+  l2tls=.true.,
+  irunge_kutta=1,
+  irk_order=3,
+  iadv_order=5,
+  itheta_adv=0,
+  ltadv_limiter=.false.,
+  itype_fast_waves=2,
+  y_scalar_advect = 'BOTT2_STRANG',
+  y_vert_adv_dyn='impl2',
+  ieva_order=3,
+  itype_outflow_qrsg=2,
+  itype_lbc_qrsg=1,
  /END
 EONL
 
@@ -132,10 +130,10 @@ EONL
 
 cat > INPUT_SAT << EONL
  &SATCTL
-   num_sensors=1,
-   sat_input_01='MSG',1,'SEVIRI',8, .TRUE., .TRUE.,.TRUE., .TRUE.,
-   nchan_input_01=1,2,3,4,5,6,7,8,
-   lcon_clw=.FALSE.,
+  num_sensors=1,
+  sat_input_01='MSG',1,'SEVIRI',8, .TRUE., .TRUE.,.TRUE., .TRUE.,
+  nchan_input_01=1,2,3,4,5,6,7,8,
+  lcon_clw=.FALSE.,
  /END
 EONL
 
@@ -143,56 +141,56 @@ cat > INPUT_PHY << EONL
  &PHYCTL
   lseaice =.false.
   llake=.false.
-  lgsp    =.true.,
-      lgsp_first=.true.,
-      itype_gscp=$LM_NL_ITYPE_GSCP_F,
-      ldiniprec=.FALSE.,
+  lgsp=.true.,
+  lgsp_first=.true.,
+  itype_gscp=$LM_NL_ITYPE_GSCP_F,
+  ldiniprec=.FALSE.,
   lrad=.TRUE.,
-      hincrad = $LM_NL_HINCRAD_F,
-      lradtopo=.false.,
-      ico2_rad=$LM_NL_ICO2_RAD_F,
+  hincrad = $LM_NL_HINCRAD_F,
+  lradtopo=.false.,
+  ico2_rad=$LM_NL_ICO2_RAD_F,
   lforest=.TRUE.,
   ltur=.TRUE.,
-      loldtur=.true.,
-      ninctura=1,
-      itype_vdif=-1,
-      lexpcor=.false.,
-      ltmpcor=.false.,
-      lprfcor=.false.,
-      lnonloc=.false.,
-      lcpfluc=.false.,
-      itype_turb=3,
-      imode_turb=1,
-      itype_tran=2,
-      imode_tran=1,
-      limpltkediff=.TRUE.,
-    itype_wcld=2,
-      icldm_rad=4,
-      icldm_turb=2,
-      icldm_tran=0,
-      itype_synd=2,
+  loldtur=.true.,
+  ninctura=1,
+  itype_vdif=-1,
+  lexpcor=.false.,
+  ltmpcor=.false.,
+  lprfcor=.false.,
+  lnonloc=.false.,
+  lcpfluc=.false.,
+  itype_turb=3,
+  imode_turb=1,
+  itype_tran=2,
+  imode_tran=1,
+  limpltkediff=.TRUE.,
+  itype_wcld=2,
+  icldm_rad=4,
+  icldm_turb=2,
+  icldm_tran=0,
+  itype_synd=2,
   lsoil=.TRUE.,
-      itype_hydmod=1,
-        lsoil_init_fill=1,
-      lmelt=.TRUE.,
-      lmelt_var=.TRUE.,
-      itype_trvg=2,
-      ke_soil=9,
-      czml_soil=0.005, 0.025, 0.07, 0.16, 0.34, 0.70, 1.47, 2.86, 5.74,  11.50,
-      czbot_w_so=8.0,
-      itype_root = 2
-      itype_heatcond=2
-      itype_evsl=4,
-    lconv=$LM_NL_LCONV_F,
-      itype_conv=3,
-      nincconv=5,
-      lcape=.false.,
-      lconf_avg=.true.,
-    lsso=$LM_NL_LSSO_F,
-      ltkesso=.False.,
-      ltkeshs=.False.,
-    itype_albedo = $LM_NL_ITYPE_ALBEDO_F,
-    itype_aerosol = $LM_NL_ITYPE_AEROSOL_F,
+  itype_hydmod=1,
+  lsoil_init_fill=1,
+  lmelt=.TRUE.,
+  lmelt_var=.TRUE.,
+  itype_trvg=2,
+  ke_soil=9,
+  czml_soil=0.005, 0.025, 0.07, 0.16, 0.34, 0.70, 1.47, 2.86, 5.74,  11.50,
+  czbot_w_so=8.0,
+  itype_root = 2
+  itype_heatcond=2
+  itype_evsl=4,
+  lconv=$LM_NL_LCONV_F,
+  itype_conv=3,
+  nincconv=5,
+  lcape=.false.,
+  lconf_avg=.true.,
+  lsso=$LM_NL_LSSO_F,
+  ltkesso=.False.,
+  ltkeshs=.False.,
+  itype_albedo = $LM_NL_ITYPE_ALBEDO_F,
+  itype_aerosol = $LM_NL_ITYPE_AEROSOL_F,
  /END
 EONL
 
@@ -296,20 +294,16 @@ cat > INPUT_IO << EONL
   l_fi_pmsl_smooth = .FALSE.,
   ytunit='d',
  /END
-
 EONL
 
-
-
-
-
-
+# setup job
+# ---------
 cat > job <<EOF_job
 #!/bin/bash
 #SBATCH --job-name=lm_f
 #SBATCH --output=job.out
-#SBATCH --nodes=$(( (${NQS_NXLM_F} * ${NQS_NYLM_F} + ${NQS_NIOLM_F}) / ${TASKS_PER_NODE} ))
-#SBATCH --ntasks-per-node=${TASKS_PER_NODE}
+#SBATCH --nodes=$(( (${NQS_NXLM_F} * ${NQS_NYLM_F} + ${NQS_NIOLM_F}) / ${LM_NTASKS_PER_NODE_COSMO} ))
+#SBATCH --ntasks-per-node=${LM_NTASKS_PER_NODE_COSMO}
 #SBATCH --partition=${QUEUE}
 #SBATCH --time=${NQS_ELAPSED_LM_F}
 #SBATCH --account=${ACCOUNT}
@@ -330,11 +324,11 @@ export OMP_NUM_THREADS=1
 EOF_job
 
 if [[ $COSMO_TARGET == "gpu" ]]; then
-    cat >> job <<EOF_job
-    export MPICH_RDMA_ENABLED_CUDA=1
-    export MPICH_G2G_PIPELINE=256
-    # KO: Need to set path to cuda library explicitly or GPU runs fail on cuInit
-    # export LD_LIBRARY_PATH="\$LD_LIBRARY_PATH\:/opt/cray/nvidia/default/lib64"
+  cat >> job <<EOF_job
+export MPICH_RDMA_ENABLED_CUDA=1
+export MPICH_G2G_PIPELINE=256
+# KO: Need to set path to cuda library explicitly or GPU runs fail on cuInit
+# export LD_LIBRARY_PATH="\$LD_LIBRARY_PATH\:/opt/cray/nvidia/default/lib64"
 EOF_job
 fi
 
@@ -366,24 +360,17 @@ fi
 
 EOF_job
 
-
 # submit job
-if [ -n "${LM_COSMO_SPEC}" ]; then
-  spack load ${LM_COSMO_SPEC}
-fi
-if [ -z "${WAITFORJOB}" ]; then
-  jobid=$(sbatch --parsable -C gpu job)
-else
-  jobid=$(sbatch --parsable -C gpu --dependency=afterok:${WAITFORJOB} job)
-fi
-if [ -n "${LM_COSMO_SPEC}" ]; then
-  spack unload ${LM_COSMO_SPEC}
-fi
+[[ -n "${LM_COSMO_SPEC}" ]] && spack load ${LM_COSMO_SPEC}
 
-if [ $? -eq 0 -a -n "${jobid}" ]; then
+[[ -n "$1" ]] && dep="--dependency=afterok:${1}" || dep=""
+jobid=$(sbatch --parsable -C gpu ${dep} job)
+
+if [[ ($? == 0) && (-n "${jobid}") ]]; then
   echo "${jobid}" > .jobid
   echo "${jobid}"
 else
   exit 1
 fi
 
+[[ -n "${LM_COSMO_SPEC}" ]] && spack unload ${LM_COSMO_SPEC}
