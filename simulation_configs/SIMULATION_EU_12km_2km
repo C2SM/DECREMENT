@@ -32,11 +32,11 @@ export NQS_ELAPSED_IFS2LM=00:30:00  # maximum wall-clock time (HH:mm:ss)
 
 # 2_lm_c
 if [[ $COSMO_TARGET == "cpu" ]]; then
-    export NQS_NXLM_C=4             # number of CPUs in x direction (12 per node on daint-gpu)
-    export NQS_NYLM_C=3             # number of CPUs in y direction
+  export NQS_NXLM_C=4               # number of CPUs in x direction (12 per node on daint-gpu)
+  export NQS_NYLM_C=3               # number of CPUs in y direction
 else
-    export NQS_NXLM_C=2             # number of CPUs in x direction (12 per node on daint-gpu)
-    export NQS_NYLM_C=2             # number of CPUs in y direction
+  export NQS_NXLM_C=2               # number of CPUs in x direction (12 per node on daint-gpu)
+  export NQS_NYLM_C=2               # number of CPUs in y direction
 fi
 export NQS_NIOLM_C=0                # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 export NQS_ELAPSED_LM_C=00:30:00    # maximum wall-clock time (HH:mm:ss)
@@ -49,11 +49,11 @@ export NQS_ELAPSED_LM2LM=07:00:00   # maximum wall-clock time (HH:mm:ss)
 
 # 4_lm_f
 if [[ $COSMO_TARGET == "cpu" ]]; then
-    export NQS_NXLM_F=27                 # number of NODEs in x direction
-    export NQS_NYLM_F=36                 # number of NODEs in y direction
+  export NQS_NXLM_F=27              # number of NODEs in x direction
+  export NQS_NYLM_F=36              # number of NODEs in y direction
 else
-    export NQS_NXLM_F=10                 # number of NODEs in x direction
-    export NQS_NYLM_F=10                 # number of NODEs in y direction
+  export NQS_NXLM_F=10              # number of NODEs in x direction
+  export NQS_NYLM_F=10              # number of NODEs in y direction
 fi
 export NQS_NIOLM_F=4                # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 export NQS_ELAPSED_LM_F=08:00:00    # maximum wall-clock time (HH:mm:ss)
@@ -105,8 +105,8 @@ export LM_NL_DLONLM_C=0.11                   # Delta longitude (in degrees)
 export LM_NL_DLATLM_C=0.11                   # Delta latitude  (in degrees)
 export LM_NL_STARTLON_TOT_C=-23.33           # Starting longitude left
 export LM_NL_STARTLAT_TOT_C=-19.36           # Starting latitude south (bottom-left corner of the coarse grid)
-                                             # needs to be within the boundaries of the
-                                             # ERA5/ERAinterim data above AND co-located with the extpar data
+# needs to be within the boundaries of the
+# ERA5/ERAinterim data above AND co-located with the extpar data
 
 
 #RUNCTL

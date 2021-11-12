@@ -32,11 +32,11 @@ export NQS_ELAPSED_IFS2LM=02:00:00  # maximum wall-clock time (HH:mm:ss)
 
 # 2_lm_c
 if [[ $COSMO_TARGET == "cpu" ]]; then
-    export NQS_NXLM_C=4               # number of CPUs in x direction (12 per node on daint-gpu)
-    export NQS_NYLM_C=3               # number of CPUs in y direction
+  export NQS_NXLM_C=4               # number of CPUs in x direction (12 per node on daint-gpu)
+  export NQS_NYLM_C=3               # number of CPUs in y direction
 else
-    export NQS_NXLM_C=1               # number of CPUs in x direction (12 per node on daint-gpu)
-    export NQS_NYLM_C=1               # number of CPUs in y direction
+  export NQS_NXLM_C=1               # number of CPUs in x direction (12 per node on daint-gpu)
+  export NQS_NYLM_C=1               # number of CPUs in y direction
 fi
 export NQS_NIOLM_C=0                # number of NODEs for asyncronous IO
 export NQS_ELAPSED_LM_C=00:30:00    # maximum wall-clock time (HH:mm:ss)
@@ -91,8 +91,8 @@ export LM_NL_DLONLM_C=0.440         # Delta longitude (in degrees)
 export LM_NL_DLATLM_C=0.440         # Delta latitude  (in degrees)
 export LM_NL_STARTLON_TOT_C=-33.93  # Starting longitude left
 export LM_NL_STARTLAT_TOT_C=-28.93  # Starting latitude south (bottom-left corner of the coarse grid)
-                                    # needs to be within the boundaries of the
-                                    # ERA5/ERAinterim data above AND co-located with the extpar data
+# needs to be within the boundaries of the
+# ERA5/ERAinterim data above AND co-located with the extpar data
 
 #RUNCTL
 export LM_NL_DT_C=300                         # Time Step

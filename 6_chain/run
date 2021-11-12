@@ -1,19 +1,16 @@
 #!/bin/bash
 
-if [ -z "$1" ]; then
-  WAITFORJOB=""
-else
-  WAITFORJOB="$1"
-fi
-
 # cleanup
-if [ -f .jobid ]; then
+# -------
+if [[ -f .jobid ]]; then
   $(squeue -j `cat .jobid` &>/dev/null) && scancel `cat .jobid`
   sleep 3
   \rm .jobid 2>/dev/null
 fi
 ./clean
 
+# setup job
+# ---------
 cat > job <<EOF_job
 #!/bin/bash -l
 #
@@ -36,16 +33,14 @@ fi
 export LM_BEGIN_DATE=\${LM_END_DATE}
 cd ..
 ./run_daint.sh
-
 EOF_job
 
-if [ -z "${WAITFORJOB}" ]; then
-  jobid=$(sbatch --parsable -C gpu job)
-else
-  jobid=$(sbatch --parsable -C gpu --dependency=afterok:${WAITFORJOB} job)
-fi
+# submit job
+# ----------
+[[ -n "$1" ]] && dep="--dependency=afterok:${1}" || dep=""
+jobid=$(sbatch --parsable -C gpu ${dep} job)
 
-if [ $? -eq 0 -a -n "${jobid}" ]; then
+if [[ ($? == 0) && (-n "${jobid}") ]]; then
   echo "${jobid}" > .jobid
   echo "${jobid}"
 else
