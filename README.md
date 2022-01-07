@@ -1,4 +1,4 @@
-# DECREMENT, The DirEctory Cosmo Runtime EnvironMENT
+# DECREMENT, The DirEctory COSMO Runtime EnvironMENT
 A set of scripts used to run weather and climate simulations with COSMO. It is is intended to be simple and easy to extend. For more comprehensive solution consider using the LM Package.
 
 ## How settings are prescribed
