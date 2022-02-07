@@ -90,7 +90,6 @@ for part in ${SB_PARTS} ; do
   fi
 
   # Normal execution
-  echo "launching ${short}"
   jobid=$(./run ${jobid})
   
   cd - 1>/dev/null 2>/dev/null
