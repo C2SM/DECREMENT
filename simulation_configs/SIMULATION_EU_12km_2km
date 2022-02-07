@@ -1,0 +1,223 @@
+#!/bin/bash
+#Simulation setup of J. Vergara over Europe
+
+
+# ===================================================
+#                   GENERAL SETTINGS
+# ===================================================
+
+# Global Simulation Dates (YYYY-MM-DDTHH:00)
+export LM_INI_DATE="2011-01-01T00:00"
+export LM_FIN_DATE="2012-01-01T00:00"
+
+# Chaining interval
+export LM_CHAIN_INTERVAL=1month     #Current options: "1year", "1month", "1day".
+
+# Parts that will be executed. Same as folder names.
+export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f 5_pack_data 6_chain"
+
+# List of output folders to compress and pack (use spaces between the folders)
+export LM_COMPRESS_DIRS="lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev lm_f/1h_2D lm_f/24h lm_f/3h_3D_zlev"
+
+
+# ===================================================
+#                   NODES AND WALL TIME
+# ===================================================
+
+# 1_ifs2lm
+export NQS_NXIFS2LM=4               # number of CPUs in x direction (12 per node on daint-gpu)
+export NQS_NYIFS2LM=6               # number of CPUs in y direction
+export NQS_NIOIFS2LM=0              # number of CPUs for asyncronous IO
+export NQS_ELAPSED_IFS2LM=00:30:00  # maximum wall-clock time (HH:mm:ss)
+
+# 2_lm_c
+if [[ $COSMO_TARGET == "cpu" ]]; then
+  export NQS_NXLM_C=4               # number of CPUs in x direction (12 per node on daint-gpu)
+  export NQS_NYLM_C=3               # number of CPUs in y direction
+else
+  export NQS_NXLM_C=2               # number of CPUs in x direction (12 per node on daint-gpu)
+  export NQS_NYLM_C=2               # number of CPUs in y direction
+fi
+export NQS_NIOLM_C=0                # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
+export NQS_ELAPSED_LM_C=00:30:00    # maximum wall-clock time (HH:mm:ss)
+
+# 3_lm2lm
+export NQS_NXLM2LM=6                # number of CPUs in x direction (12 per node on daint-gpu)
+export NQS_NYLM2LM=10               # number of CPUs in y direction
+export NQS_NIOLM2LM=0               # number of CPUs for asyncronous IO
+export NQS_ELAPSED_LM2LM=07:00:00   # maximum wall-clock time (HH:mm:ss)
+
+# 4_lm_f
+if [[ $COSMO_TARGET == "cpu" ]]; then
+  export NQS_NXLM_F=27              # number of NODEs in x direction
+  export NQS_NYLM_F=36              # number of NODEs in y direction
+else
+  export NQS_NXLM_F=10              # number of NODEs in x direction
+  export NQS_NYLM_F=10              # number of NODEs in y direction
+fi
+export NQS_NIOLM_F=4                # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
+export NQS_ELAPSED_LM_F=08:00:00    # maximum wall-clock time (HH:mm:ss)
+
+#5_pack_data
+export NQS_ELAPSED_COMPRESS=12:00:00    # maximum wall-clock time (HH:mm:ss)
+
+# ===================================================
+#                   CONFIGURE COSMO
+# ===================================================
+
+# BC grid
+# -----------
+
+# ERAInterim files
+ln -sf run_ERAInt 0_get_data/run #Link correct copy script 
+export LM_NL_BC_DATA_PATH=/project/${ACCOUNT}/ERAinterim
+export LM_NL_POLPHIIFS=90.0
+export LM_NL_POLLAMIFS=180.0
+export LM_NL_IEIFS=512
+export LM_NL_JEIFS=256
+export LM_NL_KEIFS=60
+export LM_NL_DLAMIFS=0.703125
+export LM_NL_DPHIIFS=0.703125
+export LM_NL_PHILUIFS=-89.46282
+export LM_NL_PHIROIFS=89.46282
+export LM_NL_LAMLUIFS=-180
+export LM_NL_LAMROIFS=179.296875
+export LM_NL_CZML_SOIL_IN=0.015,0.10,0.405,1.205,
+export LM_NL_LUSE_T_SKIN=.False.
+
+#COSMO Levels
+export LM_VCFLAT=11357.0
+export LM_VCOORD_D=23588.50,22395.93,21304.04,20307.39,19399.95,18574.03,17821.88,17135.64,16507.79,15930.60,15396.52,14897.86,14427.98,13981.10,13551.52,13133.53,12721.37,12312.04,11900.03,11485.37,11068.19,10648.54,10226.48,9802.09,9375.43,8946.58,8515.59,8082.55,7647.52,7210.55,6771.96,6332.38,5896.41,5468.04,5050.84,4647.96,4261.91,3893.26,3542.15,3208.52,2892.23,2593.71,2312.95,2049.75,1803.89,1575.57,1364.68,1170.90,993.84,833.44,689.53,561.52,448.82,350.95,267.55,197.67,137.23,87.33,48.44,20.00,0.00,
+
+# LM coarse
+# ===========
+
+# Grid
+# ----
+export LM_NL_POLLATLM_C=43.0                 # Latitude  of the North pole
+export LM_NL_POLLONLM_C=-170.0               # Longitude of the North pole
+export LM_NL_EXT_IE_C=771                    # Number of grid points (I: zonal, J: meridional)
+export LM_NL_EXT_JE_C=771                    # in your external parameter file (containing topology etc.)
+export LM_NL_IELM_C=361                      # Number of grid points (I: zonal, J: meridional)
+export LM_NL_JELM_C=361                      # and number of vertical levels
+export LM_NL_KELM_C=60                       # of the coarse grid
+export LM_NL_DLONLM_C=0.11                   # Delta longitude (in degrees)
+export LM_NL_DLATLM_C=0.11                   # Delta latitude  (in degrees)
+export LM_NL_STARTLON_TOT_C=-23.33           # Starting longitude left
+export LM_NL_STARTLAT_TOT_C=-19.36           # Starting latitude south (bottom-left corner of the coarse grid)
+# needs to be within the boundaries of the
+# ERA5/ERAinterim data above AND co-located with the extpar data
+
+
+#RUNCTL
+export LM_NL_DT_C=90                         # Time Step
+
+#DYNCTL
+export LM_NL_RDHEIGHT_C=13500
+export LM_NL_RLWIDTH_C=170000.0
+export LM_NL_NRDTAU_C=10
+export LM_NL_L_DIFF_SMAG_C=.True.
+export LM_NL_LDIFF_COLD_POOLS_C=.True.
+export LM_NL_HD_CORR_U_BD_C=0.75
+export LM_NL_HD_CORR_T_BD_C=0.75
+export LM_NL_HD_CORR_P_BD_C=0.75
+export LM_NL_HD_CORR_TRCR_BD_C=0.0
+export LM_NL_HD_CORR_U_IN_C=0.0
+export LM_NL_HD_CORR_T_IN_C=0.0
+export LM_NL_HD_CORR_P_IN_C=0.0
+export LM_NL_HD_CORR_TRCR_IN_C=0.0
+
+#PHYCTL
+export LM_NL_ITYPE_GSCP_C=4
+export LM_NL_LCONV_C=.True.
+export LM_NL_LSSO_C=.True.
+export LM_NL_HINCRAD_C=1.0
+export LM_NL_ICO2_RAD_C=0
+export LM_NL_ITYPE_ALBEDO_C=2
+export LM_NL_ITYPE_AEROSOL_C=2
+
+#TUNING
+export LM_NL_TKHMIN_C=0.4
+export LM_NL_TKMMIN_C=0.4
+export LM_NL_RLAM_HEAT_C=0.5249
+export LM_NL_TUR_LEN_C=500.0
+export LM_NL_V0SNOW_C=20.0
+export LM_NL_Q_CRIT_C=4.0
+export LM_NL_QC0_C=0.0
+
+#GRIBIN
+export LM_NL_HINCBOUND_C=6.0                # Input frequency of boundary conditions
+export LM_NL_LANA_QI_C=.True.
+export LM_NL_LAN_RHO_SNOW_C=.False.
+export LM_NL_EXTPAR_C=extpar_12km_europe_771x771.nc # Coarse extpar file in /bin
+
+#Async NetCDF I/O
+export LM_NL_LASYNC_IO_C=.False.
+export LM_NL_LPREFETCH_C=.False.           # Needs async IO, uses one additional IO node
+export LM_NL_NUM_IOPE_PERCOMM_C=0         # 1 if async, 0 if sync I/0
+
+
+# LM fine 
+# =======
+
+# Grid
+# ----
+export LM_NL_POLLATLM_F=43.0        # Latitude  of the North pole
+export LM_NL_POLLONLM_F=-170.0      # Longitude of the North pole
+export LM_NL_EXT_IE_F=2313          # Number of grid points (I: zonal, J: meridional)
+export LM_NL_EXT_JE_F=2313          # in your external parameter file (containing topology etc.)
+export LM_NL_IELM_F=1542            # Number of grid points (I: zonal, J: meridional)
+export LM_NL_JELM_F=1542            # and number of vertical levels
+export LM_NL_KELM_F=60              # of the fine grid
+export LM_NL_DLONLM_F=0.02          # Delta longitude (in degrees)
+export LM_NL_DLATLM_F=0.02          # Delta latitude  (in degrees)
+export LM_NL_STARTLON_TOT_F=-18.86  # Starting longitude left
+export LM_NL_STARTLAT_TOT_F=-14.86  # Starting latitude south (bottom-left corner of the fine grid)
+
+#RUNCTL
+export LM_NL_DT_F=20                         # Time Step
+
+#DYNCTL
+export LM_NL_RDHEIGHT_F=13500
+export LM_NL_RLWIDTH_F=50000
+export LM_NL_NRDTAU_F=3
+export LM_NL_L_DIFF_SMAG_F=.True.
+export LM_NL_LDIFF_COLD_POOLS_F=.True.
+export LM_NL_HD_CORR_U_BD_F=0.75
+export LM_NL_HD_CORR_T_BD_F=0.75
+export LM_NL_HD_CORR_P_BD_F=0.75
+export LM_NL_HD_CORR_TRCR_BD_F=0.0
+export LM_NL_HD_CORR_U_IN_F=0.0
+export LM_NL_HD_CORR_T_IN_F=0.0
+export LM_NL_HD_CORR_P_IN_F=0.0
+export LM_NL_HD_CORR_TRCR_IN_F=0.0
+
+
+#PHYCTL
+export LM_NL_ITYPE_GSCP_F=4
+export LM_NL_LCONV_F=.False.
+export LM_NL_LSSO_F=.False.
+export LM_NL_HINCRAD_F=0.25
+export LM_NL_ICO2_RAD_F=0
+export LM_NL_ITYPE_ALBEDO_F=2
+export LM_NL_ITYPE_AEROSOL_F=2
+
+#TUNING
+export LM_NL_TKHMIN_F=0.4
+export LM_NL_TKMMIN_F=0.4
+export LM_NL_RLAM_HEAT_F=0.5249
+export LM_NL_TUR_LEN_F=150.0
+export LM_NL_V0SNOW_F=20.0
+export LM_NL_Q_CRIT_F=1.6
+export LM_NL_QC0_F=0.0002
+
+#GRIBIN
+export LM_NL_HINCBOUND_F=1.0              # Input frequency of boundary conditions
+export LM_NL_LANA_QI_F=.True.
+export LM_NL_LAN_RHO_SNOW_F=.False.
+export LM_NL_EXTPAR_F=extpar_2km_europe_2313x2313.nc
+
+#Async NetCDF I/O
+export LM_NL_LASYNC_IO_F=.True.
+export LM_NL_LPREFETCH_F=.True.           # Needs async IO, uses one additional IO node
+export LM_NL_NUM_IOPE_PERCOMM_F=1         # 1 if async, 0 if sync I/0

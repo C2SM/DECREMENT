@@ -1,10 +1,12 @@
-# COSMO sandbox
+# DECREMENT, The DirEctory COSMO Runtime EnvironMENT
 A set of scripts used to run weather and climate simulations with COSMO. It is is intended to be simple and easy to extend. For more comprehensive solution consider using the LM Package.
 
-## Basic usage
+## How settings are prescribed
+The scripts are loading settings from 2 different files. The first one contains everything related to the simulation configuration (domain, physical parametrizations, etc). It must be the `config` file in the root directory. Either link a stock configuration, e.g. `ln -sf simulation_configs/SIMULATION_EU_CORDEX_50km config`, or create one for your own case. The second one is the `user_settings` file. It contains some dedicated settings but you can also overwrite there any setting specified in the config file (like dates, chaining interval, nodes distribution, wall time, ...). Anything in `user_config` will take precedence over the config file. The idea being to leave the config file untouched for cleaner workflow and easier git tracking.
 
-1. Copy an `int2lm` executaeble and a `cosmo` executable to ./bin. If you want to run a stock simulation, you can get the external parameter data by runnng `./get_extpar_data.sh`. Otherwise you need to copy them to `/bin` as well an adapt the corresponding `LM_NL_EXTPAR_?` env. variable.
-2. Link the corresponding configuration file like this: `ln -s simulation_configs/SIMULATION_S_ATL config` 
+## Basic usage
+1. Copy an `int2lm` executable and a `cosmo` executable to `./bin`. When using an executable built with spack, it's recommanded to specify the corresponding spack spec in the `LM_INT2LM_SPEC` and/or `LM_COSMO_SPEC` variables in the `user_settings` file. This will enable loading the environment before submitting a job. If theses variables are unset or empty, loading the environment will be disabled. If you want to run a stock simulation, you can get the external parameter data by runnng `./get_extpar_data.sh` (or just type the corresponding commands from that file in order to avoid long and unnecessary copies for other configurations). Otherwise you need to copy them to `./bin` as well and adapt the corresponding `LM_NL_EXTPAR_?` env. variable.
+2. Link the corresponding configuration file like this: `ln -sf simulation_configs/SIMULATION_EU_CORDEX_50km config` 
 4. Open `./run_daint.sh`, adapt startdate and enddate of your simualtion, check that all the simulation setps you want to run are in the `parts` string.
 5. Adapt the output variables in GRIBOUT, you might want to adapt the respektive `mkdir` in `./clean` 
 6. Run the simulation: `./run_daint.sh`
@@ -23,7 +25,7 @@ There is a mechanism that resubmits the entire simulation step, if int2lm or cos
 Each directory contains a cleaning script `./clean`. To clean the entire package  run `./distclean.sh`
 
 ## Asynchronous execution
-The individual parts are chained together by using `--dependency=afterok:JOBID` feature of [SLURM][https://slurm.schedmd.com/sbatch.html]. The option `afterok` in each `./run` means that a dependent job is started after the parent job completed successfully. For jobs to execute in paralell this can be changed to `after`. Then the dependent job is started after the parted has started running. 
+The individual parts are chained together by using `--dependency=afterok:JOBID` feature of [SLURM](https://slurm.schedmd.com/sbatch.html). The option `afterok` in each `./run` means that a dependent job is started after the parent job completed successfully. For jobs to execute in paralell this can be changed to `after`. Then the dependent job is started after the parted has started running. 
 
 For certain scenarios it may make sense to move `0_get_data` and `1_ifs2lm` after `6_chain`. Then the infut for the next step is already computed while the current simulation still runs.
 

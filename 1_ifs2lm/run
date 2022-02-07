@@ -1,14 +1,8 @@
 #!/bin/bash
 
-if [ -z "$1" ]; then
-  WAITFORJOB=""
-else
-  WAITFORJOB="$1"
-fi
-
-
 # cleanup
-if [ -f .jobid ]; then
+# -------
+if [[ -f .jobid ]]; then
   $(squeue -j `cat .jobid` &>/dev/null) && scancel `cat .jobid`
   sleep 3
   \rm .jobid 2>/dev/null
@@ -16,6 +10,7 @@ fi
 ./clean
 
 # setup namelists
+# ---------------
 cat > INPUT <<EOF
  &CONTRL
   yinput_model='CM',
@@ -105,20 +100,16 @@ EOF
 
 # setup job
 # ---------
-
-cat > job <<EOF_job_SLURM
+cat > job <<EOF_job
 #!/bin/bash
 #SBATCH --job-name=ifs2lm
 #SBATCH --output=job.out
 #SBATCH --ntasks=$(( ${NQS_NXIFS2LM} * ${NQS_NYIFS2LM} + ${NQS_NIOIFS2LM} ))
-#SBATCH --ntasks-per-node=12
+#SBATCH --ntasks-per-node=${LM_NTASKS_PER_NODE_INT2LM}
 #SBATCH --partition=${QUEUE}
 #SBATCH --time=${NQS_ELAPSED_IFS2LM}
 #SBATCH --account=${ACCOUNT}
 EOF_job_SLURM
-
-# rest of job (actual work)
-cat >> job <<EOF_job
 
 # Initialization
 set verbose
@@ -128,8 +119,16 @@ set echo
 export OMP_NUM_THREADS=1
 export MALLOC_MMAP_MAX_=0
 export MALLOC_TRIM_THRESHOLD_=536870912
-export MPICH_RDMA_ENABLED_CUDA=0
+export MV2_ENABLE_AFFINITY=0
+
+# Set this to avoid segmentation faults
+ulimit -s unlimited
+ulimit -a
+
+unset G2G
 export MV2_USE_CUDA=0
+export MV2_USE_GPUDIRECT=0
+export MV2_USE_GPUDIRECT_GDRCOPY=0
 
 # echo date
 date
@@ -154,20 +153,20 @@ else
   ./run_daint.sh
   exit 1
 fi
-
 EOF_job
 
 # submit job
-if [ -z "${WAITFORJOB}" ]; then
-  jobid=`sbatch -C gpu job | sed 's/Submitted batch job //g'`
-else
-  jobid=`sbatch -C gpu --dependency=afterok:${WAITFORJOB} job | sed 's/Submitted batch job //g'`
-fi
+# ----------
+[[ -n "${LM_INT2LM_SPEC}" ]] && spack load ${LM_INT2LM_SPEC}
 
-if [ $? -eq 0 -a -n "${jobid}" ]; then
+[[ -n "$1" ]] && dep="--dependency=afterok:${1}" || dep=""
+jobid=$(sbatch --parsable -C gpu ${dep} job)
+
+if [[ ($? == 0) && (-n "${jobid}") ]]; then
   echo "${jobid}" > .jobid
   echo "${jobid}"
 else
   exit 1
 fi
 
+[[ -n "${LM_INT2LM_SPEC}" ]] && spack unload ${LM_INT2LM_SPEC}
