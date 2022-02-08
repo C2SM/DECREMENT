@@ -6,26 +6,24 @@ else
   WAITFORJOB="$1"
 fi
 
-# add ensemble stuff to run
-sed "s/\&RUNCTL/\&RUNCTL\n  itype_pert = 1,\n  rperturb = ${LM_C_ENS_PERT},/" run > run_ens
-
-# prepare and execute ensemble runs 
+# prepare and execute ensemble runs
 max_i="$((${LM_C_ENS_NUMBER}-1))"
 for i in $(seq -f "%04g" 0 ${max_i}) ; do
- 
-  # delete old folders (if exist) and create new ones
-  rm -rf $i && mkdir $i
-  rm -rf output/$i && mkdir output/$i
-  
-  # enter directory, clean up, and run the run
+
+  mkdir -p $i #Directory for ensemble member i
   cd $i
-  rm -f run clean output input cosmo
-  cp ../run_ens run
-  chmod +x run
-  cp ../clean .
-  ln -s ../output/$i output
-  ln -s ../input input
-  ln -s ../cosmo cosmo
+
+  # cleanup
+  ln -sf ../clean
+  ./clean
+
+  # link necessary paths and exe
+  ln -sf ../run
+  ln -sf ../output/$i output
+  ln -sf ../input
+  ln -sf ../cosmo
+
+  #submit the run
   ./run ${WAITFORJOB}
   cd ..
 done

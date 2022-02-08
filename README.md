@@ -16,7 +16,7 @@ The scripts are loading settings from 2 different files. The first one contains 
 Basic configuration is done by environmental variables in `config`. They are collected in the folder `simulation_configs/`. Consider sharing your configs with the group. If you need to introduce new environmental variables `export ...`, remember to adapt the existing configutations accordingly so they keep running.
 
 ### Ensembles
-You can run the `2_lm_c` step in perturbed-intial-conditions ensemble mode. To this end, uncomment the corresponding block of env. vars in `user_settings`. Doing so will create sub-directories in in `2_lm_c`and and output and call the `2_lm_c/run_ensemble` wrapper.
+You can run the `2_lm_c` step in perturbed-intial-conditions ensemble mode. To this end, uncomment the corresponding block of env. vars in `user_settings`. Doing so will create sub-directories in in `2_lm_c`and and output and call the `2_lm_c/run_ensemble` wrapper. Note that in COSMO6 the random seed cannot be set explicitly and is based on machine time [in ms].
 
 ## Chain
 If a simulation does not complete within 24h, you can split it up into smaller chucks and submit them one after the other. To this end, set the `*_INI` and `*_FINISHED` variables to the values of the entire simulation period. The corresponding `*_BEGIN`and `_END` variables are used for the current step and changed by the chain functionality.
