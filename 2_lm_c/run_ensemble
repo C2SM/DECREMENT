@@ -27,5 +27,6 @@ for i in $(seq -f "%04g" 0 ${max_i}) ; do
   ln -s ../input input
   ln -s ../cosmo cosmo
   ./run ${WAITFORJOB}
-  cd ../..
+  cd ..
 done
+cd ..
