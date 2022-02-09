@@ -27,4 +27,3 @@ for i in $(seq -f "%04g" 0 ${max_i}) ; do
   ./run ${WAITFORJOB}
   cd ..
 done
-cd ..
