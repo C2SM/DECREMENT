@@ -7,3 +7,5 @@ output/*
 **/core*
 **/.jobid
 **/*.swp
+config
+user_settings
