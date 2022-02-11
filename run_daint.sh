@@ -5,11 +5,6 @@
 
 source user_settings
 
-# Ensemble settings
-export LM_C_ENS_MODE=true
-export LM_C_ENS_NUMBER=100
-export LM_C_ENS_PERT=0.00001
-
 # Daint specific settings
 # =======================
 
