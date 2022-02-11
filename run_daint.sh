@@ -5,7 +5,6 @@
 
 source user_settings
 
-
 # Daint specific settings
 # =======================
 
@@ -77,6 +76,16 @@ for part in ${SB_PARTS} ; do
   mkdir -p output/${short}
 
   cd ${part}
+  
+  # Ensemble execution
+  if [ "${part}" = "2_lm_c" ] && [ ! -z $LM_C_ENS_NUMBER ]; then
+    echo "running ${short} in ensemble mode with ${LM_C_ENS_NUMBER} realizations"
+    jobid=$(./run_ensemble ${jobid})
+    cd - 1>/dev/null 2>/dev/null
+    continue
+  fi
+
+  # Normal execution
   jobid=$(./run ${jobid})
   
   cd - 1>/dev/null 2>/dev/null

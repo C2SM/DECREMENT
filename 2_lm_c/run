@@ -169,7 +169,7 @@ cat >INPUT_IO << EONL
   ymode_write = 'w  ',
   nincwait=10,
   nmaxwait=200,
-  nhour_restart=0.0,$LM_NL_HSTOP,$(( $LM_NL_HSTOP - $LM_NL_HSTART ))
+  nhour_restart=$LM_NL_HSTOP,$LM_NL_HSTOP,1
   ngribout=4,
   itype_gather=2,
   ydir_restart_in='output/restart'

@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# cleanup
+# cleanup DL: Commented for now because occasionally this cancelled the job that is supposed to launch the next one
 # -------
-if [[ -f .jobid ]]; then
-  $(squeue -j `cat .jobid` &>/dev/null) && scancel `cat .jobid`
-  sleep 3
-  \rm .jobid 2>/dev/null
-fi
+#if [[ -f .jobid ]]; then
+#  $(squeue -j `cat .jobid` &>/dev/null) && scancel `cat .jobid`
+#  sleep 3
+#  \rm .jobid 2>/dev/null
+#fi
 ./clean
 
 # setup job

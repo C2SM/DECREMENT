@@ -42,3 +42,6 @@ export EXE_COSMO="./cosmo"
 
 # Parts that will be executed. Same as folder names.
 # export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f 5_pack_data 6_chain"
+
+# Ensemble settings
+# export LM_C_ENS_NUMBER=100 #Set the number of ensemble members. Leave commented to use normal mode.
