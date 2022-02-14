@@ -44,4 +44,7 @@ export EXE_COSMO="./cosmo"
 # export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f 5_pack_data 6_chain"
 
 # Ensemble settings
-# export LM_C_ENS_NUMBER=100 #Set the number of ensemble members. Leave commented to use normal mode.
+# export LM_NL_ITYPE_PERT_C=1
+# export LM_NL_RPERTURB_C=0.00001
+# export LM_NL_ENS_NUMBER_C=10 #Set the number of ensemble members. Leave commented to use normal mode.
+~                                                                                                     
