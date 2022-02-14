@@ -34,6 +34,8 @@ cat > INPUT_ORG << EONL
   asynio_block_size = 20,
   nboundlines=3,
   ldump_ascii = .FALSE.
+  itype_pert=${LM_NL_ITYPE_PERT_C:-0},
+  rperturb=${LM_NL_RPERTURB_C:-0.00001}
   itype_calendar = 0,
   idbg_level = 4,
  /END
