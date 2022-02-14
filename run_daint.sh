@@ -2,7 +2,12 @@
 
 # User defined parameters
 # =======================
+if [ ! -f user_settings ]; then 
+  echo "user_settings doesn't exist yet. Copying default file user_settings_example"
+  cp user_settings_example user_settings
+fi
 
+if [ ! -f config ]; then echo "Abort. No config specifed. Copy one from simulation_configs, e.g., cp simulation_configs/SIMULATION_EU_CORDEX_50km config"; exit 1  ;fi
 source user_settings
 
 # Daint specific settings
