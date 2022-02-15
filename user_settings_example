@@ -30,8 +30,10 @@ export EXE_COSMO="./cosmo"
 
 # Global Simulation Dates (YYYY-MM-DDTHH:00)
 # export LM_INI_DATE="2011-01-01T00:00"   # Initial date of simualtion
+# if [ -z $LM_BEGIN_DATE ]; then #if needed so LM_BEGIN_DATE set in 6_chain does not get overwritten
 # export LM_BEGIN_DATE="2011-01-01T00:00" # Startdate of the current step
 #                                         # use if you dont want to start a step from the initdate
+# fi
 # export LM_FIN_DATE="2011-01-03T00:00"   # Overall end of simulation
 
 # Chaining interval, i.e., how long one simualtion step will be. If unset, run in one chunk
