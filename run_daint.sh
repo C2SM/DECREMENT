@@ -83,8 +83,8 @@ for part in ${SB_PARTS} ; do
   cd ${part}
   
   # Ensemble execution
-  if [ "${part}" = "2_lm_c" ] && [ ! -z $LM_C_ENS_NUMBER ]; then
-    echo "running ${short} in ensemble mode with ${LM_C_ENS_NUMBER} realizations"
+  if [ "${part}" = "2_lm_c" ] && [ ! -z $LM_NL_ENS_NUMBER_C ]; then
+    echo "running ${short} in ensemble mode with ${LM_NL_ENS_NUMBER_C} realizations"
     jobid=$(./run_ensemble ${jobid})
     cd - 1>/dev/null 2>/dev/null
     continue

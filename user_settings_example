@@ -30,8 +30,10 @@ export EXE_COSMO="./cosmo"
 
 # Global Simulation Dates (YYYY-MM-DDTHH:00)
 # export LM_INI_DATE="2011-01-01T00:00"   # Initial date of simualtion
+# if [ -z $LM_BEGIN_DATE ]; then #if needed so LM_BEGIN_DATE set in 6_chain does not get overwritten
 # export LM_BEGIN_DATE="2011-01-01T00:00" # Startdate of the current step
 #                                         # use if you dont want to start a step from the initdate
+# fi
 # export LM_FIN_DATE="2011-01-03T00:00"   # Overall end of simulation
 
 # Chaining interval, i.e., how long one simualtion step will be. If unset, run in one chunk
@@ -44,4 +46,7 @@ export EXE_COSMO="./cosmo"
 # export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f 5_pack_data 6_chain"
 
 # Ensemble settings
-# export LM_C_ENS_NUMBER=100 #Set the number of ensemble members. Leave commented to use normal mode.
+# export LM_NL_ITYPE_PERT_C=1
+# export LM_NL_RPERTURB_C=0.00001
+# export LM_NL_ENS_NUMBER_C=10 #Set the number of ensemble members. Leave commented to use normal mode.
+~                                                                                                     
