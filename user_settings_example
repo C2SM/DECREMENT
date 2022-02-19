@@ -23,10 +23,9 @@ export ACCOUNT="pr94"
 export EXE_INT2LM="./int2lm"
 export EXE_COSMO="./cosmo"
 
-# Spack specifications.
-# Leave commented or empty if you don't want to use the `spack load` commands
-# export LM_INT2LM_SPEC="int2lm@c2sm_master %gcc slave=daint"
-# export LM_COSMO_SPEC="cosmo@c2sm %pgi slave=daint real_type=double cosmo_target=gpu"
+# Will environemt using "spack load" commans.
+export LM_INT2LM_SPEC="int2lm@c2sm-master%nvhpc slave=daint"
+export LM_COSMO_SPEC="cosmo@c2sm-master%nvhpc cosmo_target=gpu real_type=double +cppdycore"
 
 # Global Simulation Dates (YYYY-MM-DDTHH:00)
 # export LM_INI_DATE="2011-01-01T00:00"   # Initial date of simualtion
