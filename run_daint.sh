@@ -2,9 +2,13 @@
 
 # User defined parameters
 # =======================
+if [ ! -f user_settings ]; then 
+  echo "user_settings doesn't exist yet. Copying default file user_settings_example"
+  cp user_settings_example user_settings
+fi
 
+if [ ! -f config ]; then echo "Abort. No config specifed. Copy one from simulation_configs, e.g., cp simulation_configs/SIMULATION_EU_CORDEX_50km config"; exit 1  ;fi
 source user_settings
-
 
 # Daint specific settings
 # =======================
@@ -77,6 +81,16 @@ for part in ${SB_PARTS} ; do
   mkdir -p output/${short}
 
   cd ${part}
+  
+  # Ensemble execution
+  if [ "${part}" = "2_lm_c" ] && [ ! -z $LM_NL_ENS_NUMBER_C ]; then
+    echo "running ${short} in ensemble mode with ${LM_NL_ENS_NUMBER_C} realizations"
+    jobid=$(./run_ensemble ${jobid})
+    cd - 1>/dev/null 2>/dev/null
+    continue
+  fi
+
+  # Normal execution
   jobid=$(./run ${jobid})
   
   cd - 1>/dev/null 2>/dev/null

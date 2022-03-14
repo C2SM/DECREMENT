@@ -1,4 +1,4 @@
-# COSMO sandbox
+# DECREMENT, The DirEctory COSMO Runtime EnvironMENT
 A set of scripts used to run weather and climate simulations with COSMO. It is is intended to be simple and easy to extend. For more comprehensive solution consider using the LM Package.
 
 ## How settings are prescribed
@@ -6,7 +6,8 @@ The scripts are loading settings from 2 different files. The first one contains 
 
 ## Basic usage
 1. Copy an `int2lm` executable and a `cosmo` executable to `./bin`. When using an executable built with spack, it's recommanded to specify the corresponding spack spec in the `LM_INT2LM_SPEC` and/or `LM_COSMO_SPEC` variables in the `user_settings` file. This will enable loading the environment before submitting a job. If theses variables are unset or empty, loading the environment will be disabled. If you want to run a stock simulation, you can get the external parameter data by runnng `./get_extpar_data.sh` (or just type the corresponding commands from that file in order to avoid long and unnecessary copies for other configurations). Otherwise you need to copy them to `./bin` as well and adapt the corresponding `LM_NL_EXTPAR_?` env. variable.
-2. Link the corresponding configuration file like this: `ln -sf simulation_configs/SIMULATION_EU_CORDEX_50km config` 
+2. Copy the simulation configuration file: `cp simulation_configs/SIMULATION_EU_CORDEX_50km config`.
+3. Copy the user settings: `cp user_settings_example user_settings`. 
 4. Open `./run_daint.sh`, adapt startdate and enddate of your simualtion, check that all the simulation setps you want to run are in the `parts` string.
 5. Adapt the output variables in GRIBOUT, you might want to adapt the respektive `mkdir` in `./clean` 
 6. Run the simulation: `./run_daint.sh`
@@ -14,6 +15,9 @@ The scripts are loading settings from 2 different files. The first one contains 
 
 ## Simualtion configuration
 Basic configuration is done by environmental variables in `config`. They are collected in the folder `simulation_configs/`. Consider sharing your configs with the group. If you need to introduce new environmental variables `export ...`, remember to adapt the existing configutations accordingly so they keep running.
+
+### Ensembles
+You can run the `2_lm_c` step in perturbed-intial-conditions ensemble mode. To this end, uncomment the corresponding block of env. vars in `user_settings`. Doing so will create sub-directories in in `2_lm_c`and and output and call the `2_lm_c/run_ensemble` wrapper. Note that in COSMO6 the random seed cannot be set explicitly and is based on machine time [in ms].
 
 ## Chain
 If a simulation does not complete within 24h, you can split it up into smaller chucks and submit them one after the other. To this end, set the `*_INI` and `*_FINISHED` variables to the values of the entire simulation period. The corresponding `*_BEGIN`and `_END` variables are used for the current step and changed by the chain functionality.
