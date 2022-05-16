@@ -9,6 +9,98 @@ if [ -f .jobid ]; then
 fi
 ./clean
 
+# Set array of output streams
+# ---------------------------
+#Use the following default streams if nothing specified
+
+if [[ $(type -t defGribout) == "function" ]]; then
+  defGribout
+else
+  declare -a LM_NL_GRIBOUT_C
+  
+  LM_NL_GRIBOUT_C[0]=" &GRIBOUT
+  yform_write='ncdf',
+  hcomb=0.0,LM_NL_HSTOP,1,
+  yvarml='U','V','W','T','PP',
+     'QV','QC', 'QS','QR','QI','QG',
+     'VIO3','HMO3',
+     'T_SNOW','QV_S','W_SNOW','W_I','T_S',
+     'T_SO','W_SO','RHO_SNOW','FRESHSNW',
+  yvarpl=' ',
+  yvarzl=' ',
+  lcheck=.FALSE.,
+  luvmasspoint=.FALSE.,
+  lwrite_const=.True.,
+  ydir='output/bc',
+  l_z_filter=.FALSE., l_p_filter=.FALSE.,
+  l_fi_pmsl_smooth = .FALSE.,
+  ytunit='d',
+ /END"
+  
+  LM_NL_GRIBOUT_C[1]=" &GRIBOUT
+  yform_write='ncdf',
+  hcomb=0.0,LM_NL_HSTOP,1,
+  yvarml='U_10M', 'V_10M', 'T_2M', 'RELHUM_2M', 'PS', 'QV_2M',
+         'ALHFL_S', 'ASHFL_S', 'AUMFL_S', 'AVMFL_S',
+         'CAPE_ML', 'CIN_ML',
+         'CLCH', 'CLCM', 'CLCL', 'TOT_PREC',
+         'TQC', 'TQI','TQR','TQV','TQG','TQS',
+         'ASOB_T',  'ASOD_T',  'ATHB_T',
+         'ASOBC_T',            'ATHBC_T',
+         'ASOB_S', 'ASWDIFD_S','ASWDIR_S', 'ASWDIFU_S', 'ATHB_S', 'ATHD_S',
+         'ASOBC_S',            'ATHBC_S',
+  yvarpl=' ',
+  yvarzl=' ',
+  ireset_sums = 2,
+  lcheck=.TRUE.,
+  luvmasspoint=.FALSE.,
+  lwrite_const=.FALSE.,
+  ydir='output/1h_2D',
+  l_z_filter=.FALSE.,l_p_filter=.FALSE.,
+  l_fi_pmsl_smooth = .FALSE.,
+  ytunit='d',
+ /END"
+  
+  LM_NL_GRIBOUT_C[2]=" &GRIBOUT
+  yform_write='ncdf',
+  hcomb=0.0,LM_NL_HSTOP,3,
+  yvarml=' ',
+  yvarpl=' ',
+  yvarzl='U', 'V', 'W', 'T', 'P', 'QV', 'QC', 'QI',
+  zlev=100,
+       200,400,600,800,1000,1200,1400,1600,1800,2000,
+       2300,2600,2900,3200,3500,
+       4000,4500,
+       5000,6000,7000,8000,9000,10000
+  lcheck=.FALSE.,
+  luvmasspoint=.FALSE.,
+  lwrite_const=.FALSE.,
+  ydir='output/3h_3D_zlev',
+  l_z_filter=.FALSE.,l_p_filter=.FALSE.,
+  l_fi_pmsl_smooth = .FALSE.,
+  ytunit='d',
+ /END"
+  
+  LM_NL_GRIBOUT_C[3]=" &GRIBOUT
+  yform_write='ncdf',
+  hcomb=0.0,LM_NL_HSTOP,24,
+  yvarml='VMAX_10M', 'W_SO', 'TMIN_2M', 'TMAX_2M', 'RUNOFF_S', 'RUNOFF_G',
+  yvarpl=' ',
+  yvarzl=' ',
+  ireset_winds = 2,
+  ireset_temps = 2,
+  lcheck=.FALSE.,
+  luvmasspoint=.FALSE.,
+  lwrite_const=.FALSE.,
+  ydir='output/24h',
+  l_z_filter=.FALSE.,l_p_filter=.FALSE.,
+  l_fi_pmsl_smooth = .FALSE.,
+  ytunit='d',
+ /END"
+fi
+
+# Write namelists
+# ---------------
 cat > INPUT_ORG << EONL
  &LMGRID
   startlat_tot= $LM_NL_STARTLAT_TOT_C, startlon_tot= $LM_NL_STARTLON_TOT_C,
@@ -30,8 +122,8 @@ cat > INPUT_ORG << EONL
   ldfi=.FALSE.,
   nprocx= $NQS_NXLM_C, nprocy= $NQS_NYLM_C, nprocio=0,
   num_asynio_comm=$NQS_NIOLM_C,
-  num_iope_percomm=$LM_NL_NUM_IOPE_PERCOMM_C,
-  asynio_block_size = 20,
+  num_iope_percomm = $LM_NL_NUM_IOPE_PERCOMM_C,
+  asynio_block_size = $LM_NL_ASYNIO_BLOCK_SIZE_C,
   nboundlines=3,
   ldump_ascii = .FALSE.
   itype_pert=${LM_NL_ITYPE_PERT_C:-0},
@@ -172,7 +264,7 @@ cat >INPUT_IO << EONL
   nincwait=10,
   nmaxwait=200,
   nhour_restart=$LM_NL_HSTOP,$LM_NL_HSTOP,1
-  ngribout=4,
+  ngribout=${#LM_NL_GRIBOUT_C[@]},
   itype_gather=2,
   ydir_restart_in='output/restart'
   ydir_restart_out='output/restart'
@@ -203,83 +295,11 @@ cat >INPUT_IO << EONL
   lan_t_s = .FALSE.,
   ytunitbd='d',
  /END
- &GRIBOUT
-  yform_write='ncdf',
-  hcomb=0.0,$LM_NL_HSTOP,1,
-  yvarml='U','V','W','T','PP',
-     'QV','QC', 'QS','QR','QI','QG',
-     'VIO3','HMO3',
-     'T_SNOW','QV_S','W_SNOW','W_I','T_S',
-     'T_SO','W_SO','RHO_SNOW','FRESHSNW',
-  yvarpl=' ',
-  yvarzl=' ',
-  lcheck=.FALSE.,
-  luvmasspoint=.FALSE.,
-  lwrite_const=.True.,
-  ydir='output/bc',
-  l_z_filter=.FALSE., l_p_filter=.FALSE.,
-  l_fi_pmsl_smooth = .FALSE.,
-  ytunit='d',
- /END
- &GRIBOUT
-  yform_write='ncdf',
-  hcomb=0.0,$LM_NL_HSTOP,1,
-  yvarml='U_10M', 'V_10M', 'T_2M', 'RELHUM_2M', 'PS', 'QV_2M',
-         'ALHFL_S', 'ASHFL_S', 'AUMFL_S', 'AVMFL_S',
-         'CAPE_ML', 'CIN_ML',
-         'CLCH', 'CLCM', 'CLCL', 'TOT_PREC',
-         'TQC', 'TQI','TQR','TQV','TQG','TQS',
-         'ASOB_T',  'ASOD_T',  'ATHB_T',
-         'ASOBC_T',            'ATHBC_T',
-         'ASOB_S', 'ASWDIFD_S','ASWDIR_S', 'ASWDIFU_S', 'ATHB_S', 'ATHD_S',
-         'ASOBC_S',            'ATHBC_S',
-  yvarpl=' ',
-  yvarzl=' ',
-  ireset_sums = 2,
-  lcheck=.TRUE.,
-  luvmasspoint=.FALSE.,
-  lwrite_const=.FALSE.,
-  ydir='output/1h_2D',
-  l_z_filter=.FALSE.,l_p_filter=.FALSE.,
-  l_fi_pmsl_smooth = .FALSE.,
-  ytunit='d',
- /END
- &GRIBOUT
-  yform_write='ncdf',
-  hcomb=0.0,$LM_NL_HSTOP,3,
-  yvarml=' ',
-  yvarpl=' ',
-  yvarzl='U', 'V', 'W', 'T', 'P', 'QV', 'QC', 'QI',
-  zlev=100,
-       200,400,600,800,1000,1200,1400,1600,1800,2000,
-       2300,2600,2900,3200,3500,
-       4000,4500,
-       5000,6000,7000,8000,9000,10000
-  lcheck=.FALSE.,
-  luvmasspoint=.FALSE.,
-  lwrite_const=.FALSE.,
-  ydir='output/3h_3D_zlev',
-  l_z_filter=.FALSE.,l_p_filter=.FALSE.,
-  l_fi_pmsl_smooth = .FALSE.,
-  ytunit='d',
- /END
- &GRIBOUT
-  yform_write='ncdf',
-  hcomb=0.0,$LM_NL_HSTOP,24,
-  yvarml='VMAX_10M', 'W_SO', 'TMIN_2M', 'TMAX_2M', 'RUNOFF_S', 'RUNOFF_G',
-  yvarpl=' ',
-  yvarzl=' ',
-  ireset_winds = 2,
-  ireset_temps = 2,
-  lcheck=.FALSE.,
-  luvmasspoint=.FALSE.,
-  lwrite_const=.FALSE.,
-  ydir='output/24h',
-  l_z_filter=.FALSE.,l_p_filter=.FALSE.,
-  l_fi_pmsl_smooth = .FALSE.,
-  ytunit='d',
- /END
 EONL
+
+for ((k=0; k<${#LM_NL_GRIBOUT_C[@]}; k++)); do
+  sed "s/LM_NL_HSTOP/${LM_NL_HSTOP}/g" <<<${LM_NL_GRIBOUT_C[k]} >>INPUT_IO
+done
 
 cat > INPUT_ASS << EONL
  &NUDGING
@@ -301,7 +321,7 @@ cat > INPUT_SAT << EONL
  /END
 EONL
 
-# setup job
+# Setup job
 # ---------
 cat > job <<EOF_job
 #!/bin/bash
@@ -367,7 +387,7 @@ fi
 
 EOF_job
 
-# submit job
+# Submit job
 # ----------
 [[ -n "${LM_COSMO_SPEC}" ]] && spack load ${LM_COSMO_SPEC}
 

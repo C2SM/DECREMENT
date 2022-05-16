@@ -155,6 +155,7 @@ export LM_NL_EXTPAR_C=extpar_12km_europe_771x771.nc # Coarse extpar file in /bin
 export LM_NL_LASYNC_IO_C=.False.
 export LM_NL_LPREFETCH_C=.False.           # Needs async IO, uses one additional IO node
 export LM_NL_NUM_IOPE_PERCOMM_C=0         # 1 if async, 0 if sync I/0
+export LM_NL_ASYNIO_BLOCK_SIZE_C=10
 
 
 # LM fine 
@@ -221,3 +222,4 @@ export LM_NL_EXTPAR_F=extpar_2km_europe_2313x2313.nc
 export LM_NL_LASYNC_IO_F=.True.
 export LM_NL_LPREFETCH_F=.True.           # Needs async IO, uses one additional IO node
 export LM_NL_NUM_IOPE_PERCOMM_F=1         # 1 if async, 0 if sync I/0
+export LM_NL_ASYNIO_BLOCK_SIZE_F=20

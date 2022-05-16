@@ -164,6 +164,7 @@ export LM_NL_EXTPAR_C=extpar_SA_4km.nc #Coarse extpar file in /bin
 #Async NetCDF I/O
 export LM_NL_LASYNC_IO_C=.False.
 export LM_NL_NUM_IOPE_PERCOMM_C=0         # 1 if async, 0 if sync I/0
+export LM_NL_ASYNIO_BLOCK_SIZE_C=10
 
 
 # Configuration
@@ -233,6 +234,7 @@ export LM_NL_EXTPAR_F=extpar_atlantic_2km.nc
 #Async NetCDF I/O
 export LM_NL_LASYNC_IO_F=.False.
 export LM_NL_NUM_IOPE_PERCOMM_F=0         # 1 if async, 0 if sync I/0
+export LM_NL_ASYNIO_BLOCK_SIZE_F=20
 
 
 

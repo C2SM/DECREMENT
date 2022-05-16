@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Simulation setup of C. Heim. A 3km simulation over the South Atlantic, driven directly by ERA5
 
 
@@ -35,12 +36,13 @@ if [[ $COSMO_TARGET == "cpu" ]]; then
   export NQS_NXLM_C=24              # number of CPUs in x direction (12 per node on daint-gpu)
   export NQS_NYLM_C=32              # number of CPUs in y direction
 else
-  export NQS_NXLM_C=8               # number of CPUs in x direction (12 per node on daint-gpu)
-  export NQS_NYLM_C=8               # number of CPUs in y direction
+  export NQS_NXLM_C=13              # number of CPUs in x direction (12 per node on daint-gpu)
+  export NQS_NYLM_C=11              # number of CPUs in y direction
 fi
-export NQS_NIOLM_C=0                # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
+export NQS_NIOLM_C=4                # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 export NQS_ELAPSED_LM_C=05:00:00    # maximum wall-clock time (HH:mm:ss)
 
+# 5_pack_data
 export NQS_ELAPSED_COMPRESS=12:00:00    # maximum wall-clock time (HH:mm:ss) for compression
 
 
@@ -137,4 +139,92 @@ export LM_NL_EXTPAR_C=extpar_SA_3km_new_albedoCON_soil_landuse.nc # Coarse extpa
 
 #Async NetCDF I/O
 export LM_NL_LASYNC_IO_C=.True.
+export LM_NL_LPREFETCH_C=.True.
 export LM_NL_NUM_IOPE_PERCOMM_C=1         # 1 if async, 0 if sync I/0
+export LM_NL_ASYNIO_BLOCK_SIZE_C=60
+
+#GRIBOUT
+defGribout(){
+  declare -ag LM_NL_GRIBOUT_C
+
+  LM_NL_GRIBOUT_C[0]=" &GRIBOUT
+  yform_write='ncdf',
+  hcomb=0.0,LM_NL_HSTOP,1,
+  yvarml='U','V','W','T','PP',
+     'QV','QC', 'QS','QR','QI','QG',
+     'VIO3','HMO3',
+     'T_SNOW','QV_S','W_SNOW','W_I','T_S',
+     'T_SO','W_SO','RHO_SNOW','FRESHSNW',
+  yvarpl=' ',
+  yvarzl=' ',
+  lcheck=.FALSE.,
+  luvmasspoint=.FALSE.,
+  lwrite_const=.True.,
+  ydir='output/bc',
+  l_z_filter=.FALSE., l_p_filter=.FALSE.,
+  l_fi_pmsl_smooth = .FALSE.,
+  ytunit='d',
+ /END"
+
+  LM_NL_GRIBOUT_C[1]=" &GRIBOUT
+  yform_write='ncdf',
+  hcomb=0.0,LM_NL_HSTOP,1,
+  yvarml='U_10M', 'V_10M', 'T_2M', 'RELHUM_2M', 'PS', 'QV_2M',
+         'ALHFL_S', 'ASHFL_S', 'AUMFL_S', 'AVMFL_S',
+         'CAPE_ML', 'CIN_ML',
+         'CLCH', 'CLCM', 'CLCL', 'TOT_PREC',
+         'TQC', 'TQI','TQR','TQV','TQG','TQS',
+         'ASOB_T',  'ASOD_T',  'ATHB_T',
+         'ASOBC_T',            'ATHBC_T',
+         'ASOB_S', 'ASWDIFD_S','ASWDIR_S', 'ASWDIFU_S', 'ATHB_S', 'ATHD_S',
+         'ASOBC_S',            'ATHBC_S',
+  yvarpl=' ',
+  yvarzl=' ',
+  ireset_sums = 2,
+  lcheck=.TRUE.,
+  luvmasspoint=.FALSE.,
+  lwrite_const=.FALSE.,
+  ydir='output/1h_2D',
+  l_z_filter=.FALSE.,l_p_filter=.FALSE.,
+  l_fi_pmsl_smooth = .FALSE.,
+  ytunit='d',
+ /END"
+
+  LM_NL_GRIBOUT_C[2]=" &GRIBOUT
+  yform_write='ncdf',
+  hcomb=0.0,LM_NL_HSTOP,3,
+  yvarml=' ',
+  yvarpl=' ',
+  yvarzl='U', 'V', 'W', 'T', 'P', 'QV', 'QC', 'QI',
+  zlev=100,
+       200,400,600,800,1000,1200,1400,1600,1800,2000,
+       2300,2600,2900,3200,3500,
+       4000,4500,
+       5000,6000,7000,8000,9000,10000
+  lcheck=.FALSE.,
+  luvmasspoint=.FALSE.,
+  lwrite_const=.FALSE.,
+  ydir='output/3h_3D_zlev',
+  l_z_filter=.FALSE.,l_p_filter=.FALSE.,
+  l_fi_pmsl_smooth = .FALSE.,
+  ytunit='d',
+ /END"
+
+  LM_NL_GRIBOUT_C[3]=" &GRIBOUT
+  yform_write='ncdf',
+  hcomb=0.0,LM_NL_HSTOP,24,
+  yvarml='VMAX_10M', 'W_SO', 'TMIN_2M', 'TMAX_2M', 'RUNOFF_S', 'RUNOFF_G',
+  yvarpl=' ',
+  yvarzl=' ',
+  ireset_winds = 2,
+  ireset_temps = 2,
+  lcheck=.FALSE.,
+  luvmasspoint=.FALSE.,
+  lwrite_const=.FALSE.,
+  ydir='output/24h',
+  l_z_filter=.FALSE.,l_p_filter=.FALSE.,
+  l_fi_pmsl_smooth = .FALSE.,
+  ytunit='d',
+ /END"
+}
+export -f defGribout

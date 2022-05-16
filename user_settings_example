@@ -24,8 +24,8 @@ export EXE_INT2LM="./int2lm"
 export EXE_COSMO="./cosmo"
 
 # Will environemt using "spack load" commans.
-export LM_INT2LM_SPEC="int2lm@c2sm-master%nvhpc slave=daint"
-export LM_COSMO_SPEC="cosmo@c2sm-master%nvhpc cosmo_target=gpu real_type=double +cppdycore"
+export LM_INT2LM_SPEC="int2lm@c2sm-master%nvhpc"
+export LM_COSMO_SPEC="cosmo@c2sm-features%nvhpc cosmo_target=gpu real_type=double +cppdycore ~oasis"
 
 # Global Simulation Dates (YYYY-MM-DDTHH:00)
 # export LM_INI_DATE="2011-01-01T00:00"   # Initial date of simualtion
@@ -51,4 +51,3 @@ export LM_RETRIES="True"
 # export LM_NL_ITYPE_PERT_C=1
 # export LM_NL_RPERTURB_C=0.00001
 # export LM_NL_ENS_NUMBER_C=10 #Set the number of ensemble members. Leave commented to use normal mode.
-~                                                                                                     
