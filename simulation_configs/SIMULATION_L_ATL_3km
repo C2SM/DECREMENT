@@ -227,4 +227,4 @@ defGribout_C(){
   ytunit='d',
  /END"
 }
-export -f defGribout
+export -f defGribout_C
