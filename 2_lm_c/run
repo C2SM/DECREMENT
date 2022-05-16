@@ -13,8 +13,8 @@ fi
 # ---------------------------
 #Use the following default streams if nothing specified
 
-if [[ $(type -t defGribout) == "function" ]]; then
-  defGribout
+if [[ $(type -t defGribout_C) == "function" ]]; then
+  defGribout_C
 else
   declare -a LM_NL_GRIBOUT_C
   

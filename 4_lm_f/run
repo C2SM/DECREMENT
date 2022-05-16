@@ -12,7 +12,9 @@ fi
 # Set array of output streams
 # ---------------------------
 #Use the following default streams if nothing specified
-if [[ -z "${LM_NL_GRIBOUT_F}" ]]; then
+if [[ $(type -t defGribout_F) == "function" ]]; then
+  defGribout_F
+else
   declare -a LM_NL_GRIBOUT_F
   
   LM_NL_GRIBOUT_F[0]=" &GRIBOUT
