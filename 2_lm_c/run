@@ -298,7 +298,7 @@ cat >INPUT_IO << EONL
 EONL
 
 for ((k=0; k<${#LM_NL_GRIBOUT_C[@]}; k++)); do
-  sed "s/LM_NL_HSTOP/${LM_NL_HSTOP}/g" <<<${LM_NL_GRIBOUT_C[k]} >>INPUT_IO
+  sed "s/\( *hcomb *=\)\([^,]*\),\([^,]*\),\(.*\)/\1\2,${LM_NL_HSTOP},\4/gi" <<<${LM_NL_GRIBOUT_F[k]} >>INPUT_IO
 done
 
 cat > INPUT_ASS << EONL
