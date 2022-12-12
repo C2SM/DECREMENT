@@ -335,12 +335,12 @@ ulimit -a
 # set environmental parameters
 export MALLOC_MMAP_MAX_=0
 export MALLOC_TRIM_THRESHOLD_=536870912
-export COSMO_NPROC_NODEVICE=${NQS_NIOLM_F}
 export OMP_NUM_THREADS=1
 EOF_job
 
 if [[ $COSMO_TARGET == "gpu" ]]; then
   cat >> job <<EOF_job
+export COSMO_NPROC_NODEVICE=${NQS_NIOLM_F}
 export MPICH_RDMA_ENABLED_CUDA=1
 export MPICH_G2G_PIPELINE=256
 # KO: Need to set path to cuda library explicitly or GPU runs fail on cuInit
