@@ -17,7 +17,7 @@ else
 fi
 
 # Scheduler account
-export ACCOUNT="pr94"
+export ACCOUNT="pr133"
 
 # Name of the executables
 export EXE_INT2LM="./int2lm"
