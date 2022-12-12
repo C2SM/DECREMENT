@@ -33,13 +33,14 @@ export NQS_ELAPSED_IFS2LM=01:30:00  # maximum wall-clock time (HH:mm:ss)
 
 # 2_lm_c
 if [[ $COSMO_TARGET == "cpu" ]]; then
-  export NQS_NXLM_C=24              # number of CPUs in x direction (12 per node on daint-gpu)
-  export NQS_NYLM_C=32              # number of CPUs in y direction
+  export NQS_NXLM_C=44              # number of CPUs in x direction (12 per node on daint-gpu)
+  export NQS_NYLM_C=39              # number of CPUs in y direction
+  export NQS_NIOLM_C=12             # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 else
   export NQS_NXLM_C=13              # number of CPUs in x direction (12 per node on daint-gpu)
   export NQS_NYLM_C=11              # number of CPUs in y direction
+  export NQS_NIOLM_C=4              # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 fi
-export NQS_NIOLM_C=4                # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 export NQS_ELAPSED_LM_C=05:00:00    # maximum wall-clock time (HH:mm:ss)
 
 # 5_pack_data
@@ -148,82 +149,76 @@ defGribout_C(){
   declare -ag LM_NL_GRIBOUT_C
 
   LM_NL_GRIBOUT_C[0]=" &GRIBOUT
-  yform_write='ncdf',
-  hcomb=0.0,LM_NL_HSTOP,1,
-  yvarml='U','V','W','T','PP',
-     'QV','QC', 'QS','QR','QI','QG',
-     'VIO3','HMO3',
-     'T_SNOW','QV_S','W_SNOW','W_I','T_S',
-     'T_SO','W_SO','RHO_SNOW','FRESHSNW',
+  ydir='output/30min_water',
+  yform_write='nc-4',
+  hcomb=0.0,LM_NL_HSTOP,0.5,
+  yvarml='TOT_PREC','TQC','TQI'
   yvarpl=' ',
   yvarzl=' ',
   lcheck=.FALSE.,
-  luvmasspoint=.FALSE.,
   lwrite_const=.True.,
-  ydir='output/bc',
-  l_z_filter=.FALSE., l_p_filter=.FALSE.,
-  l_fi_pmsl_smooth = .FALSE.,
   ytunit='d',
  /END"
 
   LM_NL_GRIBOUT_C[1]=" &GRIBOUT
-  yform_write='ncdf',
+  ydir='output/1h_2D',
+  yform_write='nc-4',
   hcomb=0.0,LM_NL_HSTOP,1,
-  yvarml='U_10M', 'V_10M', 'T_2M', 'RELHUM_2M', 'PS', 'QV_2M',
-         'ALHFL_S', 'ASHFL_S', 'AUMFL_S', 'AVMFL_S',
-         'CAPE_ML', 'CIN_ML',
-         'CLCH', 'CLCM', 'CLCL', 'TOT_PREC',
-         'TQC', 'TQI','TQR','TQV','TQG','TQS',
-         'ASOB_T',  'ASOD_T',  'ATHB_T',
-         'ASOBC_T',            'ATHBC_T',
-         'ASOB_S', 'ASWDIFD_S','ASWDIR_S', 'ASWDIFU_S', 'ATHB_S', 'ATHD_S',
-         'ASOBC_S',            'ATHBC_S',
+  yvarml='T_S', 'ALHFL_S', 'ASHFL_S', 'U_10M', 'V_10M', 'T_2M', 'QV_2M',
+         'PS', 'PMSL', 'CAPE_ML', 'CIN_ML', 'TQV', 'TQR', 'TQS', 'TQG',
+         'CLCL', 'CLCM', 'CLCH', 'CLCT', 'ASOB_T', 'ASOD_T', 'ATHB_T',
+         'ASOBC_T', 'ATHBC_T', 'ASOBC_S', 'ATHBC_S', 'ASOB_S', 'ASWDIFD_S',
+         'ASWDIR_S', 'ASWDIFU_S', 'ATHB_S', 'ATHD_S'
   yvarpl=' ',
   yvarzl=' ',
   ireset_sums = 2,
   lcheck=.TRUE.,
-  luvmasspoint=.FALSE.,
   lwrite_const=.FALSE.,
-  ydir='output/1h_2D',
-  l_z_filter=.FALSE.,l_p_filter=.FALSE.,
-  l_fi_pmsl_smooth = .FALSE.,
   ytunit='d',
  /END"
 
   LM_NL_GRIBOUT_C[2]=" &GRIBOUT
-  yform_write='ncdf',
+  ydir='output/3h_3D_zlev',
+  yform_write='nc-4',
   hcomb=0.0,LM_NL_HSTOP,3,
   yvarml=' ',
   yvarpl=' ',
-  yvarzl='U', 'V', 'W', 'T', 'P', 'QV', 'QC', 'QI',
-  zlev=100,
-       200,400,600,800,1000,1200,1400,1600,1800,2000,
-       2300,2600,2900,3200,3500,
-       4000,4500,
-       5000,6000,7000,8000,9000,10000
+  yvarzl='U', 'V', 'W', 'T', 'P', 'QV', 'QG', 'QR', 'QS'
+  zlev=20.0,100.0,200.0,400.0,600.0,800.0,1000.0,1200.0,1400.0,1600.0,1800.0,2000.0,
+       2300.0,2600.0,3000.0,4000.0,5000.0,6000.0,7000.0,8000.0,10000.0,12000.0,14000.0,
+       16000.0,18000.0
   lcheck=.FALSE.,
-  luvmasspoint=.FALSE.,
   lwrite_const=.FALSE.,
-  ydir='output/3h_3D_zlev',
-  l_z_filter=.FALSE.,l_p_filter=.FALSE.,
-  l_fi_pmsl_smooth = .FALSE.,
   ytunit='d',
  /END"
 
   LM_NL_GRIBOUT_C[3]=" &GRIBOUT
-  yform_write='ncdf',
-  hcomb=0.0,LM_NL_HSTOP,24,
-  yvarml='VMAX_10M', 'W_SO', 'TMIN_2M', 'TMAX_2M', 'RUNOFF_S', 'RUNOFF_G',
+  ydir='output/3h_3D_cloud',
+  yform_write='nc-4',
+  hcomb=0.0,LM_NL_HSTOP,3,
+  yvarml=' ',
+  yvarpl=' ',
+  yvarzl='QC', 'QI'
+  zlev=20.0,100.0,200.0,400.0,600.0,800.0,1000.0,1200.0,1400.0,1600.0,1800.0,2000.0,
+       2300.0,2600.0,3000.0,3500.0,4000.0,4500.0,5000.0,5500.0,6000.0,7000.0,8000.0,
+       9000.0,10000.0,11000.0,12000.0,13000.0,14000.0,15000.0,16000.0,17000.0,18000.0
+  lcheck=.FALSE.,
+  lwrite_const=.FALSE.,
+  ytunit='d',
+ /END"
+
+  LM_NL_GRIBOUT_C[4]=" &GRIBOUT
+  ydir='output/24h',
+  yform_write='nc-4',
+  hcomb=0.0,LM_NL_HSTOP,3,
+  yvarml='T_SO', 'W_SO', 'TMIN_2M', 'TMAX_2M', 'RUNOFF_S', 'RUNOFF_G',
+         'VMAX_10M', 'TWATER', 'TWATFLXU', 'TWATFLXV', 'ALB_RAD'
   yvarpl=' ',
   yvarzl=' ',
   ireset_winds = 2,
   ireset_temps = 2,
   lcheck=.FALSE.,
-  luvmasspoint=.FALSE.,
   lwrite_const=.FALSE.,
-  ydir='output/24h',
-  l_z_filter=.FALSE.,l_p_filter=.FALSE.,
-  l_fi_pmsl_smooth = .FALSE.,
   ytunit='d',
  /END"
 }
