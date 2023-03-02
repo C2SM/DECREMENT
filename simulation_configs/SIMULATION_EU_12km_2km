@@ -32,34 +32,36 @@ export NQS_ELAPSED_IFS2LM=00:30:00  # maximum wall-clock time (HH:mm:ss)
 
 # 2_lm_c
 if [[ $COSMO_TARGET == "cpu" ]]; then
-  export NQS_NXLM_C=4               # number of CPUs in x direction (12 per node on daint-gpu)
-  export NQS_NYLM_C=3               # number of CPUs in y direction
+    export NQS_NXLM_C=4             # number of CPUs in x direction (12 per node on daint-gpu)
+    export NQS_NYLM_C=3             # number of CPUs in y direction
+    export NQS_NIOLM_C=0            # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 else
-  export NQS_NXLM_C=2               # number of CPUs in x direction (12 per node on daint-gpu)
-  export NQS_NYLM_C=2               # number of CPUs in y direction
+    export NQS_NXLM_C=2             # number of CPUs in x direction (12 per node on daint-gpu)
+    export NQS_NYLM_C=2             # number of CPUs in y direction
+    export NQS_NIOLM_C=1            # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 fi
-export NQS_NIOLM_C=0                # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
-export NQS_ELAPSED_LM_C=00:30:00    # maximum wall-clock time (HH:mm:ss)
+export NQS_ELAPSED_LM_C=24:00:00    # maximum wall-clock time (HH:mm:ss)
 
 # 3_lm2lm
 export NQS_NXLM2LM=6                # number of CPUs in x direction (12 per node on daint-gpu)
 export NQS_NYLM2LM=10               # number of CPUs in y direction
 export NQS_NIOLM2LM=0               # number of CPUs for asyncronous IO
-export NQS_ELAPSED_LM2LM=07:00:00   # maximum wall-clock time (HH:mm:ss)
+export NQS_ELAPSED_LM2LM=10:00:00   # maximum wall-clock time (HH:mm:ss)
 
 # 4_lm_f
 if [[ $COSMO_TARGET == "cpu" ]]; then
-  export NQS_NXLM_F=27              # number of NODEs in x direction
-  export NQS_NYLM_F=36              # number of NODEs in y direction
+    export NQS_NXLM_F=28            # number of NODEs in x direction
+    export NQS_NYLM_F=35            # number of NODEs in y direction
+    export NQS_NIOLM_F=4            # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 else
-  export NQS_NXLM_F=10              # number of NODEs in x direction
-  export NQS_NYLM_F=10              # number of NODEs in y direction
+    export NQS_NXLM_F=10            # number of NODEs in x direction
+    export NQS_NYLM_F=10            # number of NODEs in y direction
+    export NQS_NIOLM_F=4            # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 fi
-export NQS_NIOLM_F=4                # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
-export NQS_ELAPSED_LM_F=08:00:00    # maximum wall-clock time (HH:mm:ss)
+export NQS_ELAPSED_LM_F=24:00:00    # maximum wall-clock time (HH:mm:ss)
 
-#5_pack_data
-export NQS_ELAPSED_COMPRESS=12:00:00    # maximum wall-clock time (HH:mm:ss)
+# 5_pack_data
+export NQS_ELAPSED_COMPRESS=07:00:00    # maximum wall-clock time (HH:mm:ss)
 
 # ===================================================
 #                   CONFIGURE COSMO
@@ -83,14 +85,14 @@ export LM_NL_PHIROIFS=89.46282
 export LM_NL_LAMLUIFS=-180
 export LM_NL_LAMROIFS=179.296875
 export LM_NL_CZML_SOIL_IN=0.015,0.10,0.405,1.205,
-export LM_NL_LUSE_T_SKIN=.False.
+export LM_NL_LUSE_T_SKIN=.FALSE.
 
 #COSMO Levels
 export LM_VCFLAT=11357.0
 export LM_VCOORD_D=23588.50,22395.93,21304.04,20307.39,19399.95,18574.03,17821.88,17135.64,16507.79,15930.60,15396.52,14897.86,14427.98,13981.10,13551.52,13133.53,12721.37,12312.04,11900.03,11485.37,11068.19,10648.54,10226.48,9802.09,9375.43,8946.58,8515.59,8082.55,7647.52,7210.55,6771.96,6332.38,5896.41,5468.04,5050.84,4647.96,4261.91,3893.26,3542.15,3208.52,2892.23,2593.71,2312.95,2049.75,1803.89,1575.57,1364.68,1170.90,993.84,833.44,689.53,561.52,448.82,350.95,267.55,197.67,137.23,87.33,48.44,20.00,0.00,
 
 # LM coarse
-# ===========
+# =========
 
 # Grid
 # ----
@@ -116,8 +118,8 @@ export LM_NL_DT_C=90                         # Time Step
 export LM_NL_RDHEIGHT_C=13500
 export LM_NL_RLWIDTH_C=170000.0
 export LM_NL_NRDTAU_C=10
-export LM_NL_L_DIFF_SMAG_C=.True.
-export LM_NL_LDIFF_COLD_POOLS_C=.True.
+export LM_NL_L_DIFF_SMAG_C=.TRUE.
+export LM_NL_LDIFF_COLD_POOLS_C=.TRUE.
 export LM_NL_HD_CORR_U_BD_C=0.75
 export LM_NL_HD_CORR_T_BD_C=0.75
 export LM_NL_HD_CORR_P_BD_C=0.75
@@ -129,8 +131,8 @@ export LM_NL_HD_CORR_TRCR_IN_C=0.0
 
 #PHYCTL
 export LM_NL_ITYPE_GSCP_C=4
-export LM_NL_LCONV_C=.True.
-export LM_NL_LSSO_C=.True.
+export LM_NL_LCONV_C=.TRUE.
+export LM_NL_LSSO_C=.TRUE.
 export LM_NL_HINCRAD_C=1.0
 export LM_NL_ICO2_RAD_C=0
 export LM_NL_ITYPE_ALBEDO_C=2
@@ -147,13 +149,13 @@ export LM_NL_QC0_C=0.0
 
 #GRIBIN
 export LM_NL_HINCBOUND_C=6.0                # Input frequency of boundary conditions
-export LM_NL_LANA_QI_C=.True.
-export LM_NL_LAN_RHO_SNOW_C=.False.
+export LM_NL_LANA_QI_C=.TRUE.
+export LM_NL_LAN_RHO_SNOW_C=.FALSE.
 export LM_NL_EXTPAR_C=extpar_12km_europe_771x771.nc # Coarse extpar file in /bin
 
 #Async NetCDF I/O
-export LM_NL_LASYNC_IO_C=.False.
-export LM_NL_LPREFETCH_C=.False.           # Needs async IO, uses one additional IO node
+export LM_NL_LASYNC_IO_C=.FALSE.
+export LM_NL_LPREFETCH_C=.FALSE.           # Needs async IO, uses one additional IO node
 export LM_NL_NUM_IOPE_PERCOMM_C=0         # 1 if async, 0 if sync I/0
 export LM_NL_ASYNIO_BLOCK_SIZE_C=10
 
@@ -182,8 +184,8 @@ export LM_NL_DT_F=20                         # Time Step
 export LM_NL_RDHEIGHT_F=13500
 export LM_NL_RLWIDTH_F=50000
 export LM_NL_NRDTAU_F=3
-export LM_NL_L_DIFF_SMAG_F=.True.
-export LM_NL_LDIFF_COLD_POOLS_F=.True.
+export LM_NL_L_DIFF_SMAG_F=.TRUE.
+export LM_NL_LDIFF_COLD_POOLS_F=.TRUE.
 export LM_NL_HD_CORR_U_BD_F=0.75
 export LM_NL_HD_CORR_T_BD_F=0.75
 export LM_NL_HD_CORR_P_BD_F=0.75
@@ -193,11 +195,10 @@ export LM_NL_HD_CORR_T_IN_F=0.0
 export LM_NL_HD_CORR_P_IN_F=0.0
 export LM_NL_HD_CORR_TRCR_IN_F=0.0
 
-
 #PHYCTL
 export LM_NL_ITYPE_GSCP_F=4
-export LM_NL_LCONV_F=.False.
-export LM_NL_LSSO_F=.False.
+export LM_NL_LCONV_F=.FALSE.
+export LM_NL_LSSO_F=.FALSE.
 export LM_NL_HINCRAD_F=0.25
 export LM_NL_ICO2_RAD_F=0
 export LM_NL_ITYPE_ALBEDO_F=2
@@ -214,12 +215,12 @@ export LM_NL_QC0_F=0.0002
 
 #GRIBIN
 export LM_NL_HINCBOUND_F=1.0              # Input frequency of boundary conditions
-export LM_NL_LANA_QI_F=.True.
-export LM_NL_LAN_RHO_SNOW_F=.False.
+export LM_NL_LANA_QI_F=.TRUE.
+export LM_NL_LAN_RHO_SNOW_F=.FALSE.
 export LM_NL_EXTPAR_F=extpar_2km_europe_2313x2313.nc
 
 #Async NetCDF I/O
-export LM_NL_LASYNC_IO_F=.True.
-export LM_NL_LPREFETCH_F=.True.           # Needs async IO, uses one additional IO node
+export LM_NL_LASYNC_IO_F=.TRUE.
+export LM_NL_LPREFETCH_F=.TRUE.           # Needs async IO, uses one additional IO node
 export LM_NL_NUM_IOPE_PERCOMM_F=1         # 1 if async, 0 if sync I/0
 export LM_NL_ASYNIO_BLOCK_SIZE_F=20

@@ -25,13 +25,8 @@ export CRAY_CUDA_MPS=1
 module load daint-gpu
 module load NCO
 
-#Loop over directories to compress
-for d in $LM_COMPRESS_DIRS; do
-  ./nczip -kv input/\${d}/l{?,??}fd\${LM_YYYY_BEGIN}*.nc 
-  tar --transform='s/.nz/.nc/' -cvf output/\$(dirname \$d)_\$(basename \$d)_\${LM_YYYY_BEGIN}.tar input/\$(dirname \$d)/\$(basename \$d)/*.nz
-  rm input/\$(dirname \$d)/\$(basename \$d)/*.nz
-done
-
+# Compress, archive and remove originals
+./pack_data.sh ${LM_BEGIN_DATE} ${LM_END_DATE} "${LM_COMPRESS_DIRS}"
 
 EOF_job
 
