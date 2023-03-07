@@ -123,8 +123,8 @@ diff_hours() {
     d2=$(date -d "$2" +%s)
     echo $(( ($d2 - $d1) / 3600 ))
 }
-export LM_NL_HSTART=$(diff_hours ${LM_INI_DATE} ${LM_BEGIN_DATE})
-export LM_NL_HSTOP=$(diff_hours ${LM_INI_DATE} ${LM_END_DATE})
+export LM_NL_HSTART=$(diff_hours "${LM_INI_DATE}" "${LM_BEGIN_DATE}")
+export LM_NL_HSTOP=$(diff_hours "${LM_INI_DATE}" "${LM_END_DATE}")
 
 export LM_NL_NSTART_C=$((LM_NL_HSTART*3600/LM_NL_DT_C))
 export LM_NL_NSTOP_C=$((LM_NL_HSTOP*3600/LM_NL_DT_C))
