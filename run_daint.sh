@@ -75,7 +75,7 @@ export LM_LM2LM_NODES=$(nodes ${NQS_NXLM2LM} ${NQS_NYLM2LM} ${NQS_NIOLM2LM} ${LM
 # ============
 # Convert dates to formats capable of handling addition of arbitrary time intervals
 export LM_INI_DATE=$(date -d "${LM_INI_DATE}" +%c)
-export LM_FIN_DATE=$(date -d "${LM_INI_DATE}" +%c)
+export LM_FIN_DATE=$(date -d "${LM_FIN_DATE}" +%c)
 
 # Startdate of current step
 # If set in 6_chain/run, keep the value
@@ -135,6 +135,7 @@ export LM_NL_NSTOP_F=$((LM_NL_HSTOP*3600/LM_NL_DT_F))
 
 # Submit jobs
 # ===========
+echo "submitting jobs for the priod from ${LM_BEGIN_DATE} to ${LM_END_DATE}"
 
 for part in ${SB_PARTS} ; do
     short=$(echo "${part}" | sed 's/^[0-9]*_//g')
