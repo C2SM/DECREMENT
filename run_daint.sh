@@ -12,7 +12,7 @@ source Default_namelists/lm_f_defaults.sh
 
 # Load user defined parameters
 # ============================
-# Load once here, just to have access to COSMO_TARGET
+# Load once here, just to have access to COSMO_TARGET in config
 
 if [ ! -f user_settings ]; then 
     echo "user_settings doesn't exist yet. Copying default file user_settings_example"
@@ -27,17 +27,6 @@ fi
 source user_settings
 
 
-# Daint specific settings
-# =======================
-
-export QUEUE="normal"
-export RUNCMD="srun"
-export CORES_PER_NODE=24
-export GPUS_PER_NODE=1
-[[ $COSMO_TARGET == "cpu" ]] && export LM_NTASKS_PER_NODE_COSMO=12 || export LM_NTASKS_PER_NODE_COSMO=1
-export LM_NTASKS_PER_NODE_INT2LM=12
-
-
 # Load simualtion config
 # ======================
 
@@ -50,6 +39,26 @@ source config
 # Source user settings again so that they take precedence over anything else
 # user_settings > config > Default_namelists/*
 source user_settings
+
+
+# Daint specific settings
+# =======================
+
+export QUEUE="normal"
+export RUNCMD="srun"
+export CORES_PER_NODE=24
+[[ $COSMO_TARGET == "cpu" ]] && export LM_NTASKS_PER_NODE_COSMO=12 || export LM_NTASKS_PER_NODE_COSMO=1
+export LM_NTASKS_PER_NODE_INT2LM=12
+
+
+# Architecture specific settings
+# ==============================
+export COSMO_TARGET="gpu"
+if [[ $COSMO_TARGET == "cpu" ]]; then
+    export LM_NL_LCPP_DYCORE=.False.
+else
+    export LM_NL_LCPP_DYCORE=.True.
+fi
 
 # Compute requested node numbers
 # ==============================
