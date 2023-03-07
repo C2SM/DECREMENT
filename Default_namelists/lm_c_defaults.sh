@@ -195,7 +195,7 @@ lm_c_INPUT_IO(){
   ymode_write = 'w  '
   nincwait = 10
   nmaxwait = 200
-  nhour_restart = $LM_NL_HSTOP, $LM_NL_HSTOP, 1
+  nhour_restart = 0, $LM_NL_HSTOP, $LM_NL_HSTOP
   ngribout = 4
   itype_gather = 2
   ydir_restart_in = 'output/restart'
