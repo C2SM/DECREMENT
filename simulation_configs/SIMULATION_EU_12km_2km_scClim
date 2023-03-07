@@ -1,0 +1,520 @@
+#!/bin/bash
+#Simulation setup of J. Vergara over Europe
+
+
+# ===================================================
+#                   GENERAL SETTINGS
+# ===================================================
+
+# Global Simulation Dates (YYYY-MM-DDTHH:00)
+export LM_INI_DATE="2011-01-01T00:00"
+export LM_FIN_DATE="2012-01-01T00:00"
+
+# Chaining interval
+export LM_CHAIN_INTERVAL=1month     #Current options: "1year", "1month", "1day".
+
+# Parts that will be executed. Same as folder names.
+export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f 5_pack_data 6_chain"
+
+# List of output folders to compress and pack (use spaces between the folders)
+export LM_COMPRESS_DIRS="lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev lm_f/1h_2D lm_f/24h lm_f/3h_3D_zlev"
+
+
+# ===================================================
+#                   NODES AND WALL TIME
+# ===================================================
+
+# 1_ifs2lm
+export NQS_NXIFS2LM=4               # number of CPUs in x direction (12 per node on daint-gpu)
+export NQS_NYIFS2LM=6               # number of CPUs in y direction
+export NQS_NIOIFS2LM=0              # number of CPUs for asyncronous IO
+export NQS_ELAPSED_IFS2LM=00:30:00  # maximum wall-clock time (HH:mm:ss)
+
+# 2_lm_c
+if [[ $COSMO_TARGET == "cpu" ]]; then
+    export NQS_NXLM_C=4             # number of CPUs in x direction (12 per node on daint-gpu)
+    export NQS_NYLM_C=3             # number of CPUs in y direction
+    export NQS_NIOLM_C=0            # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
+else
+    export NQS_NXLM_C=2             # number of CPUs in x direction (12 per node on daint-gpu)
+    export NQS_NYLM_C=2             # number of CPUs in y direction
+    export NQS_NIOLM_C=1            # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
+fi
+export NQS_ELAPSED_LM_C=24:00:00    # maximum wall-clock time (HH:mm:ss)
+
+## 3_lm2lm
+export NQS_NXLM2LM=8                # number of CPUs in x direction (12 per node on daint-gpu)
+export NQS_NYLM2LM=12               # number of CPUs in y direction
+export NQS_NIOLM2LM=0               # number of CPUs for asyncronous IO
+export NQS_ELAPSED_LM2LM=10:00:00   # maximum wall-clock time (HH:mm:ss)
+
+# 4_lm_f
+if [[ $COSMO_TARGET == "cpu" ]]; then
+    export NQS_NXLM_F=28            # number of NODEs in x direction
+    export NQS_NYLM_F=35            # number of NODEs in y direction
+    export NQS_NIOLM_F=4            # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
+else
+    export NQS_NXLM_F=10            # number of NODEs in x direction
+    export NQS_NYLM_F=10            # number of NODEs in y direction
+    export NQS_NIOLM_F=4            # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
+fi
+export NQS_ELAPSED_LM_F=24:00:00    # maximum wall-clock time (HH:mm:ss)
+
+# 5_pack_data
+export NQS_ELAPSED_COMPRESS=07:00:00    # maximum wall-clock time (HH:mm:ss)
+
+# ===================================================
+#                   CONFIGURE COSMO
+# ===================================================
+
+# BC grid
+# -----------
+
+# ERAInterim files
+#ln -sf run_ERAInt 0_get_data/run #Link correct copy script
+#export LM_NL_BC_DATA_PATH=/project/${ACCOUNT}/ERAinterim
+export LM_NL_POLPHIIFS=90.0
+export LM_NL_POLLAMIFS=180.0
+export LM_NL_IEIFS=544
+#export LM_NL_IEIFS=427
+export LM_NL_JEIFS=224
+export LM_NL_KEIFS=98
+#export LM_NL_KEIFS=108
+export LM_NL_DLAMIFS=0.28125
+export LM_NL_DPHIIFS=0.28125
+export LM_NL_PHILUIFS=19.25058 # startlat_in_tot
+export LM_NL_PHIROIFS=81.92025  # endlat_in_tot
+#export LM_NL_LAMLUIFS=-45.   #startlon_in_tot
+#export LM_NL_LAMROIFS=74.8125 #endlon_in_tot
+export LM_NL_LAMLUIFS=-68.90625
+export LM_NL_LAMROIFS=83.8125
+export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.945,
+export LM_NL_LUSE_T_SKIN=.TRUE.
+
+#COSMO Levels
+export LM_VCFLAT=11357.0
+export LM_VCOORD_D=23588.50,22395.93,21304.04,20307.39,19399.95,18574.03,17821.88,17135.64,16507.79,15930.60,15396.52,14897.86,14427.98,13981.10,13551.52,13133.53,12721.37,12312.04,11900.03,11485.37,11068.19,10648.54,10226.48,9802.09,9375.43,8946.58,8515.59,8082.55,7647.52,7210.55,6771.96,6332.38,5896.41,5468.04,5050.84,4647.96,4261.91,3893.26,3542.15,3208.52,2892.23,2593.71,2312.95,2049.75,1803.89,1575.57,1364.68,1170.90,993.84,833.44,689.53,561.52,448.82,350.95,267.55,197.67,137.23,87.33,48.44,20.00,0.00,
+
+# LM coarse
+# =========
+
+# Grid
+export LM_NL_POLLATLM_C=43.0                 # Latitude  of the North pole
+export LM_NL_POLLONLM_C=-170.0               # Longitude of the North pole
+export LM_NL_EXT_IE_C=771                    # Number of grid points (I: zonal, J: meridional)
+export LM_NL_EXT_JE_C=771                    # in your external parameter file (containing topology etc.)
+export LM_NL_IELM_C=361                      # Number of grid points (I: zonal, J: meridional)
+export LM_NL_JELM_C=361                      # and number of vertical levels
+export LM_NL_KELM_C=60                       # of the coarse grid
+export LM_NL_DLONLM_C=0.11                   # Delta longitude (in degrees)
+export LM_NL_DLATLM_C=0.11                   # Delta latitude  (in degrees)
+export LM_NL_STARTLON_TOT_C=-23.33           # Starting longitude left
+export LM_NL_STARTLAT_TOT_C=-19.36           # Starting latitude south (bottom-left corner of the coarse grid)
+# needs to be within the boundaries of the
+# ERA5/ERAinterim data above AND co-located with the extpar data
+
+
+#RUNCTL
+export LM_NL_DT_C=90                         # Time Step
+
+#DYNCTL
+export LM_NL_RDHEIGHT_C=13500
+export LM_NL_RLWIDTH_C=85000.0
+export LM_NL_NRDTAU_C=10
+export LM_NL_L_DIFF_SMAG_C=.TRUE.
+export LM_NL_LDIFF_COLD_POOLS_C=.FALSE.
+export LM_NL_HD_CORR_U_BD_C=0.75
+export LM_NL_HD_CORR_T_BD_C=0.75
+export LM_NL_HD_CORR_P_BD_C=0.75
+export LM_NL_HD_CORR_TRCR_BD_C=0.0
+export LM_NL_HD_CORR_U_IN_C=0.0
+export LM_NL_HD_CORR_T_IN_C=0.0
+export LM_NL_HD_CORR_P_IN_C=0.0
+export LM_NL_HD_CORR_TRCR_IN_C=0.0
+
+#PHYCTL
+export LM_NL_ITYPE_GSCP_C=4
+export LM_NL_LCONV_C=.TRUE.
+export LM_NL_LSSO_C=.TRUE.
+export LM_NL_HINCRAD_C=1.0
+export LM_NL_ICO2_RAD_C=0   # already done according Ruoyi's suggestion: 0 for events and 19 for climate
+export LM_NL_ITYPE_ALBEDO_C=3 #2
+export LM_NL_ITYPE_AEROSOL_C=2
+
+#TUNING
+export LM_NL_TKHMIN_C=0.4
+export LM_NL_TKMMIN_C=0.4
+export LM_NL_RLAM_HEAT_C=0.5249
+export LM_NL_TUR_LEN_C=500.0
+export LM_NL_V0SNOW_C=20.0
+export LM_NL_Q_CRIT_C=4.0
+export LM_NL_QC0_C=0.0
+
+#GRIBIN
+export LM_NL_HINCBOUND_C=3.0                # Input frequency of boundary conditions
+export LM_NL_LANA_QI_C=.TRUE.   # .FALSE. produces a segmentation fault (no idea about the reason)
+export LM_NL_LAN_RHO_SNOW_C=.FALSE.
+export LM_NL_EXTPAR_C=extpar_euro_12km_771x771.nc #extpar_12km_europe_771x771.nc # Coarse extpar file in /bin
+
+#Async NetCDF I/O
+export LM_NL_LASYNC_IO_C=.FALSE.
+export LM_NL_LPREFETCH_C=.FALSE.           # Needs async IO, uses one additional IO node
+export LM_NL_NUM_IOPE_PERCOMM_C=0         # 1 if async, 0 if sync I/0
+export LM_NL_ASYNIO_BLOCK_SIZE_C=10
+
+# Change output streams by redefining lm_c_INPUT_IO
+lm_c_INPUT_IO(){
+    cat >INPUT_IO << EONL
+ &IOCTL
+  ldwd_grib_use = .FALSE.
+  yform_read = 'ncdf'
+  l_ke_in_gds = .TRUE.
+  lasync_io = $LM_NL_LASYNC_IO_C
+  lprefetch_io = ${LM_NL_LPREFETCH_C:-.FALSE.}
+  ymode_read = 'r  '
+  ymode_write = 'w  '
+  nincwait = 10
+  nmaxwait = 200
+  nhour_restart = $LM_NL_HSTOP, $LM_NL_HSTOP, 1
+  ngribout = 4
+  itype_gather = 2
+  ydir_restart_in = 'output/restart'
+  ydir_restart_out = 'output/restart'
+  ytunit_restart = 'd'
+  lbdclim = .TRUE.
+  yncglob_title = "COSMO driven by ERA5"
+  yncglob_source = "COSMO_5.08"
+ /END
+
+ &DATABASE
+ /END
+
+ &GRIBIN
+  lbdana = .FALSE.
+  ydirini = 'input'
+  lchkini = .TRUE.
+  hincbound = $LM_NL_HINCBOUND_C
+  ydirbd = 'input'
+  lchkbd =.TRUE.
+  lana_qi = $LM_NL_LANA_QI_C
+  llb_qi = $LM_NL_LANA_QI_C
+  lana_qg = .FALSE.
+  llb_qg = .FALSE.
+  lana_qr_qs = .FALSE.
+  llb_qr_qs  = .FALSE.
+  lana_rho_snow = $LM_NL_LAN_RHO_SNOW_C
+  lan_lai = .TRUE.
+  lan_rootdp = .TRUE.
+  lan_vio3 = .TRUE.
+  lan_plcov = .TRUE.
+  lan_t_cl = .TRUE.
+  lan_w_cl = .TRUE.
+  lan_hmo3 = .TRUE.
+  lan_t_so0 = .TRUE.
+  lan_t_snow = .TRUE.
+  lan_w_snow = .TRUE.
+  lan_w_i = .TRUE.
+  lan_rho_snow = .TRUE.
+  lan_t_s = .FALSE.
+  ytunitbd = 'd'
+ /END
+
+ &GRIBOUT
+  yform_write = 'nc-4'
+  hcomb = 0.0, ${LM_NL_HSTOP}, 1
+  yvarml = 'U','V','W','T','PP',
+     'QV','QC', 'QS','QR','QI','QG',
+     'VIO3','HMO3',
+     'T_SNOW','QV_S','W_SNOW','W_I','T_S',
+     'T_SO','W_SO','RHO_SNOW','FRESHSNW'
+  yvarpl = ' '
+  yvarzl = ' '
+  lcheck = .FALSE.
+  luvmasspoint = .FALSE.
+  lwrite_const = .TRUE.
+  ydir = 'output/bc'
+  l_z_filter = .FALSE.
+  l_p_filter = .FALSE.
+  l_fi_pmsl_smooth = .FALSE.
+  ytunit = 'd'
+ /END
+
+ &GRIBOUT
+  yform_write = 'nc-4'
+  hcomb = 0.0, ${LM_NL_HSTOP}, 1
+  yvarml = 'U_10M', 'V_10M', 'T_2M', 'RELHUM_2M', 'PS', 'QV_2M',
+           'ALHFL_S', 'ASHFL_S', 'AUMFL_S', 'AVMFL_S', 'CAPE_ML',
+           'CIN_ML', 'CLCH', 'CLCM', 'CLCL', 'TOT_PREC',
+           'TQC', 'TQI','TQR','TQV','TQG','TQS',
+           'ASOB_T', 'ASOD_T',  'ATHB_T', 'ASOBC_T', 'ATHBC_T',
+           'ASOB_S', 'ASWDIFD_S','ASWDIR_S', 'ASWDIFU_S', 'ATHB_S', 'ATHD_S',
+           'ASOBC_S', 'ATHBC_S'
+  yvarpl = ' '
+  yvarzl = ' '
+  ireset_sums = 2
+  lcheck = .TRUE.
+  luvmasspoint = .TRUE.
+  lwrite_const = .FALSE.
+  ydir = 'output/1h_2D'
+  l_z_filter = .FALSE.
+  l_p_filter = .FALSE.
+  l_fi_pmsl_smooth = .FALSE.
+  ytunit = 'd'
+ /END
+
+ &GRIBOUT
+  yform_write = 'nc-4'
+  hcomb = 0.0, ${LM_NL_HSTOP}, 3
+  yvarml = ' '
+  yvarpl = ' ',
+  yvarzl = 'U', 'V', 'W', 'T', 'P', 'QV', 'QC', 'QI'
+  zlev = 100, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000,
+         2300, 2600, 2900, 3200, 3500, 4000, 4500,
+         5000, 6000, 7000, 8000, 9000, 10000
+  lcheck = .FALSE.
+  luvmasspoint = .TRUE.
+  lwrite_const = .FALSE.
+  ydir = 'output/3h_3D_zlev'
+  l_z_filter = .FALSE.
+  l_p_filter = .FALSE.
+  l_fi_pmsl_smooth = .FALSE.
+  ytunit = 'd'
+ /END
+
+ &GRIBOUT
+  yform_write = 'nc-4'
+  hcomb = 0.0, ${LM_NL_HSTOP}, 24
+  yvarml = 'VMAX_10M', 'W_SO', 'TMIN_2M', 'TMAX_2M', 'RUNOFF_S', 'RUNOFF_G',
+  yvarpl = ' '
+  yvarzl = ' '
+  ireset_winds = 2
+  ireset_temps = 2
+  lcheck = .FALSE.
+  luvmasspoint = .TRUE.
+  lwrite_const = .FALSE.
+  ydir = 'output/24h'
+  l_z_filter = .FALSE.
+  l_p_filter = .FALSE.
+  l_fi_pmsl_smooth = .FALSE.
+  ytunit = 'd'
+ /END
+EONL
+}
+export -f lm_c_INPUT_IO
+
+
+# LM fine 
+# =======
+
+# Grid
+export LM_NL_POLLATLM_F=43.0        # Latitude  of the North pole
+export LM_NL_POLLONLM_F=-170.0      # Longitude of the North pole
+export LM_NL_EXT_IE_F=2313          # Number of grid points (I: zonal, J: meridional)
+export LM_NL_EXT_JE_F=2313          # in your external parameter file (containing topology etc.)
+export LM_NL_IELM_F=1542            # Number of grid points (I: zonal, J: meridional)
+export LM_NL_JELM_F=1542            # and number of vertical levels
+export LM_NL_KELM_F=60              # of the fine grid
+export LM_NL_DLONLM_F=0.02          # Delta longitude (in degrees)
+export LM_NL_DLATLM_F=0.02          # Delta latitude  (in degrees)
+export LM_NL_STARTLON_TOT_F=-18.86  # Starting longitude left
+export LM_NL_STARTLAT_TOT_F=-14.86  # Starting latitude south (bottom-left corner of the fine grid)
+
+#RUNCTL
+export LM_NL_DT_F=20                         # Time Step
+
+#DYNCTL
+export LM_NL_RDHEIGHT_F=13500
+export LM_NL_RLWIDTH_F=50000
+export LM_NL_NRDTAU_F=3
+export LM_NL_L_DIFF_SMAG_F=.TRUE.
+export LM_NL_LDIFF_COLD_POOLS_F=.FALSE.
+export LM_NL_HD_CORR_U_BD_F=0.75
+export LM_NL_HD_CORR_T_BD_F=0.75
+export LM_NL_HD_CORR_P_BD_F=0.75
+export LM_NL_HD_CORR_TRCR_BD_F=0.0
+export LM_NL_HD_CORR_U_IN_F=0.0
+export LM_NL_HD_CORR_T_IN_F=0.0
+export LM_NL_HD_CORR_P_IN_F=0.0
+export LM_NL_HD_CORR_TRCR_IN_F=0.0
+
+#PHYCTL
+export LM_NL_ITYPE_GSCP_F=4
+export LM_NL_LCONV_F=.FALSE.
+export LM_NL_LSSO_F=.FALSE.
+export LM_NL_HINCRAD_F=0.25
+export LM_NL_ICO2_RAD_F=0   # already done according Ruoyi's suggestion: 0 for events and 19 for climate
+export LM_NL_ITYPE_ALBEDO_F=3
+export LM_NL_ITYPE_AEROSOL_F=2
+
+#TUNING
+export LM_NL_TKHMIN_F=0.4
+export LM_NL_TKMMIN_F=0.4
+export LM_NL_RLAM_HEAT_F=0.5249
+export LM_NL_TUR_LEN_F=150.0
+export LM_NL_V0SNOW_F=20.0
+export LM_NL_Q_CRIT_F=1.6
+export LM_NL_QC0_F=0.0002
+
+#GRIBIN
+export LM_NL_HINCBOUND_F=1.0              # Input frequency of boundary conditions
+export LM_NL_LANA_QI_F=.TRUE.
+export LM_NL_LAN_RHO_SNOW_F=.FALSE.
+export LM_NL_EXTPAR_F=extpar_euro_2km_2313x2313_with_old_nots.nc #extpar_euro_2km_2313x2313.nc
+
+#Async NetCDF I/O
+export LM_NL_LASYNC_IO_F=.TRUE.
+export LM_NL_LPREFETCH_F=.FALSE.           # Needs async IO, uses one additional IO node
+export LM_NL_NUM_IOPE_PERCOMM_F=1         # 1 if async, 0 if sync I/0
+export LM_NL_ASYNIO_BLOCK_SIZE_F=20
+
+# # Change output streams by redefining lm_f_INPUT_IO
+lm_f_INPUT_IO(){
+    cat > INPUT_IO << EONL
+ &IOCTL
+  ldwd_grib_use = .FALSE.
+  yform_read = 'ncdf'
+  l_ke_in_gds = .TRUE.
+  lasync_io = $LM_NL_LASYNC_IO_F
+  lprefetch_io = ${LM_NL_LPREFETCH_F:-.FALSE.}
+  ymode_read = 'r  '
+  ymode_write = 'w  '
+  nincwait = 10
+  nmaxwait = 200
+  nhour_restart = $LM_NL_HSTOP, $LM_NL_HSTOP, 1
+  ngribout = 5
+  itype_gather = 2
+  ydir_restart_in = 'output/restart'
+  ydir_restart_out = 'output/restart'
+  ytunit_restart = 'd'
+  lbdclim = .TRUE.
+  yncglob_title = "COSMO driven by 4 km COSMO"
+  yncglob_source = "COSMO_5.08"
+ /END
+
+ &DATABASE
+ /END
+
+ &GRIBIN
+  lbdana = .FALSE.
+  ydirini = 'input'
+  lchkini = .TRUE.
+  hincbound = $LM_NL_HINCBOUND_F
+  ydirbd = 'input'
+  lchkbd = .FALSE.
+  lana_qi = $LM_NL_LANA_QI_F
+  llb_qi = $LM_NL_LANA_QI_F
+  lana_qg = .FALSE.
+  llb_qg = .FALSE.
+  lana_qr_qs = .FALSE.
+  llb_qr_qs = .FALSE.
+  lana_rho_snow = $LM_NL_LAN_RHO_SNOW_F
+  lan_lai = .TRUE.
+  lan_rootdp = .TRUE.
+  lan_vio3 = .TRUE.
+  lan_plcov = .TRUE.
+  lan_t_cl = .TRUE.
+  lan_w_cl = .TRUE.
+  lan_hmo3 = .TRUE.
+  lan_t_so0 = .TRUE.
+  lan_t_snow = .TRUE.
+  lan_w_snow = .TRUE.
+  lan_w_i = .TRUE.
+  lan_rho_snow = .TRUE.
+  lan_t_s = .FALSE.
+  ytunitbd = 'd'
+ /END
+
+ &GRIBOUT
+  yform_write = 'nc-4'
+  hcomb = 0.0, ${LM_NL_HSTOP}, 1.0
+  yvarml = 'U_10M', 'V_10M', 'VMAX_10M',
+           'T_2M', 'TD_2M', 'RELHUM_2M', 'QV_2M','RUNOFF_S', 'RUNOFF_G',
+           'ALHFL_S', 'ASHFL_S', 'AUMFL_S', 'AVMFL_S', 'PS', 'PMSL',
+           'CAPE_ML', 'CIN_ML', 'CLCH', 'CLCM', 'CLCL', 'CLCT', 'LFC_ML','LCL_ML',
+           'TQV', 'TQC', 'TQI','TQR','TQG','TQS',
+           'ASOB_T' , 'ASOD_T'   , 'ATHB_T'  , 'ASOBC_T',           
+           'ASOB_S' , 'ASWDIFD_S', 'ASWDIR_S', 'ASWDIFU_S', 'ATHB_S', 'ATHD_S',
+           'ASOBC_S', 'ATHU_S'   , 'ATHBC_S' , 'ALB_RAD', 'HPBL', 'HZEROCL'
+  yvarpl = ' '
+  yvarzl = ' '
+  ireset_sums = 2
+  lcheck = .TRUE.
+  luvmasspoint = .TRUE.
+  lwrite_const = .TRUE.
+  ydir = 'output/1h_2D'
+  l_z_filter = .FALSE.
+  l_p_filter = .FALSE.
+  l_fi_pmsl_smooth = .FALSE.
+  ytunit = 'd'
+ /END
+
+ &GRIBOUT
+  yform_write = 'nc-4'
+  hcomb = 0.0, ${LM_NL_HSTOP}, 1.0
+  yvarml = 'LPI_MAX', 'W_CTMAX'
+  yvarpl = ' '
+  yvarzl = ' '
+  lcheck = .TRUE.
+  luvmasspoint = .FALSE.
+  lwrite_const = .FALSE.
+  ydir = 'output/1h_2D_LPI'
+  l_z_filter = .FALSE.
+  l_p_filter = .FALSE.
+  l_fi_pmsl_smooth = .FALSE.
+  ytunit = 'd'
+ /END
+
+ &GRIBOUT
+  yform_write = 'nc-4'
+  hcomb = 0.0, ${LM_NL_HSTOP}, 24.0
+  yvarml = 'T_SO', 'W_SO', 'W_SNOW', 'H_SNOW', 'TMIN_2M', 'TMAX_2M', 'VABSMX_10M'
+  yvarpl = ' '
+  yvarzl = ' '
+  ireset_winds = 2
+  ireset_temps = 2
+  lcheck = .FALSE.
+  luvmasspoint = .TRUE.
+  lwrite_const = .FALSE.
+  ydir = 'output/24h'
+  l_z_filter = .FALSE.
+  l_p_filter = .FALSE.
+  l_fi_pmsl_smooth = .FALSE.
+  ytunit = 'd'
+ /END
+
+ &GRIBOUT
+  yform_write = 'nc-4'
+  hcomb = 0.0, ${LM_NL_HSTOP}, 1.0
+  yvarml = ' '
+  yvarpl = 'P', 'T', 'FI', 'RELHUM', 'U', 'V', 'W'
+  yvarzl = ' '
+  plev = 200, 300, 400, 500, 600, 700, 850, 925, 1000
+  lcheck = .TRUE.
+  luvmasspoint = .TRUE.
+  lwrite_const = .FALSE.
+  ydir = 'output/1h_3D_plev'
+  l_z_filter = .FALSE.
+  l_p_filter = .FALSE.
+  l_fi_pmsl_smooth = .FALSE.
+  ytunit = 'd'
+ /END
+
+ &GRIBOUT
+  yform_write = 'nc-4'
+  ncomb = ${LM_NL_NSTART_F}, ${LM_NL_NSTOP_F}, 15
+  yvarml = 'TOT_PREC','TOT_SNOW', 'DHAIL_MX'
+  yvarpl = ' '
+  yvarzl = ' '
+  ireset_sums = 2
+  lcheck = .TRUE.
+  luvmasspoint = .FALSE.
+  lwrite_const = .FALSE.
+  ydir = 'output/5min_2D'
+  l_z_filter = .FALSE.
+  l_p_filter = .FALSE.
+  l_fi_pmsl_smooth = .FALSE.
+  ytunit = 'd'
+ /END
+EONL
+}
+export -f lm_f_INPUT_IO
