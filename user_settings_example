@@ -10,11 +10,6 @@
 
 # COSMO target architecture
 export COSMO_TARGET="gpu"
-if [[ $COSMO_TARGET == "cpu" ]]; then
-    export LM_NL_LCPP_DYCORE=.False.
-else
-    export LM_NL_LCPP_DYCORE=.True.
-fi
 
 # Scheduler account
 export ACCOUNT="pr133"
@@ -23,20 +18,24 @@ export ACCOUNT="pr133"
 export EXE_INT2LM="./int2lm"
 export EXE_COSMO="./cosmo"
 
-# Will environemt using "spack load" commans.
+# Will environemt using "spack load" commands.
 export LM_INT2LM_SPEC="int2lm@c2sm-master%nvhpc"
-export LM_COSMO_SPEC="cosmo@c2sm-features%nvhpc cosmo_target=gpu real_type=double +cppdycore ~oasis"
+export LM_COSMO_SPEC="cosmo@c2sm-features%nvhpc cosmo_target=gpu real_type=double +cppdycore"
+
+# # spack environment dumped to file. Takes precedence over spack specs above
+# # generate them this way:
+# # spack load --sh int2lm@c2sm-master%nvhpc > env_int2lm.sh
+# # spack load --sh cosmo@c2sm-features%nvhpc cosmo_target=gpu +cppdycore > env_cosmo.sh
+# export LM_INT2LM_ENV="env_int2lm.sh"
+# export LM_COSMO_ENV="env_cosmo.sh"
 
 # Global Simulation Dates (YYYY-MM-DDTHH:00)
-# export LM_INI_DATE="2011-01-01T00:00"   # Initial date of simualtion
-# if [ -z $LM_BEGIN_DATE ]; then #if needed so LM_BEGIN_DATE set in 6_chain does not get overwritten
-# export LM_BEGIN_DATE="2011-01-01T00:00" # Startdate of the current step
-#                                         # use if you dont want to start a step from the initdate
-# fi
-# export LM_FIN_DATE="2011-01-03T00:00"   # Overall end of simulation
+export LM_INI_DATE="2011-01-01T00:00"   # Initial date of simualtion
+export LM_START_DATE="2011-01-01T00:00"   # use if you don't want to start from LM_INI_DATE
+export LM_FIN_DATE="2011-01-03T00:00"   # Overall end of simulation
 
 # Chaining interval, i.e., how long one simualtion step will be. If unset, run in one chunk
-# export LM_CHAIN_INTERVAL=1day     #Current options: "1year", "1month", "1day".
+# export LM_CHAIN_INTERVAL=1day # Anything human readable like "2 hours", "1 month", ...
 
 # enable retries
 export LM_RETRIES="True"
