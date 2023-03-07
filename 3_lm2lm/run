@@ -54,12 +54,12 @@ ${RUNCMD} -u ${EXE_INT2LM}
 module load NCO
 cd output
 for laf_file in laf*.nc ; do
-    ncdump -h ${laf_file} | grep -q S_ORO_MAX
-    if [[ $? != 0 ]]; then
+    ncdump -h \${laf_file} | grep -q S_ORO_MAX
+    if [[ \$? != 0 ]]; then
         echo "S_ORO_MAX not in ${laf_file}, copying S_ORO as S_ORO_MAX"
-        ncks -O -v S_ORO ${laf_file} tmp.nc
+        ncks -O -v S_ORO \${laf_file} tmp.nc
         ncrename -v S_ORO,S_ORO_MAX tmp.nc
-        ncks -A -v S_ORO_MAX tmp.nc ${laf_file}
+        ncks -A -v S_ORO_MAX tmp.nc \${laf_file}
     fi
 done
 rm tmp.nc
