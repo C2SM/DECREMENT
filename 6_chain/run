@@ -9,7 +9,19 @@
 #fi
 ./clean
 
-# setup job
+
+# Check if we are done
+# --------------------
+if (( $(date -d "$LM_END_DATE" +%s) >= $(date -d "$LM_FIN_DATE" +%s) )); then
+    echo "End of the simulation"
+    exit 0
+fi
+
+# Swap dates
+# ----------
+export LM_BEGIN_DATE=${LM_END_DATE}
+
+# Setup job
 # ---------
 cat > job <<EOF_job
 #!/bin/bash -l
@@ -21,21 +33,11 @@ cat > job <<EOF_job
 #SBATCH --partition=normal
 #SBATCH --account=${ACCOUNT}
 
-#Check if we are done. If yes, exit
-sEndDate=\$(date -d \${LM_END_DATE} +%s)
-sFinDate=\$(date -d \${LM_FIN_DATE} +%s)
-if [ \$sEndDate -ge \$sFinDate ] ; then
-  echo "done"
-  exit 0 
-fi
-
-# Swap dates
-export LM_BEGIN_DATE=\${LM_END_DATE}
 cd ..
 ./run_daint.sh
 EOF_job
 
-# submit job
+# Submit job
 # ----------
 [[ -n "$1" ]] && dep="--dependency=afterok:${1}" || dep=""
 jobid=$(sbatch --parsable -C gpu ${dep} job)
