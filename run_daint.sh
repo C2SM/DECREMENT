@@ -1,19 +1,17 @@
 #!/bin/bash
 
-
-# Load default namelist definitions
-# =================================
-
+# Load defaults
+# =============
+source tools.sh
+source defaults.sh
 source Default_namelists/ifs2lm_defaults.sh
 source Default_namelists/lm_c_defaults.sh 
 source Default_namelists/lm2lm_defaults.sh 
 source Default_namelists/lm_f_defaults.sh
 
-
 # Load user defined parameters
 # ============================
 # Load once here, just to have access to COSMO_TARGET in config
-
 if [ ! -f user_settings ]; then 
     echo "user_settings doesn't exist yet. Copying default file user_settings_example"
     cp user_settings_example user_settings
@@ -29,13 +27,11 @@ source user_settings
 
 # Load simualtion config
 # ======================
-
 source config
 
 
 # Reload user settings
 # ====================
-
 # Source user settings again so that they take precedence over anything else
 # user_settings > config > Default_namelists/*
 source user_settings
@@ -43,7 +39,6 @@ source user_settings
 
 # Daint specific settings
 # =======================
-
 export QUEUE="normal"
 export RUNCMD="srun"
 export CORES_PER_NODE=24
@@ -53,11 +48,30 @@ export LM_NTASKS_PER_NODE_INT2LM=12
 
 # Architecture specific settings
 # ==============================
-export COSMO_TARGET="gpu"
 if [[ $COSMO_TARGET == "cpu" ]]; then
     export LM_NL_LCPP_DYCORE=.False.
 else
     export LM_NL_LCPP_DYCORE=.True.
+fi
+
+# Async IO settings
+# =================
+if (( ${NQS_NIOLM_C} > 0 )); then
+    export LM_NL_LASYNC_IO_C=.TRUE.
+    export LM_NL_NUM_IOPE_PERCOMM_C=1
+else
+    export LM_NL_LASYNC_IO_C=.FALSE.
+    export LM_NL_NUM_IOPE_PERCOMM_C=0
+    export LM_NL_LPREFETCH_C=.FALSE.
+fi
+
+if (( ${NQS_NIOLM_F} > 0 )); then
+    export LM_NL_LASYNC_IO_F=.TRUE.
+    export LM_NL_NUM_IOPE_PERCOMM_F=1
+else
+    export LM_NL_LASYNC_IO_F=.FALSE.
+    export LM_NL_NUM_IOPE_PERCOMM_F=0
+    export LM_NL_LPREFETCH_F=.FALSE.
 fi
 
 # Compute requested node numbers
@@ -132,28 +146,28 @@ export LM_NL_NSTOP_C=$((LM_NL_HSTOP*3600/LM_NL_DT_C))
 export LM_NL_NSTART_F=$((LM_NL_HSTART*3600/LM_NL_DT_F))
 export LM_NL_NSTOP_F=$((LM_NL_HSTOP*3600/LM_NL_DT_F))
 
+# Dates for filenames
+export LM_BEGIN_DATE_FR=$(date -d "${LM_BEGIN_DATE}" +%FT%R)
+export LM_END_DATE_FR=$(date -d "${LM_END_DATE}" +%FT%R)
+
 
 # Submit jobs
 # ===========
-echo "submitting jobs for the priod from ${LM_BEGIN_DATE} to ${LM_END_DATE}"
+echo "submitting jobs for the priod from ${LM_BEGIN_DATE_FR} to ${LM_END_DATE_FR}"
 
 for part in ${SB_PARTS} ; do
-    short=$(echo "${part}" | sed 's/^[0-9]*_//g')
-    echo "launching ${short}"
-    mkdir -p output/${short}
-
-    cd ${part}
-    
-    # Ensemble execution
-    if [ "${part}" = "2_lm_c" ] && [ ! -z $LM_NL_ENS_NUMBER_C ]; then
-        echo "running ${short} in ensemble mode with ${LM_NL_ENS_NUMBER_C} realizations"
-        jobid=$(./run_ensemble ${jobid})
-        cd - 1>/dev/null 2>/dev/null
-        continue
+    if [[ ${part} == "6_chain" ]]; then
+        # Check if we are done
+        if (( $(date -d "$LM_END_DATE" +%s) >= $(date -d "$LM_FIN_DATE" +%s) )); then
+            echo "End of the simulation"
+            continue
+        else
+            # Swap dates
+            export LM_BEGIN_DATE=${LM_END_DATE}
+            # submit next chunk
+            submit 6_chain
+        fi
+    else
+        submit $part
     fi
-
-    # Normal execution
-    jobid=$(./run ${jobid})
-    
-    cd - 1>/dev/null 2>/dev/null
 done

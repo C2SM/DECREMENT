@@ -1,31 +1,9 @@
 #!/bin/bash
 
-# cleanup
-# -------
-if [ -f .jobid ]; then
-    $(squeue -j `cat .jobid` &>/dev/null) && scancel `cat .jobid`
-    sleep 3
-    \rm .jobid 2>/dev/null
-fi
-./clean
-
-# write namelists
-# ---------------
-lm_f_INPUT_ORG
-lm_f_INPUT_DYN
-lm_f_INPUT_PHY
-lm_f_INPUT_IO
-lm_f_INPUT_DIA
-lm_f_INPUT_INI
-lm_f_INPUT_SAT
-lm_f_INPUT_ASS
-
-# setup job
-# ---------
 cat > job <<EOF_job
 #!/bin/bash
 #SBATCH --job-name=lm_f
-#SBATCH --output=job.out
+#SBATCH --output=job_${LM_BEGIN_DATE_FR}_${LM_END_DATE_FR}.out
 #SBATCH --nodes=${LM_COSMO_NODES_F}
 #SBATCH --ntasks-per-node=${LM_NTASKS_PER_NODE_COSMO}
 #SBATCH --partition=${QUEUE}
@@ -35,6 +13,9 @@ cat > job <<EOF_job
 # Initialization
 set verbose
 set echo
+
+# clean
+./clean
 
 # Set this to avoid segmentation faults
 ulimit -s unlimited
@@ -57,8 +38,27 @@ EOF_job
 fi
 
 cat >> job <<EOF_job
+# load spack environment
+if [[ -n "\${LM_COSMO_ENV}" ]]; then
+    source ../\${LM_COSMO_ENV}
+elif [[ -n "\${LM_COSMO_SPEC}" ]]; then
+    spack load \${LM_COSMO_SPEC}
+fi
 # echo date
 date
+
+# write namelists
+lm_f_INPUT_ORG
+lm_f_INPUT_DYN
+lm_f_INPUT_PHY
+lm_f_INPUT_IO
+lm_f_INPUT_DIA
+lm_f_INPUT_INI
+lm_f_INPUT_SAT
+lm_f_INPUT_ASS
+
+# create ydir directories
+mkydirs INPUT_IO
 
 # Run LM in case directory
 ${RUNCMD} -u ${EXE_COSMO}
@@ -68,40 +68,4 @@ date
 
 #Print accounting file
 sacct -j \$SLURM_JOB_ID --format=User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPUFreq
-
-\rm -f .jobid >&/dev/null
-
-# Retry if failed
-if [[ "\${LM_RETRIES}" == "True" ]]; then
-  if grep -q 'CLEAN UP' job.out; then
-    \rm -f .retry >&/dev/null
-  else
-    if [ -f .retry ]; then exit 1; fi
-    touch .retry
-    cd .. 
-    ./run_daint.sh
-    exit 1
-  fi
-fi
-
 EOF_job
-
-# load spack environment
-# ----------------------
-if [[ -n "${LM_COSMO_ENV}" ]]; then
-    source ../${LM_COSMO_ENV}
-elif [[ -n "${LM_COSMO_SPEC}" ]]; then
-    spack load ${LM_COSMO_SPEC}
-fi
-
-# submit job
-# ----------
-[[ -n "$1" ]] && dep="--dependency=afterok:${1}" || dep=""
-jobid=$(sbatch --parsable -C gpu ${dep} job)
-
-if [[ ($? == 0) && (-n "${jobid}") ]]; then
-    echo "${jobid}" > .jobid
-    echo "${jobid}"
-else
-    exit 1
-fi

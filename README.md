@@ -22,9 +22,6 @@ You can run the `2_lm_c` step in perturbed-intial-conditions ensemble mode. To t
 ## Chain
 If a simulation does not complete within 24h, you can split it up into smaller chucks and submit them one after the other. To this end, set the `*_INI` and `*_FINISHED` variables to the values of the entire simulation period. The corresponding `*_BEGIN`and `_END` variables are used for the current step and changed by the chain functionality.
 
-## Retry
-There is a mechanism that resubmits the entire simulation step, if int2lm or cosmo have failed., i.e. `./run_daint.sh` is called again. In that case an empty file `.retry` is written in the directory of the part that failed. 
-
 ## Cleanup
 Each directory contains a cleaning script `./clean`. To clean the entire package  run `./distclean.sh`
 

@@ -1,13 +1,5 @@
 #!/bin/bash
 
-# cleanup
-if [ -f .jobid ]; then
-  $(squeue -j `cat .jobid` &>/dev/null) && scancel `cat .jobid`
-  sleep 3
-  \rm .jobid 2>/dev/null
-fi
-./clean
-
 cat > job <<EOF_job
 #!/bin/bash
 #SBATCH --job-name=compress
@@ -29,15 +21,3 @@ module load NCO
 ./pack_data.sh ${LM_BEGIN_DATE} ${LM_END_DATE} "${LM_COMPRESS_DIRS}"
 
 EOF_job
-
-
-# submit job
-[[ -n "$1" ]] && dep="--dependency=afterok:${1}" || dep=""
-jobid=$(sbatch --parsable -C gpu ${dep} job)
-
-if [[ ($? == 0) && (-n "${jobid}") ]]; then
-  echo "${jobid}" > .jobid
-  echo "${jobid}"
-else
-  exit 1
-fi

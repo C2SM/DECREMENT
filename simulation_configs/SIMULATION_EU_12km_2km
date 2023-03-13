@@ -154,10 +154,7 @@ export LM_NL_LAN_RHO_SNOW_C=.FALSE.
 export LM_NL_EXTPAR_C=extpar_12km_europe_771x771.nc # Coarse extpar file in /bin
 
 #Async NetCDF I/O
-export LM_NL_LASYNC_IO_C=.FALSE.
-export LM_NL_LPREFETCH_C=.FALSE.           # Needs async IO, uses one additional IO node
-export LM_NL_NUM_IOPE_PERCOMM_C=0         # 1 if async, 0 if sync I/0
-export LM_NL_ASYNIO_BLOCK_SIZE_C=10
+export LM_NL_LPREFETCH_C=.FALSE.           # Needs async IO, i.e. NQS_NIOLM_C > 0
 
 
 # LM fine 
@@ -220,7 +217,5 @@ export LM_NL_LAN_RHO_SNOW_F=.FALSE.
 export LM_NL_EXTPAR_F=extpar_2km_europe_2313x2313.nc
 
 #Async NetCDF I/O
-export LM_NL_LASYNC_IO_F=.TRUE.
-export LM_NL_LPREFETCH_F=.TRUE.           # Needs async IO, uses one additional IO node
-export LM_NL_NUM_IOPE_PERCOMM_F=1         # 1 if async, 0 if sync I/0
+export LM_NL_LPREFETCH_F=.TRUE.           # Needs async IO, i.e. NQS_NIOLM_F > 0
 export LM_NL_ASYNIO_BLOCK_SIZE_F=20
