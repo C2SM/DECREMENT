@@ -156,5 +156,5 @@ export LM_END_DATE_FR=$(date -d "${LM_END_DATE}" +%FT%R)
 echo "submitting jobs for the priod from ${LM_BEGIN_DATE_FR} to ${LM_END_DATE_FR}"
 
 for part in ${SB_PARTS} ; do
-    submit $part
+    submit ${part}
 done
