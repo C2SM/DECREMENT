@@ -1,4 +1,4 @@
 #!/bin/bash
 
-\rm -rf job* INPUT OUTPUT YU* core.* .jobid
+\rm -rf INPUT OUTPUT YU* core.* .jobid
 

@@ -11,6 +11,9 @@ cat > job <<EOF_job
 #SBATCH --time=${NQS_ELAPSED_COMPRESS}
 #SBATCH --account=${ACCOUNT}
 
+#Check if output folder exists
+mkdir -p $(readlink output)
+
 # Load modules
 export OMP_NUM_THREADS=$CORES_PER_NODE
 export CRAY_CUDA_MPS=1

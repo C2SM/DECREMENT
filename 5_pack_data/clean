@@ -1,7 +1,5 @@
 #!/bin/bash
 
-\rm -rf core* job* .jobid
+\rm -rf core* .jobid
 
-#Check if output folder exists
-mkdir -p $(readlink output)
 
