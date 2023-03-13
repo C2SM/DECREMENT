@@ -156,18 +156,5 @@ export LM_END_DATE_FR=$(date -d "${LM_END_DATE}" +%FT%R)
 echo "submitting jobs for the priod from ${LM_BEGIN_DATE_FR} to ${LM_END_DATE_FR}"
 
 for part in ${SB_PARTS} ; do
-    if [[ ${part} == "6_chain" ]]; then
-        # Check if we are done
-        if (( $(date -d "$LM_END_DATE" +%s) >= $(date -d "$LM_FIN_DATE" +%s) )); then
-            echo "End of the simulation"
-            continue
-        else
-            # Swap dates
-            export LM_BEGIN_DATE=${LM_END_DATE}
-            # submit next chunk
-            submit 6_chain
-        fi
-    else
-        submit $part
-    fi
+    submit $part
 done

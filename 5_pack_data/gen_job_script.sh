@@ -2,8 +2,8 @@
 
 cat > job <<EOF_job
 #!/bin/bash
-#SBATCH --job-name=compress
-#SBATCH --output=job.out
+#SBATCH --job-name=pack_data
+#SBATCH --output=job_${LM_BEGIN_DATE_FR}_${LM_END_DATE_FR}.out
 #SBATCH --nodes=1
 #SBATCH --cpus-per-task=12
 #SBATCH --ntasks=1
