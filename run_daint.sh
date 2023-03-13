@@ -91,19 +91,21 @@ export LM_LM2LM_NODES=$(nodes ${NQS_NXLM2LM} ${NQS_NYLM2LM} ${NQS_NIOLM2LM} ${LM
 export LM_INI_DATE=$(date -d "${LM_INI_DATE}" +%c)
 export LM_FIN_DATE=$(date -d "${LM_FIN_DATE}" +%c)
 
-# Startdate of current step
-# If set in 6_chain/run, keep the value
-# otherwise if LM_START_DATE is set in user_settings, use that date
-# else start from absolute initial date LM_INI_DATE
-if [[ -z ${LM_BEGIN_DATE} ]]; then
-    if [[ -n ${LM_START_DATE} ]]; then
-        export LM_BEGIN_DATE=$(date -d "${LM_START_DATE}" +%c)
-    else
-        export LM_BEGIN_DATE=${LM_INI_DATE}
-    fi
+# Start date of the simulation (not the chunk)
+# If not set by the user, set it to the LM_INI_DATE
+if [[ -z ${LM_START_DATE} ]]; then
+    export LM_START_DATE=${LM_INI_DATE}
+else
+    export LM_START_DATE=$(date -d "${LM_START_DATE}" +%c)
 fi
 
-# Enddate of current step
+# Begin date of current step
+# If set in 6_chain, keep the value, otherwise, use LM_START_DATE
+if [[ -z ${LM_BEGIN_DATE} ]]; then
+    export LM_BEGIN_DATE=$(date -d "${LM_START_DATE}" +%c)
+fi
+
+# End date of current step
 if [[ -z "${LM_CHAIN_INTERVAL}" ]]; then
     export LM_END_DATE=${LM_FIN_DATE}
 else

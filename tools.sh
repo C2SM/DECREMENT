@@ -87,7 +87,7 @@ submit(){
             ln -sf ../cosmo
 
             # generate job script
-            ./gen_job_script.sh
+            [[ ${LM_BEGIN_DATE} == ${LM_START_DATE} ]] && ./gen_job_script.sh
 
             # Submit job and get job id
             jobid=$(sbatch --parsable -C gpu ${dep_str} job)
@@ -106,7 +106,7 @@ submit(){
         # Normal execution
         # ----------------
         # generate job script
-        ./gen_job_script.sh
+        [[ ${LM_BEGIN_DATE} == ${LM_START_DATE} ]] && ./gen_job_script.sh
         
         # Submit job and get job id
         jobid=$(sbatch --parsable -C gpu ${dep_str} job)
