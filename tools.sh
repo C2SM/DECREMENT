@@ -60,7 +60,7 @@ submit(){
     
     # Get dependencies ids
     dep_str=$(gen_slurm_dependencies ${short})
-    echo "launching ${short} with the following dependencies: {dep_str}"
+    echo "launching ${short} with the following dependencies: ${dep_str}"
     
     if [[ "${short}" == "lm_c" ]] && (( LM_NL_ENS_NUMBER_C > 1 )); then
         
