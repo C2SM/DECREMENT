@@ -1,0 +1,63 @@
+#!/bin/bash
+
+
+# Initialization
+set verbose
+set echo
+
+# clean
+./clean
+
+# set environmental parameters
+export OMP_NUM_THREADS=1
+export MALLOC_MMAP_MAX_=0
+export MALLOC_TRIM_THRESHOLD_=536870912
+export MV2_ENABLE_AFFINITY=0
+
+# Set this to avoid segmentation faults
+ulimit -s unlimited
+ulimit -a
+
+unset G2G
+export MV2_USE_CUDA=0
+export MV2_USE_GPUDIRECT=0
+export MV2_USE_GPUDIRECT_GDRCOPY=0
+
+# load spack environment
+if [[ -n "${LM_INT2LM_ENV}" ]]; then
+    source ../${LM_INT2LM_ENV}
+elif [[ -n "${LM_INT2LM_SPEC}" ]]; then
+    spack load ${LM_INT2LM_SPEC}
+fi
+
+# echo date
+date
+
+# write namelists
+lm2lm_INPUT
+
+# Check if output folder exists
+mkdir -p $(readlink output)
+
+# Run LM in case directory
+${RUNCMD} -u ${EXE_INT2LM}
+status=$?
+
+# Add S_ORO_MAX if missing
+if [[ $? == 0 ]]; then
+    module load NCO
+    cd output
+    for laf_file in laf*.nc ; do
+        add_s_oro_max ${laf_file}
+        status=$?
+    done
+    cd - 1>/dev/null 2>/dev/null
+fi
+
+# echo date
+date
+
+sacct -j $SLURM_JOB_ID --format=User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPUFreq
+
+# Exit
+exit ${status}

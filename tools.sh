@@ -11,21 +11,15 @@ export -f mkydirs
 
 
 add_s_oro_max(){
-    # Add the S_ORO_MAX variable to any laf file missing it
-    # by copying the S_ORO variable
-    module load NCO
-    cd output
-    for laf_file in laf*.nc ; do
-        ncdump -h ${laf_file} | grep -q S_ORO_MAX
-        if [[ $? != 0 ]]; then
-            echo "S_ORO_MAX not in ${laf_file}, copying S_ORO as S_ORO_MAX"
-            ncks -O -v S_ORO ${laf_file} tmp.nc
-            ncrename -v S_ORO,S_ORO_MAX tmp.nc
-            ncks -A -v S_ORO_MAX tmp.nc ${laf_file}
-        fi
-    done
-    rm -f tmp.nc
-    cd - 1>/dev/null 2>/dev/null
+    # Add the S_ORO_MAX variable to $1 if missing by copying the S_ORO variable
+    ncdump -h ${1} | grep -q S_ORO_MAX
+    if [[ $? != 0 ]]; then
+        echo "S_ORO_MAX not in ${1}, copying S_ORO as S_ORO_MAX"
+        ncks -O -v S_ORO ${1} tmp.nc
+        ncrename -v S_ORO,S_ORO_MAX tmp.nc
+        ncks -A -v S_ORO_MAX tmp.nc ${1}
+        rm -f tmp.nc
+    fi
 }
 export -f add_s_oro_max
 
@@ -48,6 +42,25 @@ gen_slurm_dependencies(){
     done
     [[ -n ${dep_ids} ]] && echo "--dependency=afterok:$(id_list ${dep_ids})"
 }
+
+
+get_dep_ids(){
+    # Check the dependencies of argument $1 and output
+    # the corresponding job ids
+    eval dep_names=\$${1}_deps
+    for dep in ${dep_names}; do
+        eval job_id=\$${dep}_id
+        [[ -n ${job_id} ]] && dep_ids="${dep_ids} ${job_id}"
+    done
+    echo $(id_list ${dep_ids})
+}
+export -f get_dep_ids
+
+
+compute_nodes(){
+    echo $(( ($1 * $2 + $3 + $4 - 1) / $4 ))
+}
+export -f compute_nodes
 
 
 submit(){
@@ -89,15 +102,15 @@ submit(){
             # generate job script
             [[ ${LM_BEGIN_DATE} == ${LM_START_DATE} ]] && ./gen_job_script.sh
 
-            # Submit job and get job id
-            jobid=$(sbatch --parsable -C gpu ${dep_str} job)
+            # Submit job and store job id
+            output=job_${LM_BEGIN_DATE_FR}_${LM_END_DATE_FR}.out
+            jobid=$(sbatch --parsable --output=${output} -C gpu ${dep_str} job)
             jobids="${jobids} ${jobid}"
             
             cd ..
         done
         
-        # switch job ids (gather all member ids in a : seperated list)
-        eval export previous_${short}_id=\${current_${short}_id}
+        # gather all member ids in a :-separated list and export
         jobids=$(id_list ${jobids})
         eval export current_${short}_id=\${jobids}
         
@@ -109,10 +122,10 @@ submit(){
         [[ ${LM_BEGIN_DATE} == ${LM_START_DATE} ]] && ./gen_job_script.sh
         
         # Submit job and get job id
-        jobid=$(sbatch --parsable -C gpu ${dep_str} job)
+        output=job_${LM_BEGIN_DATE_FR}_${LM_END_DATE_FR}.out
+        jobid=$(sbatch --parsable --output=${output} -C gpu ${dep_str} job)
         
-        # switch job ids
-        eval export previous_${short}_id=\${current_${short}_id}
+        # Store job id
         eval export current_${short}_id=\${jobid}
     fi
     

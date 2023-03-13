@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Check if we are done
+if (( $(date -d "$LM_END_DATE" +%s) >= $(date -d "$LM_FIN_DATE" +%s) )); then
+    echo "End of the simulation"
+    exit 0
+fi
+
+# cycle dates ...
+export LM_BEGIN_DATE=${LM_END_DATE}
+
+# ... and job ids
+for part in ${SB_PARTS} ; do
+    short=${part#[0-9]*_}
+    eval export previous_${short}_id=\${current_${short}_id}
+    eval unset current_${short}_id
+done
+
+# submit next chunk
+cd ..
+./run_daint.sh

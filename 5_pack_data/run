@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#Check if output folder exists
+mkdir -p $(readlink output)
+
+# Load modules
+export OMP_NUM_THREADS=$CORES_PER_NODE
+export CRAY_CUDA_MPS=1
+module load daint-gpu
+module load NCO
+
+# Compress, archive and remove originals
+./pack_data.sh ${LM_BEGIN_DATE} ${LM_END_DATE} "${LM_COMPRESS_DIRS}"

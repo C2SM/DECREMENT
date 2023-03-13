@@ -42,8 +42,6 @@ source user_settings
 export QUEUE="normal"
 export RUNCMD="srun"
 export CORES_PER_NODE=24
-[[ $COSMO_TARGET == "cpu" ]] && export LM_NTASKS_PER_NODE_COSMO=12 || export LM_NTASKS_PER_NODE_COSMO=1
-export LM_NTASKS_PER_NODE_INT2LM=12
 
 
 # Architecture specific settings
@@ -74,16 +72,6 @@ else
     export LM_NL_LPREFETCH_F=.FALSE.
 fi
 
-# Compute requested node numbers
-# ==============================
-nodes(){
-    echo $(( ($1 * $2 + $3 + $4 - 1) / $4 ))
-}
-export LM_COSMO_NODES_C=$(nodes ${NQS_NXLM_C} ${NQS_NYLM_C} ${NQS_NIOLM_C} ${LM_NTASKS_PER_NODE_COSMO})
-export LM_COSMO_NODES_F=$(nodes ${NQS_NXLM_F} ${NQS_NYLM_F} ${NQS_NIOLM_F} ${LM_NTASKS_PER_NODE_COSMO})
-export LM_IFS2LM_NODES=$(nodes ${NQS_NXIFS2LM} ${NQS_NYIFS2LM} ${NQS_NIOIFS2LM} ${LM_NTASKS_PER_NODE_INT2LM})
-export LM_LM2LM_NODES=$(nodes ${NQS_NXLM2LM} ${NQS_NYLM2LM} ${NQS_NIOLM2LM} ${LM_NTASKS_PER_NODE_INT2LM})
-
 
 # Handle dates
 # ============
@@ -93,7 +81,7 @@ export LM_FIN_DATE=$(date -d "${LM_FIN_DATE}" +%c)
 
 # Start date of the simulation (not the chunk)
 # If not set by the user, set it to the LM_INI_DATE
-if [[ -z ${LM_START_DATE} ]]; then
+if [[ -z "${LM_START_DATE}" ]]; then
     export LM_START_DATE=${LM_INI_DATE}
 else
     export LM_START_DATE=$(date -d "${LM_START_DATE}" +%c)
@@ -101,7 +89,7 @@ fi
 
 # Begin date of current step
 # If set in 6_chain, keep the value, otherwise, use LM_START_DATE
-if [[ -z ${LM_BEGIN_DATE} ]]; then
+if [[ -z "${LM_BEGIN_DATE}" ]]; then
     export LM_BEGIN_DATE=$(date -d "${LM_START_DATE}" +%c)
 fi
 
@@ -158,5 +146,115 @@ export LM_END_DATE_FR=$(date -d "${LM_END_DATE}" +%FT%R)
 echo "submitting jobs for the priod from ${LM_BEGIN_DATE_FR} to ${LM_END_DATE_FR}"
 
 for part in ${SB_PARTS} ; do
-    submit ${part}
+    short=${part#[0-9]*_}
+    SHORT=$(echo ${short} | tr '[:lower:]' '[:upper:]')
+    mkdir -p output/${short}
+
+    cd ${part}
+
+    # Build sbatch options
+    # --------------------
+    # Common options
+    sbatch_opts="--parsable -C gpu --output job_${LM_BEGIN_DATE_FR}_${LM_END_DATE_FR}.out"
+    sbatch_opts+=" --job-name ${short}"
+    sbatch_opts+=" --account=${ACCOUNT}"
+
+    # number of nodes and potentitally number of tasks per node
+    ntpn=12
+    case ${short} in
+        ifs2lm)
+            nodes=$(compute_nodes ${NQS_NXIFS2LM} ${NQS_NYIFS2LM} ${NQS_NIOIFS2LM} ${ntpn});;
+        lm2lm)
+            nodes=$(compute_nodes ${NQS_NXLM2LM} ${NQS_NYLM2LM} ${NQS_NIOLM2LM} ${ntpn});;
+        lm_c)
+            if [[ $COSMO_TARGET == "gpu" ]]; then
+                ntpn=1
+                sbatch_opts+=" --ntasks-per-node=1"
+            fi
+            nodes=$(compute_nodes ${NQS_NXLM_C} ${NQS_NYLM_C} ${NQS_NIOLM_C} ${ntpn});;
+        lm_f)
+            if [[ $COSMO_TARGET == "gpu" ]]; then
+                ntpn=1
+                sbatch_opts+=" --ntasks-per-node=1"
+            fi
+            nodes=$(compute_nodes ${NQS_NXLM_C} ${NQS_NYLM_C} ${NQS_NIOLM_C} ${ntpn});;
+        *)
+            eval nodes=\${NQS_NODES_${SHORT}}
+            [[ -z "${nodes}" ]] && nodes=1;;
+    esac
+    sbatch_opts+=" --nodes=${nodes}"
+
+    # dependencies
+    dep_ids=$(get_dep_ids ${short})
+    [[ -n "${dep_ids}" ]] && sbatch_opts+=" --dependency=afterok:${dep_ids}"
+
+    # wall time
+    eval time=\${NQS_ELAPSED_${SHORT}}
+    [[ -z "${time}" ]] && time="00:05:00"
+    sbatch_opts+=" --time=${time}"
+                 
+    # partition
+    eval partition=\${NQS_QUEUE_${SHORT}}
+    [[ -z "${partition}" ]] && partition=${QUEUE}
+    sbatch_opts+=" --partition=${partition}"
+    
+    # log message
+    # -----------
+    message="launching ${short}"
+    [[ -n "${dep_ids}" ]] && message+=" with the following dependencies: ${dep_ids}"
+    echo ${message}
+    
+    if [[ "${short}" == "lm_c" ]] && (( LM_NL_ENS_NUMBER_C > 1 )); then
+        
+        # Ensemble execution
+        # ------------------
+        echo "running lm_c in ensemble mode with ${LM_NL_ENS_NUMBER_C} realizations"
+
+        # Loop over ensemble members
+        (( max_k=${LM_NL_ENS_NUMBER_C}-1 ))
+        for (( k=0; k<=$max_k; k++ )); do
+            # create 0-padded member number directory
+            member=$(printf "%0${#max_k}d" $k)
+            mkdir -p $member
+            cd $member
+
+            # cleanup
+            ln -sf ../clean
+            ./clean
+
+            # link necessary paths and exe
+            ln -sf ../gen_job_script.sh
+            ln -sf ../output/$member output
+            ln -sf ../input
+            ln -sf ../cosmo
+
+            # generate job script
+            [[ ${LM_BEGIN_DATE} == ${LM_START_DATE} ]] && ./gen_job_script.sh
+
+            # Submit job and store job id
+            jobid=$(sbatch ${sbatch_opts} --wrap="./run")
+            jobids="${jobids} ${jobid}"
+            
+            cd ..
+        done
+        
+        # gather all member ids in a :-separated list and export
+        jobids=$(id_list ${jobids})
+        eval export current_${short}_id=\${jobids}
+        
+    else
+        
+        # Normal execution
+        # ----------------
+        # generate job script
+        [[ ${LM_BEGIN_DATE} == ${LM_START_DATE} ]] && ./gen_job_script.sh
+        
+        # Submit job and get job id
+        jobid=$(sbatch ${sbatch_opts} --wrap="./run")
+        
+        # Store job id
+        eval export current_${short}_id=\${jobid}
+    fi
+    
+    cd - 1>/dev/null 2>/dev/null
 done

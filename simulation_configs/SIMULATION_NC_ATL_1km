@@ -55,7 +55,7 @@ export NQS_NIOLM_F=0                # number of NODEs for asyncronous IO
 export NQS_ELAPSED_LM_F=20:00:00    # maximum wall-clock time (HH:mm:ss)
 
 #5_pack_data
-export NQS_ELAPSED_COMPRESS=12:00:00    # maximum wall-clock time (HH:mm:ss)
+export NQS_ELAPSED_PACK_DATA=12:00:00    # maximum wall-clock time (HH:mm:ss)
 
 
 # ===================================================

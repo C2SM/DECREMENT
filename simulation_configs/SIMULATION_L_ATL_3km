@@ -44,7 +44,7 @@ fi
 export NQS_ELAPSED_LM_C=05:00:00    # maximum wall-clock time (HH:mm:ss)
 
 # 5_pack_data
-export NQS_ELAPSED_COMPRESS=12:00:00    # maximum wall-clock time (HH:mm:ss) for compression
+export NQS_ELAPSED_PACK_DATA=12:00:00    # maximum wall-clock time (HH:mm:ss) for compression
 
 
 # ===================================================

@@ -61,7 +61,7 @@ fi
 export NQS_ELAPSED_LM_F=24:00:00    # maximum wall-clock time (HH:mm:ss)
 
 # 5_pack_data
-export NQS_ELAPSED_COMPRESS=07:00:00    # maximum wall-clock time (HH:mm:ss)
+export NQS_ELAPSED_PACK_DATA=07:00:00    # maximum wall-clock time (HH:mm:ss)
 
 # ===================================================
 #                   CONFIGURE COSMO
