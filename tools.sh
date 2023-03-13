@@ -44,7 +44,7 @@ gen_slurm_dependencies(){
     eval dep_names=\$${1}_deps
     for dep in ${dep_names}; do
         eval job_id=\$${dep}_id
-        [[ -n ${job_id}]] && dep_ids="${dep_ids} ${job_id}"
+        [[ -n ${job_id} ]] && dep_ids="${dep_ids} ${job_id}"
     done
     [[ -n ${dep_ids} ]] && echo "--dependency=afterok:$(id_list ${dep_ids})"
 }
