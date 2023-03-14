@@ -131,7 +131,7 @@ export LM_NL_NSTOP_C=$((LM_NL_HSTOP*3600/LM_NL_DT_C))
 export LM_NL_NSTART_F=$((LM_NL_HSTART*3600/LM_NL_DT_F))
 export LM_NL_NSTOP_F=$((LM_NL_HSTOP*3600/LM_NL_DT_F))
 
-# Dates for filenames
+# Dates for filenames or log messages
 export LM_BEGIN_DATE_FR=$(date -d "${LM_BEGIN_DATE}" +%FT%R)
 export LM_END_DATE_FR=$(date -d "${LM_END_DATE}" +%FT%R)
 
@@ -152,7 +152,7 @@ for part in ${SB_PARTS} ; do
     cmd="sbatch --parsable -C gpu"
     
     # Common options
-    cmd+=" --output job_${LM_BEGIN_DATE_FR}_${LM_END_DATE_FR}.out"
+    cmd+=" --output run_${LM_BEGIN_DATE_FR}_${LM_END_DATE_FR}.out"
     cmd+=" --job-name ${short}"
     cmd+=" --account=${ACCOUNT}"
 
