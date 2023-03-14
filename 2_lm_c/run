@@ -47,14 +47,15 @@ mkydirs INPUT_IO
 
 # Run LM in case directory
 ${RUNCMD} -u ${EXE_COSMO}
-grep -q 'CLEAN UP' ${SBATCH_OUTPUT}
+grep -q 'CLEAN UP' ${LM_RUN_OUTPUT}
 status=$?
 
 # echo date
 date
 
 #Print accounting file
-sacct -j $SLURM_JOB_ID --format=User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPUFreq
+sacct -j ${SLURM_JOB_ID} --format="User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPUFreq"
+
 
 # Exit
 exit ${status}

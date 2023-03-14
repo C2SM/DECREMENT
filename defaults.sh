@@ -31,3 +31,6 @@ export chain_deps="previous_lm_c previous_lm_f"
 #Async NetCDF I/O
 export LM_NL_ASYNIO_BLOCK_SIZE_C=10
 export LM_NL_ASYNIO_BLOCK_SIZE_F=10
+
+# Get data
+export NQS_ELAPSED_GET_DATA="01:00:00"

@@ -77,6 +77,7 @@ get_dep_ids(){
     # Check the dependencies of argument $1 and output
     # the corresponding job ids
     eval dep_names=\$${1}_deps
+    unset dep_ids
     for dep in ${dep_names}; do
         eval job_id=\$${dep}_id
         [[ -n ${job_id} ]] && dep_ids="${dep_ids} ${job_id}"

@@ -134,6 +134,8 @@ export LM_NL_NSTOP_F=$((LM_NL_HSTOP*3600/LM_NL_DT_F))
 # Dates for filenames or log messages
 export LM_BEGIN_DATE_FR=$(date -d "${LM_BEGIN_DATE}" +%FT%R)
 export LM_END_DATE_FR=$(date -d "${LM_END_DATE}" +%FT%R)
+export LM_BEGIN_DATE_DG=$(date -d "${LM_BEGIN_DATE}" +%Y%m%d%H%M%S)
+export LM_END_DATE_DG=$(date -d "${LM_END_DATE}" +%Y%m%d%H%M%S)
 
 
 # Submit jobs
@@ -152,7 +154,8 @@ for part in ${SB_PARTS} ; do
     cmd="sbatch --parsable -C gpu"
     
     # Common options
-    cmd+=" --output run_${LM_BEGIN_DATE_FR}_${LM_END_DATE_FR}.out"
+    export LM_RUN_OUTPUT="run_${LM_BEGIN_DATE_DG}_${LM_END_DATE_DG}.out"
+    cmd+=" --output ${LM_RUN_OUTPUT}"
     cmd+=" --job-name ${short}"
     cmd+=" --account=${ACCOUNT}"
 
@@ -164,22 +167,16 @@ for part in ${SB_PARTS} ; do
         lm2lm)
             nodes=$(compute_nodes ${NQS_NXLM2LM} ${NQS_NYLM2LM} ${NQS_NIOLM2LM} ${ntpn});;
         lm_c)
-            if [[ $COSMO_TARGET == "gpu" ]]; then
-                ntpn=1
-                cmd+=" --ntasks-per-node=1"
-            fi
+            [[ $COSMO_TARGET == "gpu" ]] && ntpn=1
             nodes=$(compute_nodes ${NQS_NXLM_C} ${NQS_NYLM_C} ${NQS_NIOLM_C} ${ntpn});;
         lm_f)
-            if [[ $COSMO_TARGET == "gpu" ]]; then
-                ntpn=1
-                cmd+=" --ntasks-per-node=1"
-            fi
-            nodes=$(compute_nodes ${NQS_NXLM_C} ${NQS_NYLM_C} ${NQS_NIOLM_C} ${ntpn});;
+            [[ $COSMO_TARGET == "gpu" ]] && ntpn=1
+            nodes=$(compute_nodes ${NQS_NXLM_F} ${NQS_NYLM_F} ${NQS_NIOLM_F} ${ntpn});;
         *)
             eval nodes=\${NQS_NODES_${SHORT}}
             [[ -z "${nodes}" ]] && nodes=1;;
     esac
-    cmd+=" --nodes=${nodes}"
+    cmd+=" --nodes=${nodes} --ntasks-per-node=${ntpn}"
 
     # dependencies
     dep_ids=$(get_dep_ids ${short})
