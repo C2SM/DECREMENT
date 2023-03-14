@@ -11,18 +11,17 @@ source Default_namelists/lm_f_defaults.sh
 
 # Load user defined parameters
 # ============================
-# Load once here, just to have access to COSMO_TARGET in config
-if [ ! -f user_settings ]; then 
-    echo "user_settings doesn't exist yet. Copying default file user_settings_example"
-    cp user_settings_example user_settings
-fi
+# Load once here, just to have access to COSMO_TARGET when sourcing config
 
-if [ ! -f config ]; then
-    echo "Abort. No config specifed. Copy one from simulation_configs, e.g., cp simulation_configs/SIMULATION_EU_CORDEX_50km config"
+if [[ ! -f config ]]; then
+    echo "ERROR : No config file found. Copy or link one from simulation_configs, e.g., ln -s simulation_configs/SIMULATION_EU_CORDEX_50km config"
     exit 1
 fi
-
-source user_settings
+if [[ ! -f user_settings ]]; then 
+    echo "WARNING : No user_setting file found. You could start from the user_settings_example file if needed."
+else
+    source user_settings    
+fi
 
 
 # Load simualtion config
@@ -122,11 +121,7 @@ export LM_DD_END=$(date -d "${LM_END_DATE}" +%d)
 export LM_ZZ_END=$(date -d "${LM_END_DATE}" +%H)
 
 # Compute HSTART, HSTOP and corresponding NSTART, NSTOP
-diff_hours() {
-    d1=$(date -d "$1" +%s)
-    d2=$(date -d "$2" +%s)
-    echo $(( ($d2 - $d1) / 3600 ))
-}
+
 export LM_NL_HSTART=$(diff_hours "${LM_INI_DATE}" "${LM_BEGIN_DATE}")
 export LM_NL_HSTOP=$(diff_hours "${LM_INI_DATE}" "${LM_END_DATE}")
 
@@ -152,12 +147,14 @@ for part in ${SB_PARTS} ; do
 
     cd ${part}
 
-    # Build sbatch options
+    # Build sbatch command
     # --------------------
+    cmd="sbatch --parsable -C gpu"
+    
     # Common options
-    sbatch_opts="--parsable -C gpu --output job_${LM_BEGIN_DATE_FR}_${LM_END_DATE_FR}.out"
-    sbatch_opts+=" --job-name ${short}"
-    sbatch_opts+=" --account=${ACCOUNT}"
+    cmd+=" --output job_${LM_BEGIN_DATE_FR}_${LM_END_DATE_FR}.out"
+    cmd+=" --job-name ${short}"
+    cmd+=" --account=${ACCOUNT}"
 
     # number of nodes and potentitally number of tasks per node
     ntpn=12
@@ -169,40 +166,42 @@ for part in ${SB_PARTS} ; do
         lm_c)
             if [[ $COSMO_TARGET == "gpu" ]]; then
                 ntpn=1
-                sbatch_opts+=" --ntasks-per-node=1"
+                cmd+=" --ntasks-per-node=1"
             fi
             nodes=$(compute_nodes ${NQS_NXLM_C} ${NQS_NYLM_C} ${NQS_NIOLM_C} ${ntpn});;
         lm_f)
             if [[ $COSMO_TARGET == "gpu" ]]; then
                 ntpn=1
-                sbatch_opts+=" --ntasks-per-node=1"
+                cmd+=" --ntasks-per-node=1"
             fi
             nodes=$(compute_nodes ${NQS_NXLM_C} ${NQS_NYLM_C} ${NQS_NIOLM_C} ${ntpn});;
         *)
             eval nodes=\${NQS_NODES_${SHORT}}
             [[ -z "${nodes}" ]] && nodes=1;;
     esac
-    sbatch_opts+=" --nodes=${nodes}"
+    cmd+=" --nodes=${nodes}"
 
     # dependencies
     dep_ids=$(get_dep_ids ${short})
-    [[ -n "${dep_ids}" ]] && sbatch_opts+=" --dependency=afterok:${dep_ids}"
+    [[ -n "${dep_ids}" ]] && cmd+=" --dependency=afterok:${dep_ids}"
 
     # wall time
     eval time=\${NQS_ELAPSED_${SHORT}}
     [[ -z "${time}" ]] && time="00:05:00"
-    sbatch_opts+=" --time=${time}"
+    cmd+=" --time=${time}"
                  
     # partition
     eval partition=\${NQS_QUEUE_${SHORT}}
     [[ -z "${partition}" ]] && partition=${QUEUE}
-    sbatch_opts+=" --partition=${partition}"
+    cmd+=" --partition=${partition}"
+
+    # job file
+    cmd+=" ./run"
     
     # log message
     # -----------
-    message="launching ${short}"
-    [[ -n "${dep_ids}" ]] && message+=" with the following dependencies: ${dep_ids}"
-    echo ${message}
+    echo "launching ${short} with the following command"
+    echo ${cmd}
     
     if [[ "${short}" == "lm_c" ]] && (( LM_NL_ENS_NUMBER_C > 1 )); then
         
@@ -213,26 +212,20 @@ for part in ${SB_PARTS} ; do
         # Loop over ensemble members
         (( max_k=${LM_NL_ENS_NUMBER_C}-1 ))
         for (( k=0; k<=$max_k; k++ )); do
-            # create 0-padded member number directory
+            # create 0-padded member directory
             member=$(printf "%0${#max_k}d" $k)
             mkdir -p $member
             cd $member
 
-            # cleanup
-            ln -sf ../clean
-            ./clean
-
             # link necessary paths and exe
-            ln -sf ../gen_job_script.sh
+            ln -sf ../clean
+            ln -sf ../run
             ln -sf ../output/$member output
             ln -sf ../input
             ln -sf ../cosmo
 
-            # generate job script
-            [[ ${LM_BEGIN_DATE} == ${LM_START_DATE} ]] && ./gen_job_script.sh
-
             # Submit job and store job id
-            jobid=$(sbatch ${sbatch_opts} --wrap="./run")
+            jobid=$(${cmd})
             jobids="${jobids} ${jobid}"
             
             cd ..
@@ -246,15 +239,13 @@ for part in ${SB_PARTS} ; do
         
         # Normal execution
         # ----------------
-        # generate job script
-        [[ ${LM_BEGIN_DATE} == ${LM_START_DATE} ]] && ./gen_job_script.sh
-        
         # Submit job and get job id
-        jobid=$(sbatch ${sbatch_opts} --wrap="./run")
+        jobid=$(${cmd})
         
         # Store job id
         eval export current_${short}_id=\${jobid}
     fi
     
     cd - 1>/dev/null 2>/dev/null
+    
 done

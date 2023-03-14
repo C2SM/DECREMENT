@@ -1,12 +1,11 @@
 #!/bin/bash
 
-# These are the default user settings. Some settings are also present
-# in the simulation configuration file. The values in this file will
-# take precedence over the default settings of the configuration so
-# use that file to overwrite any config setting you'd like to change,
-# like nodes distribution, wall time, parts to be ran, etc... The idea
-# is to leave the configuration file untouched in order to facilitate
-# git tracking.
+# This is an example file with some settings set to default values,
+# some not. Really take it as an example, not a default settings file.
+# It won't be loaded as is, first copy it as `user_settings` and then
+# modify it at will.
+# These settings will take precedence over any other:
+# user_settings > config > defaults
 
 # COSMO target architecture
 export COSMO_TARGET="gpu"
@@ -18,7 +17,7 @@ export ACCOUNT="pr133"
 export EXE_INT2LM="./int2lm"
 export EXE_COSMO="./cosmo"
 
-# Will environemt using "spack load" commands.
+# Load environemt using "spack load" commands.
 export LM_INT2LM_SPEC="int2lm@c2sm-master%nvhpc"
 export LM_COSMO_SPEC="cosmo@c2sm-features%nvhpc cosmo_target=gpu real_type=double +cppdycore"
 
@@ -34,17 +33,25 @@ export LM_INI_DATE="2011-01-01T00:00"   # Initial date of simualtion
 export LM_START_DATE="2011-01-01T00:00"   # use if you don't want to start from LM_INI_DATE
 export LM_FIN_DATE="2011-01-03T00:00"   # Overall end of simulation
 
-# Chaining interval, i.e., how long one simualtion step will be. If unset, run in one chunk
-# export LM_CHAIN_INTERVAL=1day # Anything human readable like "2 hours", "1 month", ...
-
-# enable retries
-export LM_RETRIES="True"
+# Chaining interval, i.e., how long one simualtion chunk will be. If unset, run in one chunk
+export LM_CHAIN_INTERVAL=1day # Anything human readable like "2 hours", "1 month", ...
 
 # List of output folders to compress and pack (use spaces between the folders)
 # export LM_COMPRESS_DIRS="lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev lm_f/1h_2D lm_f/24h lm_f/3h_3D_zlev"
 
 # Parts that will be executed. Same as folder names.
-# export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f 5_pack_data 6_chain"
+# CAUTION: make sure the order of the parts is compatible with the dependencies,
+# i.e. any dependency of a part should be submitted before the part
+export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c"
+
+# Dependencies
+# The format is xxx_deps="current_yyy previous_zzz ..."
+# where xxx, yyy and zzz are valid "short names" of parts to be ran,
+# i.e without the "k_" with k an integer in front of the name.
+export get_data_deps=""
+export ifs2lm_deps="previous_ifs2lm current_get_data"
+export lm_c_deps="previous_lm_c current_ifs2lm"
+export chain_deps="previous_lm_c"
 
 # Ensemble settings
 # export LM_NL_ITYPE_PERT_C=1
