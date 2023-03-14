@@ -71,7 +71,7 @@ export NQS_ELAPSED_PACK_DATA=07:00:00    # maximum wall-clock time (HH:mm:ss)
 # -----------
 
 # ERAInterim files
-ln -sf run_ERAInt 0_get_data/run #Link correct copy script 
+export LM_NL_BC_DATA_TYPE='ERAInt'
 export LM_NL_BC_DATA_PATH=/project/${ACCOUNT}/ERAinterim
 export LM_NL_POLPHIIFS=90.0
 export LM_NL_POLLAMIFS=180.0

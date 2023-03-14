@@ -55,7 +55,7 @@ export NQS_ELAPSED_PACK_DATA=12:00:00    # maximum wall-clock time (HH:mm:ss) fo
 # ------------
 
 # ERA5 
-ln -sf run_ERA5 0_get_data/run 
+export LM_NL_BC_DATA_TYPE='ERA5'
 export LM_NL_BC_DATA_PATH=/store/c2sm/c2sme/ERA5_int2lmready/heimc2
 export LM_NL_POLPHIIFS=90.0
 export LM_NL_POLLAMIFS=180.0
