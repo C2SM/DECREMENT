@@ -1,6 +1,7 @@
 #!/bin/bash
 
 diff_hours(){
+    # get difference between 2 dates in hours
     d1=$(date -d "$1" +%s)
     d2=$(date -d "$2" +%s)
     echo $(( ($d2 - $d1) / 3600 ))
@@ -16,6 +17,37 @@ mkydirs(){
     done
 }
 export -f mkydirs
+
+
+file_list(){
+    # get list of COSMO files between 2 dates assuming the "d format"
+
+    # Arguments
+    direc="$1"
+    date_1="$2"
+    date_2="$3"
+
+    # Compute date bounds to seconds since some absolute date
+    begin_sec=$(date -d "$date_1" +%s)
+    end_sec=$(date -d "$date_2" +%s)
+
+    # Get list
+    list=""
+    for f in $(find ${direc} -name *.nc); do
+        # Capture digits reprensting the date in the file name
+        digits=$(sed 's/l.\{1,2\}fd\([[:digit:]]*\).*\.nc/\1/' <<< $(basename ${f}))
+        # Form date string
+        this_date=${digits:0:4}-${digits:4:2}-${digits:6:2}T${digits:8:2}:${digits:10:2}
+        # Convert date to seconds
+        this_sec=$(date -d "${this_date}" +%s)
+        # Check if it belongs to the interval
+        if (( this_sec >= begin_sec && this_sec <= end_sec )); then
+            list+=" ${f}"
+        fi
+    done
+    echo ${list}
+}
+export -f file_list
 
 
 add_s_oro_max(){

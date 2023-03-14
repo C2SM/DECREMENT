@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# clean
+./clean
+
 #Check if output folder exists
 mkdir -p $(readlink output)
 
@@ -10,4 +13,36 @@ module load daint-gpu
 module load NCO
 
 # Compress, archive and remove originals
-./pack_data.sh ${LM_BEGIN_DATE} ${LM_END_DATE} "${LM_COMPRESS_DIRS}"
+for direc in ${LM_COMPRESS_DIRS}; do
+    nc_list=$(file_list ${direc} "${LM_BEGIN_DATE}" "${LM_END_DATE}")
+    if [[ -n ${nc_list} ]]; then
+        # compress files
+        ./nczip -kv "${nc_list}"
+        
+        # create archive
+        if [[ $? == 0 ]]; then
+            cd input
+            nz_files=$(find ${direc} -name '*.nz')
+            d1=$(date -d "${LM_BEGIN_DATE}" +%Y%m%d%H%M)
+            d2=$(date -d "${LM_END_DATE}" +%Y%m%d%H%M)
+            part=$(dirname ${direc})
+            stream=$(basename ${direc})
+            tar_file="../output/${part}__${stream}__${d1}-${d2}.tar"
+            tar --transform='s/.nz/.nc/' -cvf ${tar_file} ${nz_files}
+        fi
+
+        # remove compressed files
+        if [[ $? == 0 ]]; then        
+            echo "removing compressed files"
+            rm ${nz_files}
+        fi
+
+        # remove original files
+        if [[ $? == 0 ]]; then
+            cd ..
+            rm -f ${nc_list}
+        fi
+    else
+        echo "no nc files found in ${direc} between ${LM_BEGIN_DATE_FR} and ${LM_END_DATE_FR}"
+    fi
+done
