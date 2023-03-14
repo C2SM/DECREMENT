@@ -1,4 +1,4 @@
 #!/bin/bash
 
-\rm -rf core* job* .jobid 
+\rm -rf core* job*
 

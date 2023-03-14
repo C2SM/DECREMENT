@@ -5,7 +5,6 @@ output/*
 **/job.out
 **/YU*
 **/core*
-**/.jobid
 **/*.swp
 config
 user_settings
