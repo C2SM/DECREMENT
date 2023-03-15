@@ -137,10 +137,18 @@ export LM_END_DATE_FR=$(date -d "${LM_END_DATE}" +%FT%R)
 export LM_BEGIN_DATE_DG=$(date -d "${LM_BEGIN_DATE}" +%Y%m%d%H%M%S)
 export LM_END_DATE_DG=$(date -d "${LM_END_DATE}" +%Y%m%d%H%M%S)
 
+# Init matter
+# ===========
+if [[ "${LM_BEGIN_DATE}" == "${LM_START_DATE}" ]]; then
+    export status_file=$(realpath "./status.log")
+    # do some cleaning
+    ./clean.sh
+    rm -f ${status_file}
+fi
 
 # Submit jobs
 # ===========
-echo "submitting jobs for the priod from ${LM_BEGIN_DATE_FR} to ${LM_END_DATE_FR}"
+echo "submitting jobs for the priod from ${LM_BEGIN_DATE_FR} to ${LM_END_DATE_FR}" >> ${status_file}
 
 for part in ${SB_PARTS} ; do
     short=${part#[0-9]*_}
@@ -194,17 +202,12 @@ for part in ${SB_PARTS} ; do
 
     # job file
     cmd+=" ./run"
-    
-    # log message
-    # -----------
-    echo "launching ${short} with the following command"
-    echo ${cmd}
-    
+
     if [[ "${short}" == "lm_c" ]] && (( LM_NL_ENS_NUMBER_C > 1 )); then
         
         # Ensemble execution
         # ------------------
-        echo "running lm_c in ensemble mode with ${LM_NL_ENS_NUMBER_C} realizations"
+        echo "running lm_c in ensemble mode with ${LM_NL_ENS_NUMBER_C} realizations" >> ${status_file}
 
         # Loop over ensemble members
         (( max_k=${LM_NL_ENS_NUMBER_C}-1 ))
@@ -223,14 +226,14 @@ for part in ${SB_PARTS} ; do
 
             # Submit job and store job id
             jobid=$(${cmd})
-            jobids="${jobids} ${jobid}"
+            jobids+=" ${jobid}"
             
             cd ..
         done
         
         # gather all member ids in a :-separated list and export
-        jobids=$(id_list ${jobids})
-        eval export current_${short}_id=\${jobids}
+        jobid=$(id_list ${jobids})
+        eval export current_${short}_id=\${jobid}
         
     else
         
@@ -241,8 +244,22 @@ for part in ${SB_PARTS} ; do
         
         # Store job id
         eval export current_${short}_id=\${jobid}
+        
     fi
+    
+    # Status log
+    # ----------
+    GREEN="\033[32m"
+    NORMAL="\033[0;39m"
+    echo -e "${GREEN}[[ ${part} ]]${NORMAL}" >> ${status_file}
+    echo "[ nodes        ] ${nodes}" >> ${status_file}
+    echo "[ time         ] ${time}" >> ${status_file}
+    echo "[ queue        ] ${partition}" >> ${status_file}
+    echo "[ dependencies ] ${dep_ids}" >> ${status_file}
+    echo "[ job id       ] ${jobid}" >> ${status_file}
+    echo "[ status       ] submitted" >> ${status_file}
     
     cd - 1>/dev/null 2>/dev/null
     
 done
+

@@ -19,7 +19,7 @@ mkydirs(){
 export -f mkydirs
 
 
-file_list(){
+cosmo_file_list(){
     # get list of COSMO files between 2 dates assuming the "d format"
 
     # Arguments
@@ -47,7 +47,7 @@ file_list(){
     done
     echo ${list}
 }
-export -f file_list
+export -f cosmo_file_list
 
 
 add_s_oro_max(){
@@ -79,8 +79,22 @@ get_dep_ids(){
     eval dep_names=\$${1}_deps
     unset dep_ids
     for dep in ${dep_names}; do
+        dep_part=${dep#*_}
+        dep_step=${dep%%_*}
+        # Check if dependency is supposed to be ran, otherwise ignore
+        [[ "${SB_PARTS}" != *"${dep_part}"* ]] && continue
+        # Check if dependency is from previous chunk
+        # In that case, ignore for first chunk
+        [[ ("${dep_step}" == "previous") && ("${LM_BEGIN_DATE}" == "${LM_START_DATE}") ]] && continue
+        # Get dependency job id
         eval job_id=\$${dep}_id
-        [[ -n ${job_id} ]] && dep_ids="${dep_ids} ${job_id}"
+        if [[ -n ${job_id} ]]; then
+            dep_ids+=" ${job_id}"
+        else
+            echo "ERROR : no job id found for depdendency ${dep}"
+            exit 1
+        fi
+        
     done
     echo $(id_list ${dep_ids})
 }
@@ -91,3 +105,9 @@ compute_nodes(){
     echo $(( ($1 * $2 + $3 + $4 - 1) / $4 ))
 }
 export -f compute_nodes
+
+
+update_status(){
+    sed -i '/\[ job id       \] '"${SLURM_JOB_ID}"'/!b;n;c\[ status       \] '"${1}" ${status_file}
+}
+export -f update_status
