@@ -148,7 +148,11 @@ fi
 
 # Submit jobs
 # ===========
-echo "submitting jobs for the priod from ${LM_BEGIN_DATE_FR} to ${LM_END_DATE_FR}" >> ${status_file}
+if [[ "${LM_BEGIN_DATE}" != "${LM_START_DATE}" ]]; then
+    echo "" >> ${status_file}
+fi
+echo "====>  jobs for the priod ${LM_BEGIN_DATE_FR} -- ${LM_END_DATE_FR}  <===="  >> ${status_file}
+echo "" >> ${status_file}
 
 for part in ${SB_PARTS} ; do
     short=${part#[0-9]*_}
