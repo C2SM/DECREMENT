@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Update job status
+update_status "running"
+
 # Check if we are done
 if (( $(date -d "$LM_END_DATE" +%s) >= $(date -d "$LM_FIN_DATE" +%s) )); then
     echo "End of the simulation"
@@ -19,3 +22,6 @@ done
 # submit next chunk
 cd ..
 ./run_daint.sh
+
+# Update job status
+update_status "done"

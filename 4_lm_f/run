@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Update job status
+update_status "running"
+
 # Initialization
 set verbose
 set echo
@@ -55,6 +58,8 @@ date
 # Print accounting file
 sacct -j ${SLURM_JOB_ID} --format="User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPUFreq"
 
+# Update job status
+update_status "done"
 
 # Exit
 exit ${status}

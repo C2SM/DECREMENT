@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Update job status
+update_status "running"
+
 # clean
 ./clean
 
@@ -44,3 +47,6 @@ for direc in ${LM_COMPRESS_DIRS}; do
         echo "no nc files found in ${direc} between ${LM_BEGIN_DATE_FR} and ${LM_END_DATE_FR}"
     fi
 done
+
+# Update job status
+update_status "done"
