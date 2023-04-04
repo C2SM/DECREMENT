@@ -17,7 +17,7 @@ export LM_CHAIN_INTERVAL=1month     #Current options: "1year", "1month", "1day".
 export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f 5_pack_data 6_chain"
 
 # List of output folders to compress and pack (use spaces between the folders)
-export LM_COMPRESS_DIRS="lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev lm_f/1h_2D lm_f/24h lm_f/3h_3D_zlev"
+export LM_COMPRESS_DIRS="lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev lm_f/1h_2D lm_f/24h lm_f/3h_3D_zlev lm_f/1h_2D_LPI lm_f/1h_3D_plev lm_f/5min_2D"
 
 
 # ===================================================
@@ -71,8 +71,8 @@ export NQS_ELAPSED_PACK_DATA=07:00:00    # maximum wall-clock time (HH:mm:ss)
 # -----------
 
 # ERAInterim files
-export LM_NL_BC_DATA_TYPE='ERAInt'
-export LM_NL_BC_DATA_PATH=/project/${ACCOUNT}/ERAinterim
+export LM_NL_BC_DATA_TYPE="ERA5-scClim"
+export LM_NL_BC_DATA_PATH="/store/c2sm/c2sme/ERA5_int2lmready/velasque"
 export LM_NL_POLPHIIFS=90.0
 export LM_NL_POLLAMIFS=180.0
 export LM_NL_IEIFS=544
@@ -99,6 +99,7 @@ export LM_VCOORD_D=23588.50,22395.93,21304.04,20307.39,19399.95,18574.03,17821.8
 # =========
 
 # Grid
+# ----
 export LM_NL_POLLATLM_C=43.0                 # Latitude  of the North pole
 export LM_NL_POLLONLM_C=-170.0               # Longitude of the North pole
 export LM_NL_EXT_IE_C=771                    # Number of grid points (I: zonal, J: meridional)
@@ -304,6 +305,7 @@ export -f lm_c_INPUT_IO
 # =======
 
 # Grid
+# ----
 export LM_NL_POLLATLM_F=43.0        # Latitude  of the North pole
 export LM_NL_POLLONLM_F=-170.0      # Longitude of the North pole
 export LM_NL_EXT_IE_F=2313          # Number of grid points (I: zonal, J: meridional)
@@ -359,7 +361,7 @@ export LM_NL_LAN_RHO_SNOW_F=.FALSE.
 export LM_NL_EXTPAR_F=extpar_euro_2km_2313x2313_with_old_nots.nc #extpar_euro_2km_2313x2313.nc
 
 #Async NetCDF I/O
-export LM_NL_LPREFETCH_F=.FALSE.           # Needs async IO, i.e. NQS_NIOLM_F > 0
+export LM_NL_LPREFETCH_F=.TRUE.           # Needs async IO, i.e. NQS_NIOLM_F > 0
 export LM_NL_ASYNIO_BLOCK_SIZE_F=20
 
 # Change output streams by redefining lm_f_INPUT_IO
