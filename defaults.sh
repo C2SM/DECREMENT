@@ -18,7 +18,7 @@ export LM_COSMO_SPEC="cosmo@c2sm-features%nvhpc cosmo_target=gpu real_type=doubl
 # The format is xxx_deps="current_yyy previous_zzz ..."
 # where xxx, yyy and zzz are valid "short names" of parts to be ran,
 # i.e without the "k_" with k an integer in front of the name.
-export get_data_deps=""
+export get_data_deps="previous_get_data"
 export ifs2lm_deps="previous_ifs2lm current_get_data"
 export lm_c_deps="previous_lm_c current_ifs2lm"
 export lm2lm_deps="previous_lm2lm current_lm_c"
