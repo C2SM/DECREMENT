@@ -17,7 +17,7 @@ module load NCO
 
 # Compress, archive and remove originals
 for direc in ${LM_COMPRESS_DIRS}; do
-    nc_list=$(cosmo_file_list "input/${direc}" "${LM_BEGIN_DATE}" "${LM_END_DATE}")
+    nc_list=$(cosmo_file_list "input/${direc}" ">=" "${LM_BEGIN_DATE}" "<=" "${LM_END_DATE}")
     if [[ -n ${nc_list} ]]; then
         # compress files
         ./nczip -kv "${nc_list}"
@@ -33,7 +33,7 @@ for direc in ${LM_COMPRESS_DIRS}; do
         fi
 
         # remove compressed files
-        if [[ $? == 0 ]]; then        
+        if [[ $? == 0 ]]; then
             echo "removing compressed files"
             rm ${nz_files}
         fi
@@ -41,6 +41,7 @@ for direc in ${LM_COMPRESS_DIRS}; do
 
         # remove original files
         if [[ $? == 0 ]]; then
+            echo "removing original files"
             rm -f ${nc_list}
         fi
     else
