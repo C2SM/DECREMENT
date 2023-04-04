@@ -24,8 +24,10 @@ cosmo_file_list(){
 
     # Arguments
     direc="$1"
-    date_1="$2"
-    date_2="$3"
+    begin_op="$2"
+    date_1="$3"
+    end_op="$4"
+    date_2="$5"
 
     # Compute date bounds to seconds since some absolute date
     begin_sec=$(date -d "$date_1" +%s)
@@ -41,7 +43,7 @@ cosmo_file_list(){
         # Convert date to seconds
         this_sec=$(date -d "${this_date}" +%s)
         # Check if it belongs to the interval
-        if (( this_sec >= begin_sec && this_sec <= end_sec )); then
+        if (( this_sec ${begin_op} begin_sec && this_sec ${end_op} end_sec )); then
             list+=" ${f}"
         fi
     done
