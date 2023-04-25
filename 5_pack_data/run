@@ -17,32 +17,37 @@ module load NCO
 
 # Compress, archive and remove originals
 for direc in ${LM_COMPRESS_DIRS}; do
-    nc_list=$(cosmo_file_list "input/${direc}" ">=" "${LM_BEGIN_DATE}" "<=" "${LM_END_DATE}")
+    nc_list=$(cosmo_file_list "input/${direc}" ">=" "${LM_BEGIN_DATE}" "<" "${LM_END_DATE}")
     if [[ -n ${nc_list} ]]; then
         # compress files
+        echo "Compressing files"
         ./nczip -kv "${nc_list}"
+        status=$?
         
-        cd input
         # create archive
-        if [[ $? == 0 ]]; then
+        if [[ $status == 0 ]]; then
+            echo "building archive file ${tar_file}"
+            cd input
             nz_files=$(find ${direc} -name '*.nz')
             part=$(dirname ${direc})
             stream=$(basename ${direc})
             tar_file="../output/${part}__${stream}__${LM_BEGIN_DATE_DG}-${LM_END_DATE_DG}.tar"
             tar --transform='s/.nz/.nc/' -cvf ${tar_file} ${nz_files}
+            status=$?
+        else
+            echo "something went wrong, not building archive file ${tar_file}"
+            exit $status
         fi
 
         # remove compressed files
-        if [[ $? == 0 ]]; then
-            echo "removing compressed files"
-            rm ${nz_files}
-        fi
-        cd ..
-
-        # remove original files
-        if [[ $? == 0 ]]; then
-            echo "removing original files"
+        if [[ $status == 0 ]]; then
+            echo "removing compressed and original files"
+            rm -f ${nz_files}
+            cd ..
             rm -f ${nc_list}
+        else
+            echo "something went wrong, not removing compressed and original files"
+            exit $status
         fi
     else
         echo "no nc files found in ${direc} between ${LM_BEGIN_DATE_FR} and ${LM_END_DATE_FR}"
