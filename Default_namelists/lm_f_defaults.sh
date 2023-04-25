@@ -156,7 +156,7 @@ lm_f_INPUT_PHY(){
   itype_synd = 2
   lsoil = .TRUE.
   itype_hydmod = 1
-  lsoil_init_fill = 1
+  lsoil_init_fill = .TRUE.
   lmelt = .TRUE.
   lmelt_var = .TRUE.
   itype_trvg = 2
