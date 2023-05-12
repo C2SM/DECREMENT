@@ -54,7 +54,7 @@ export NQS_ELAPSED_PACK_DATA=12:00:00    # maximum wall-clock time (HH:mm:ss)
 
 # ERA-Interim 
 export LM_NL_BC_DATA_TYPE='ERAInt'
-export LM_NL_BC_DATA_PATH=/project/${ACCOUNT}/ERAinterim
+export LM_NL_BC_DATA_PATH=/project/pr133/ERAinterim
 export LM_NL_POLPHIIFS=90.0
 export LM_NL_POLLAMIFS=180.0
 export LM_NL_IEIFS=512
