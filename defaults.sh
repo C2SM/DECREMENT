@@ -35,3 +35,6 @@ export LM_NL_ASYNIO_BLOCK_SIZE_F=10
 # Get data
 export NQS_ELAPSED_GET_DATA="01:00:00"
 
+# radiation scheme
+export LM_NL_LRADTOPO_C=.FALSE.
+export LM_NL_LRADTOPO_F=.FALSE.

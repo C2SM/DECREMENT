@@ -134,7 +134,10 @@ lm_c_INPUT_PHY(){
   ldiniprec = .FALSE.
   lrad = .TRUE.
   hincrad = $LM_NL_HINCRAD_C
-  lradtopo = .FALSE.
+  lradtopo = $LM_NL_LRADTOPO_C
+EONL
+    [[ -n ${LM_NL_NHORI_C} ]] && echo "  nhori = $LM_NL_NHORI_C" >> INPUT_PHY
+    cat >> INPUT_PHY << EONL
   ico2_rad = $LM_NL_ICO2_RAD_C
   lforest = .TRUE.
   ltur = .TRUE.

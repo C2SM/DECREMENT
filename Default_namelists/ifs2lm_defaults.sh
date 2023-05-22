@@ -52,6 +52,10 @@ ifs2lm_INPUT(){
   lvertwind_bd = .TRUE.
   itype_aerosol = $LM_NL_ITYPE_AEROSOL_C
   itype_albedo = $LM_NL_ITYPE_ALBEDO_C
+  lradtopo = $LM_NL_LRADTOPO_C
+EONL
+    [[ -n ${LM_NL_NHORI_C} ]] && echo "  nhori = $LM_NL_NHORI_C" >> INPUT_PHY
+    cat >> INPUT << EONL
  /END
 
  &GRID_IN
