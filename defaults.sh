@@ -36,5 +36,6 @@ export LM_NL_ASYNIO_BLOCK_SIZE_F=10
 export NQS_ELAPSED_GET_DATA="01:00:00"
 
 # Pack data
-export COMPRESS_LEVEL=1
-export PACK_DATA=true
+export PACK_COMPRESS_LEVEL=1
+export PACK_CREATE_ARCHIVE=true
+export PACK_REMOVE_ORIGINAL=true
