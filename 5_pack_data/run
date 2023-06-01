@@ -25,12 +25,12 @@ for direc in ${LM_COMPRESS_DIRS}; do
         status=0
         nz_list=""
         for file in ${nc_list}; do
-           echo "  $file"
-           ofile=${file%.nc}.nz
-           ncks -4 -L ${COMPRESS_LEVEL} --no_abc -O ${file} ${ofile}
-           err=$?
-           ((status += err))
-           [[ $err == 0 ]] && nz_list+=" ${ofile}"
+            echo "  $file"
+            ofile=${file%.nc}.nz
+            ncks -4 -L ${COMPRESS_LEVEL} --no_abc -O ${file} ${ofile}
+            err=$?
+            ((status += err))
+            [[ $err == 0 ]] && nz_list+=" ${ofile}"
         done
 
         if [[ ${PACK_DATA} == true ]]; then
@@ -52,7 +52,7 @@ for direc in ${LM_COMPRESS_DIRS}; do
             if [[ $status == 0 ]]; then
                 echo "removing compressed and original files"
                 for file in ${nc_list} ${nz_list}; do
-                  rm -f ${file}
+                    rm -f ${file}
                 done
             else
                 echo "something went wrong when creating archive, not removing compressed and original files"

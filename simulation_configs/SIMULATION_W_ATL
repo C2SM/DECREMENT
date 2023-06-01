@@ -32,11 +32,11 @@ export NQS_ELAPSED_IFS2LM=02:45:00  # maximum wall-clock time (HH:mm:ss)
 
 # 2_lm_c
 if [[ $COSMO_TARGET == "cpu" ]]; then
-  export NQS_NXLM_C=24              # number of CPUs in x direction (12 per node on daint-gpu)
-  export NQS_NYLM_C=20              # number of CPUs in y direction
+    export NQS_NXLM_C=24              # number of CPUs in x direction (12 per node on daint-gpu)
+    export NQS_NYLM_C=20              # number of CPUs in y direction
 else
-  export NQS_NXLM_C=6               # number of GPUs in x direction (12 per node on daint-gpu)
-  export NQS_NYLM_C=4               # number of GPUs in y direction
+    export NQS_NXLM_C=6               # number of GPUs in x direction (12 per node on daint-gpu)
+    export NQS_NYLM_C=4               # number of GPUs in y direction
 fi
 export NQS_NIOLM_C=0                # number of NODEs for asyncronous IO
 export NQS_ELAPSED_LM_C=07:00:00    # maximum wall-clock time (HH:mm:ss)

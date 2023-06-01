@@ -33,13 +33,13 @@ export NQS_ELAPSED_IFS2LM=01:30:00  # maximum wall-clock time (HH:mm:ss)
 
 # 2_lm_c
 if [[ $COSMO_TARGET == "cpu" ]]; then
-  export NQS_NXLM_C=44              # number of CPUs in x direction (12 per node on daint-gpu)
-  export NQS_NYLM_C=39              # number of CPUs in y direction
-  export NQS_NIOLM_C=12             # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
+    export NQS_NXLM_C=44              # number of CPUs in x direction (12 per node on daint-gpu)
+    export NQS_NYLM_C=39              # number of CPUs in y direction
+    export NQS_NIOLM_C=12             # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 else
-  export NQS_NXLM_C=13              # number of CPUs in x direction (12 per node on daint-gpu)
-  export NQS_NYLM_C=11              # number of CPUs in y direction
-  export NQS_NIOLM_C=4              # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
+    export NQS_NXLM_C=13              # number of CPUs in x direction (12 per node on daint-gpu)
+    export NQS_NYLM_C=11              # number of CPUs in y direction
+    export NQS_NIOLM_C=4              # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 fi
 export NQS_ELAPSED_LM_C=05:00:00    # maximum wall-clock time (HH:mm:ss)
 
@@ -144,9 +144,9 @@ export LM_NL_ASYNIO_BLOCK_SIZE_C=60
 
 #GRIBOUT
 defGribout_C(){
-  declare -ag LM_NL_GRIBOUT_C
+    declare -ag LM_NL_GRIBOUT_C
 
-  LM_NL_GRIBOUT_C[0]=" &GRIBOUT
+    LM_NL_GRIBOUT_C[0]=" &GRIBOUT
   ydir='output/30min_water',
   yform_write='nc-4',
   hcomb=0.0,LM_NL_HSTOP,0.5,
@@ -158,7 +158,7 @@ defGribout_C(){
   ytunit='d',
  /END"
 
-  LM_NL_GRIBOUT_C[1]=" &GRIBOUT
+    LM_NL_GRIBOUT_C[1]=" &GRIBOUT
   ydir='output/1h_2D',
   yform_write='nc-4',
   hcomb=0.0,LM_NL_HSTOP,1,
@@ -175,7 +175,7 @@ defGribout_C(){
   ytunit='d',
  /END"
 
-  LM_NL_GRIBOUT_C[2]=" &GRIBOUT
+    LM_NL_GRIBOUT_C[2]=" &GRIBOUT
   ydir='output/3h_3D_zlev',
   yform_write='nc-4',
   hcomb=0.0,LM_NL_HSTOP,3,
@@ -190,7 +190,7 @@ defGribout_C(){
   ytunit='d',
  /END"
 
-  LM_NL_GRIBOUT_C[3]=" &GRIBOUT
+    LM_NL_GRIBOUT_C[3]=" &GRIBOUT
   ydir='output/3h_3D_cloud',
   yform_write='nc-4',
   hcomb=0.0,LM_NL_HSTOP,3,
@@ -205,7 +205,7 @@ defGribout_C(){
   ytunit='d',
  /END"
 
-  LM_NL_GRIBOUT_C[4]=" &GRIBOUT
+    LM_NL_GRIBOUT_C[4]=" &GRIBOUT
   ydir='output/24h',
   yform_write='nc-4',
   hcomb=0.0,LM_NL_HSTOP,3,
