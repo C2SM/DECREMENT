@@ -15,39 +15,60 @@ export CRAY_CUDA_MPS=1
 module load daint-gpu
 module load NCO
 
+cd input
 # Compress, archive and remove originals
 for direc in ${LM_COMPRESS_DIRS}; do
-    nc_list=$(cosmo_file_list "input/${direc}" ">=" "${LM_BEGIN_DATE}" "<" "${LM_END_DATE}")
+    nc_list=$(cosmo_file_list "${direc}" ">=" "${LM_BEGIN_DATE}" "<" "${LM_END_DATE}")
     if [[ -n ${nc_list} ]]; then
         # compress files
         echo "Compressing files"
-        ./nczip -kv "${nc_list}"
-        status=$?
-        
-        # create archive
-        if [[ $status == 0 ]]; then
-            echo "building archive file ${tar_file}"
-            cd input
-            nz_files=$(find ${direc} -name '*.nz')
+        status=0
+        nz_list=""
+        for file in ${nc_list}; do
+            echo "  $file"
+            ofile=${file%.nc}.nz
+            ncks -4 -L ${COMPRESS_LEVEL} --no_abc -O ${file} ${ofile}
+            err=$?
+            ((status += err))
+            [[ $err == 0 ]] && nz_list+=" ${ofile}"
+        done
+
+        if [[ ${PACK_DATA} == true ]]; then
+            # create archive
             part=$(dirname ${direc})
             stream=$(basename ${direc})
             tar_file="../output/${part}__${stream}__${LM_BEGIN_DATE_DG}-${LM_END_DATE_DG}.tar"
-            tar --transform='s/.nz/.nc/' -cvf ${tar_file} ${nz_files}
-            status=$?
-        else
-            echo "something went wrong, not building archive file ${tar_file}"
-            exit $status
-        fi
+            if [[ $status == 0 ]]; then
+                echo "building archive file ${tar_file}"
+                printf '%s\n' ${nz_list} > .nz_list.txt
+                tar --transform='s/.nz/.nc/' -cvf ${tar_file} --files-from .nz_list.txt
+                status=$?
+            else
+                echo "something went wrong when compressing, not building archive file ${tar_file}"
+                exit $status
+            fi
 
-        # remove compressed files
-        if [[ $status == 0 ]]; then
-            echo "removing compressed and original files"
-            rm -f ${nz_files}
-            cd ..
-            rm -f ${nc_list}
+            # remove compressed and original files
+            if [[ $status == 0 ]]; then
+                echo "removing compressed and original files"
+                for file in ${nc_list} ${nz_list}; do
+                    rm -f ${file}
+                done
+            else
+                echo "something went wrong when creating archive, not removing compressed and original files"
+                exit $status
+            fi
         else
-            echo "something went wrong, not removing compressed and original files"
-            exit $status
+            if [[ $status == 0 ]]; then
+                # Replace original nc files by compressed files
+                echo "replacing original nc files by compressed files"
+                for file in ${nz_list}; do
+                    mv ${file} ${file%.nz}.nc
+                done
+            else
+                echo "something went wrong, not replacing original nc files"
+                exit $status
+            fi 
         fi
     else
         echo "no nc files found in ${direc} between ${LM_BEGIN_DATE_FR} and ${LM_END_DATE_FR}"

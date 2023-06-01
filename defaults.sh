@@ -38,3 +38,7 @@ export NQS_ELAPSED_GET_DATA="01:00:00"
 # radiation scheme
 export LM_NL_LRADTOPO_C=.FALSE.
 export LM_NL_LRADTOPO_F=.FALSE.
+
+# Pack data
+export COMPRESS_LEVEL=1
+export PACK_DATA=true
