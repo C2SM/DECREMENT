@@ -25,13 +25,13 @@ for direc in ${LM_COMPRESS_DIRS}; do
         status=$?
         
         # create archive
-        part=$(dirname ${direc})
-        stream=$(basename ${direc})
-        tar_file="../output/${part}__${stream}__${LM_BEGIN_DATE_DG}-${LM_END_DATE_DG}.tar"
         if [[ $status == 0 ]]; then
             echo "building archive file ${tar_file}"
             cd input
             nz_files=$(find ${direc} -name '*.nz')
+            part=$(dirname ${direc})
+            stream=$(basename ${direc})
+            tar_file="../output/${part}__${stream}__${LM_BEGIN_DATE_DG}-${LM_END_DATE_DG}.tar"
             tar --transform='s/.nz/.nc/' -cvf ${tar_file} ${nz_files}
             status=$?
         else
