@@ -39,8 +39,8 @@ lm_c_INPUT_ORG(){
   asynio_block_size = $LM_NL_ASYNIO_BLOCK_SIZE_C
   nboundlines = 3
   ldump_ascii = .FALSE.
-  itype_pert = ${LM_NL_ITYPE_PERT_C:-0}
-  rperturb = ${LM_NL_RPERTURB_C:-0.00001}
+  itype_pert = ${LM_NL_ITYPE_PERT_C}
+  rperturb = ${LM_NL_RPERTURB_C}
   itype_calendar = 0
   idbg_level = 4
  /END
@@ -190,7 +190,7 @@ lm_c_INPUT_IO(){
   yform_read = 'ncdf'
   l_ke_in_gds = .TRUE.
   lasync_io = $LM_NL_LASYNC_IO_C
-  lprefetch_io = ${LM_NL_LPREFETCH_C:-.FALSE.}
+  lprefetch_io = ${LM_NL_LPREFETCH_C}
   ymode_read = 'r  '
   ymode_write = 'w  '
   nincwait = 10
@@ -198,6 +198,7 @@ lm_c_INPUT_IO(){
   nhour_restart = 0, $LM_NL_HSTOP, $LM_NL_HSTOP
   ngribout = 4
   itype_gather = 2
+  yform_restart = ${LM_NL_RESTART_FMT}
   ydir_restart_in = 'output/restart'
   ydir_restart_out = 'output/restart'
   ytunit_restart = 'd'

@@ -103,10 +103,10 @@ get_dep_ids(){
 export -f get_dep_ids
 
 
-compute_nodes(){
+compute_cosmo_nodes(){
     echo $(( ($1 * $2 + $3 + $4 - 1) / $4 ))
 }
-export -f compute_nodes
+export -f compute_cosmo_nodes
 
 
 update_status(){
