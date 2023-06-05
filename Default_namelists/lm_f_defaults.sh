@@ -194,7 +194,7 @@ lm_f_INPUT_IO(){
   yform_read = 'ncdf'
   l_ke_in_gds = .TRUE.
   lasync_io = $LM_NL_LASYNC_IO_F
-  lprefetch_io = ${LM_NL_LPREFETCH_F:-.FALSE.}
+  lprefetch_io = ${LM_NL_LPREFETCH_F}
   ymode_read = 'r  '
   ymode_write = 'w  '
   nincwait = 10
@@ -202,6 +202,7 @@ lm_f_INPUT_IO(){
   nhour_restart = 0, $LM_NL_HSTOP, $LM_NL_HSTOP
   ngribout = 3
   itype_gather = 2
+  yform_restart = ${LM_NL_RESTART_FMT}
   ydir_restart_in = 'output/restart'
   ydir_restart_out = 'output/restart'
   ytunit_restart = 'd'

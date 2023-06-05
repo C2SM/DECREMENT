@@ -175,15 +175,15 @@ for part in ${SB_PARTS} ; do
     ntpn=12
     case ${short} in
         ifs2lm)
-            nodes=$(compute_nodes ${NQS_NXIFS2LM} ${NQS_NYIFS2LM} ${NQS_NIOIFS2LM} ${ntpn});;
+            nodes=$(compute_cosmo_nodes ${NQS_NXIFS2LM} ${NQS_NYIFS2LM} ${NQS_NIOIFS2LM} ${ntpn});;
         lm2lm)
-            nodes=$(compute_nodes ${NQS_NXLM2LM} ${NQS_NYLM2LM} ${NQS_NIOLM2LM} ${ntpn});;
+            nodes=$(compute_cosmo_nodes ${NQS_NXLM2LM} ${NQS_NYLM2LM} ${NQS_NIOLM2LM} ${ntpn});;
         lm_c)
             [[ $COSMO_TARGET == "gpu" ]] && ntpn=1
-            nodes=$(compute_nodes ${NQS_NXLM_C} ${NQS_NYLM_C} ${NQS_NIOLM_C} ${ntpn});;
+            nodes=$(compute_cosmo_nodes ${NQS_NXLM_C} ${NQS_NYLM_C} ${NQS_NIOLM_C} ${ntpn});;
         lm_f)
             [[ $COSMO_TARGET == "gpu" ]] && ntpn=1
-            nodes=$(compute_nodes ${NQS_NXLM_F} ${NQS_NYLM_F} ${NQS_NIOLM_F} ${ntpn});;
+            nodes=$(compute_cosmo_nodes ${NQS_NXLM_F} ${NQS_NYLM_F} ${NQS_NIOLM_F} ${ntpn});;
         *)
             eval nodes=\${NQS_NODES_${SHORT}}
             [[ -z "${nodes}" ]] && nodes=1;;
@@ -214,7 +214,7 @@ for part in ${SB_PARTS} ; do
         echo "running lm_c in ensemble mode with ${LM_NL_ENS_NUMBER_C} realizations" >> ${status_file}
 
         # Loop over ensemble members
-        (( max_k=${LM_NL_ENS_NUMBER_C}-1 ))
+        (( max_k = ${LM_NL_ENS_NUMBER_C} - 1 ))
         for (( k=0; k<=$max_k; k++ )); do
             # create 0-padded member directory
             member=$(printf "%0${#max_k}d" $k)

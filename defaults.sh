@@ -28,9 +28,12 @@ export chain_deps="previous_lm_c previous_lm_f"
 # Note : setting chain_deps="" will submit all chunks at once,
 # which could be a desired behavior
 
-#Async NetCDF I/O
+#I/O
 export LM_NL_ASYNIO_BLOCK_SIZE_C=10
 export LM_NL_ASYNIO_BLOCK_SIZE_F=10
+export LM_NL_RESTART_FMT='ncdf'
+export LM_NL_LPREFETCH_C='.FALSE.'
+export LM_NL_LPREFETCH_F='.FALSE.'
 
 # Get data
 export NQS_ELAPSED_GET_DATA="01:00:00"
@@ -40,5 +43,10 @@ export LM_NL_LRADTOPO_C=.FALSE.
 export LM_NL_LRADTOPO_F=.FALSE.
 
 # Pack data
-export COMPRESS_LEVEL=1
-export PACK_DATA=true
+export PACK_COMPRESS_LEVEL=1
+export PACK_CREATE_ARCHIVE=true
+export PACK_REMOVE_ORIGINAL=true
+
+# Ensemble runs
+export LM_NL_ITYPE_PERT_C=0
+export LM_NL_RPERTURB_C=0.00001

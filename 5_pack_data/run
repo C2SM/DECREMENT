@@ -18,57 +18,69 @@ module load NCO
 cd input
 # Compress, archive and remove originals
 for direc in ${LM_COMPRESS_DIRS}; do
+    echo ${direc}
     nc_list=$(cosmo_file_list "${direc}" ">=" "${LM_BEGIN_DATE}" "<" "${LM_END_DATE}")
     if [[ -n ${nc_list} ]]; then
         # compress files
         echo "Compressing files"
-        status=0
+        nfiles=0
+        nerr=0
         nz_list=""
         for file in ${nc_list}; do
+            ((nfiles++))
             echo "  $file"
             ofile=${file%.nc}.nz
-            ncks -4 -L ${COMPRESS_LEVEL} --no_abc -O ${file} ${ofile}
-            err=$?
-            ((status += err))
-            [[ $err == 0 ]] && nz_list+=" ${ofile}"
+            ncks -4 -L ${PACK_COMPRESS_LEVEL} --no_abc -O ${file} ${ofile}
+            [[ $? == 0 ]] && nz_list+=" ${ofile}" || ((nerr++))
         done
+        if (( nerr > 0 )); then
+            echo "something went wrong when compressing ${nerr}/${nfiles} files, exiting"
+            exit 1
+        fi
 
-        if [[ ${PACK_DATA} == true ]]; then
+        if [[ ${PACK_CREATE_ARCHIVE} == true ]]; then
             # create archive
             part=$(dirname ${direc})
             stream=$(basename ${direc})
             tar_file="../output/${part}__${stream}__${LM_BEGIN_DATE_DG}-${LM_END_DATE_DG}.tar"
-            if [[ $status == 0 ]]; then
-                echo "building archive file ${tar_file}"
-                printf '%s\n' ${nz_list} > .nz_list.txt
-                tar --transform='s/.nz/.nc/' -cvf ${tar_file} --files-from .nz_list.txt
-                status=$?
-            else
-                echo "something went wrong when compressing, not building archive file ${tar_file}"
+            echo "building archive file ${tar_file}"
+            printf '%s\n' ${nz_list} > .nz_list.txt
+            tar --transform='s/.nz/.nc/' -cvf ${tar_file} --files-from .nz_list.txt
+            status=$?
+            if [[ $status != 0 ]]; then
+                echo "something went wrong when creating archive, exiting"
                 exit $status
             fi
 
             # remove compressed and original files
-            if [[ $status == 0 ]]; then
+            if [[ ${PACK_REMOVE_ORIGINAL} == true ]]; then
                 echo "removing compressed and original files"
+                nfiles=0
+                nerr=0
                 for file in ${nc_list} ${nz_list}; do
+                    ((nfiles++))
                     rm -f ${file}
+                    [[ $? != 0 ]] && ((nerr++))
                 done
-            else
-                echo "something went wrong when creating archive, not removing compressed and original files"
-                exit $status
+                if (( nerr > 0 )); then
+                    echo "something went wrong when removing ${nerr}/${nfiles} compressed and original files, exiting"
+                    exit 1
+                fi
             fi
         else
-            if [[ $status == 0 ]]; then
-                # Replace original nc files by compressed files
-                echo "replacing original nc files by compressed files"
-                for file in ${nz_list}; do
-                    mv ${file} ${file%.nz}.nc
-                done
-            else
-                echo "something went wrong, not replacing original nc files"
-                exit $status
-            fi 
+            # Replace original nc files by compressed files
+            echo "replacing original nc files by compressed files"
+            nfiles=0
+            nerr=0
+            for file in ${nz_list}; do
+                ((nfiles++))
+                mv ${file} ${file%.nz}.nc
+                [[ $? != 0 ]] && ((nerr++))
+            done
+            if (( nerr > 0 )); then
+                echo "something went wrong when replacing ${nerr}/${nfiles} original nc files by compressed files, exiting"
+                exit 1
+            fi
         fi
     else
         echo "no nc files found in ${direc} between ${LM_BEGIN_DATE_FR} and ${LM_END_DATE_FR}"
