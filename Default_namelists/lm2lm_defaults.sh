@@ -17,7 +17,7 @@ lm2lm_INPUT(){
   lmixcld = .FALSE.
   yinput_model = 'COSMO'
   linitial = .TRUE.
-  idbg_level = 3
+  idbg_level = ${LM_NL_IDBG_LEVEL_F}
   luse_t_skin = .TRUE.
   nincwait = 30
   nmaxwait = 120

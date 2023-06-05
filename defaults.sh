@@ -28,6 +28,10 @@ export chain_deps="previous_lm_c previous_lm_f"
 # Note : setting chain_deps="" will submit all chunks at once,
 # which could be a desired behavior
 
+# General settings
+export LM_NL_IDBG_LEVEL_C=4
+export LM_NL_IDBG_LEVEL_F=4
+
 #I/O
 export LM_NL_ASYNIO_BLOCK_SIZE_C=10
 export LM_NL_ASYNIO_BLOCK_SIZE_F=10

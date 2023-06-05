@@ -42,7 +42,7 @@ lm_c_INPUT_ORG(){
   itype_pert = ${LM_NL_ITYPE_PERT_C}
   rperturb = ${LM_NL_RPERTURB_C}
   itype_calendar = 0
-  idbg_level = 4
+  idbg_level = ${LM_NL_IDBG_LEVEL_C}
  /END
 
  &TUNING

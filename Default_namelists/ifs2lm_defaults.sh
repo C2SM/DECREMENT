@@ -15,7 +15,7 @@ ifs2lm_INPUT(){
   lboundaries = .TRUE.
   ltime_mean = .TRUE.
   luvcor = .TRUE.
-  idbg_level = 3
+  idbg_level = ${LM_NL_IDBG_LEVEL_C}
   luse_t_skin = $LM_NL_LUSE_T_SKIN
   nprocx = ${NQS_NXIFS2LM}
   nprocy = ${NQS_NYIFS2LM}

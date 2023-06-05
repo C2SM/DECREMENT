@@ -40,7 +40,7 @@ lm_f_INPUT_ORG(){
   nboundlines = 3
   ldump_ascii = .FALSE.
   itype_calendar = 0
-  idbg_level = 4
+  idbg_level = ${LM_NL_IDBG_LEVEL_F}
  /END
 
  &TUNING
