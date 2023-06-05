@@ -6,3 +6,4 @@ for d in [0-9]*_*; do
   rm -f run_*.out
   cd - 1>/dev/null 2>/dev/null
 done
+rm -f ./status.log

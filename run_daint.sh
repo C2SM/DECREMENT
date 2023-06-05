@@ -142,7 +142,6 @@ export LM_END_DATE_DG=$(date -d "${LM_END_DATE}" +%Y%m%d%H%M%S)
 if [[ "${LM_BEGIN_DATE}" == "${LM_START_DATE}" ]]; then
     export status_file=$(realpath "./status.log")
     # do some cleaning
-    ./clean.sh
     rm -f ${status_file}
 fi
 
