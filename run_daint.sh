@@ -214,7 +214,7 @@ for part in ${SB_PARTS} ; do
         echo "running lm_c in ensemble mode with ${LM_NL_ENS_NUMBER_C} realizations" >> ${status_file}
 
         # Loop over ensemble members
-        (( max_k=${LM_NL_ENS_NUMBER_C}-1 ))
+        (( max_k = ${LM_NL_ENS_NUMBER_C} - 1 ))
         for (( k=0; k<=$max_k; k++ )); do
             # create 0-padded member directory
             member=$(printf "%0${#max_k}d" $k)
