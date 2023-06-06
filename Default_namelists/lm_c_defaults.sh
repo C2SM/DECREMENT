@@ -201,7 +201,7 @@ lm_c_INPUT_IO(){
   nhour_restart = 0, $LM_NL_HSTOP, $LM_NL_HSTOP
   ngribout = 4
   itype_gather = 2
-  yform_restart = ${LM_NL_RESTART_FMT}
+  yform_restart = '${LM_NL_RESTART_FMT}'
   ydir_restart_in = 'output/restart'
   ydir_restart_out = 'output/restart'
   ytunit_restart = 'd'

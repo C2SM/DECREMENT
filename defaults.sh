@@ -35,7 +35,7 @@ export LM_NL_IDBG_LEVEL_F=4
 #I/O
 export LM_NL_ASYNIO_BLOCK_SIZE_C=10
 export LM_NL_ASYNIO_BLOCK_SIZE_F=10
-export LM_NL_RESTART_FMT='ncdf'
+export LM_NL_RESTART_FMT='bina'
 export LM_NL_LPREFETCH_C='.FALSE.'
 export LM_NL_LPREFETCH_F='.FALSE.'
 
