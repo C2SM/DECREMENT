@@ -31,7 +31,8 @@ for direc in ${LM_COMPRESS_DIRS}; do
             echo "  $file"
             ofile=${file%.nc}.nz
             ncks -4 -L ${PACK_COMPRESS_LEVEL} --no_abc -O ${file} ${ofile}
-            [[ $? == 0 ]] && nz_list+=" ${ofile}" || ((nerr++))
+            status=$?
+            [[ -e ${ofile} && $status == 0 ]] && nz_list+=" ${ofile}" || ((nerr++))
         done
         if (( nerr > 0 )); then
             echo "something went wrong when compressing ${nerr}/${nfiles} files, exiting"
