@@ -2,6 +2,7 @@
 
 diff_hours(){
     # get difference between 2 dates in hours
+    
     d1=$(date -d "$1" +%s)
     d2=$(date -d "$2" +%s)
     echo $(( ($d2 - $d1) / 3600 ))
@@ -12,6 +13,7 @@ export -f diff_hours
 mkydirs(){
     # search for lines matching "ydirxxx = 'yyy'" in file given by first
     # argument and create the corresponding directory
+    
     for ydir in $(sed -n 's/^\s*ydir.*=\s*["'\'']\(.*\)["'\'']\s*/\1/p' $1); do
         mkdir -p ${ydir}
     done
@@ -54,6 +56,7 @@ export -f cosmo_file_list
 
 add_s_oro_max(){
     # Add the S_ORO_MAX variable to $1 if missing by copying the S_ORO variable
+    
     ncdump -h ${1} | grep -q S_ORO_MAX
     if [[ $? != 0 ]]; then
         echo "S_ORO_MAX not in ${1}, copying S_ORO as S_ORO_MAX"
@@ -69,6 +72,7 @@ export -f add_s_oro_max
 id_list(){
     # Convert a space-separated list in a :-separated one,
     # i.e. list ids in the slurm format
+    
     local IFS=":"
     echo "$*"
 }
@@ -78,6 +82,7 @@ export -f id_list
 get_dep_ids(){
     # Check the dependencies of argument $1 and output
     # the corresponding job ids
+    
     eval dep_names=\$${1}_deps
     unset dep_ids
     for dep in ${dep_names}; do
@@ -101,6 +106,51 @@ get_dep_ids(){
     echo $(id_list ${dep_ids})
 }
 export -f get_dep_ids
+
+
+submit(){
+    # Submit a part of the chain (use from the corresponding directory)
+
+    # Source env.sh if present
+    # ------------------------
+    [[ -e env.sh ]] && source env.sh
+    
+    # Build sbatch command
+    # --------------------
+    cmd="sbatch --parsable -C gpu --output ${LM_RUN_OUTPUT} --job-name ${short} --account=${ACCOUNT}"
+    
+    # number of nodes
+    eval nodes=\${NQS_NODES_${SHORT}}
+    [[ -z "${nodes}" ]] && nodes=1
+    cmd+=" --nodes=${nodes}"
+    
+    # number of tasks per node
+    eval ntpn=\${NQS_NTPN_${SHORT}}
+    [[ -z "${ntpn}" ]] && ntpn=${CORES_PER_NODE}
+    cmd+=" --ntasks-per-node=${ntpn}"
+
+    # wall time
+    eval time=\${NQS_ELAPSED_${SHORT}}
+    [[ -z "${time}" ]] && time="00:05:00"
+    cmd+=" --time=${time}"
+
+    # partition
+    eval partition=\${NQS_QUEUE_${SHORT}}
+    [[ -z "${partition}" ]] && partition=${QUEUE}
+    cmd+=" --partition=${partition}"
+
+    # dependencies
+    dep_ids=$(get_dep_ids ${short})
+    [[ -n "${dep_ids}" ]] && cmd+=" --dependency=afterok:${dep_ids}"
+
+    # job file
+    cmd+=" ./run"
+
+    # Submit job and return job id
+    # ----------------------------
+    jobid=$(${cmd})
+    echo ${jobid}
+}
 
 
 compute_cosmo_nodes(){

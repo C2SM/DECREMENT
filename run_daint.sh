@@ -40,36 +40,7 @@ source user_settings
 # =======================
 export QUEUE="normal"
 export RUNCMD="srun"
-export CORES_PER_NODE=24
-
-
-# Architecture specific settings
-# ==============================
-if [[ $COSMO_TARGET == "cpu" ]]; then
-    export LM_NL_LCPP_DYCORE=.False.
-else
-    export LM_NL_LCPP_DYCORE=.True.
-fi
-
-# Async IO settings
-# =================
-if (( ${NQS_NIOLM_C} > 0 )); then
-    export LM_NL_LASYNC_IO_C=.TRUE.
-    export LM_NL_NUM_IOPE_PERCOMM_C=1
-else
-    export LM_NL_LASYNC_IO_C=.FALSE.
-    export LM_NL_NUM_IOPE_PERCOMM_C=0
-    export LM_NL_LPREFETCH_C=.FALSE.
-fi
-
-if (( ${NQS_NIOLM_F} > 0 )); then
-    export LM_NL_LASYNC_IO_F=.TRUE.
-    export LM_NL_NUM_IOPE_PERCOMM_F=1
-else
-    export LM_NL_LASYNC_IO_F=.FALSE.
-    export LM_NL_NUM_IOPE_PERCOMM_F=0
-    export LM_NL_LPREFETCH_F=.FALSE.
-fi
+export CORES_PER_NODE=12
 
 
 # Handle dates
@@ -137,6 +108,7 @@ export LM_END_DATE_FR=$(date -d "${LM_END_DATE}" +%FT%R)
 export LM_BEGIN_DATE_DG=$(date -d "${LM_BEGIN_DATE}" +%Y%m%d%H%M%S)
 export LM_END_DATE_DG=$(date -d "${LM_END_DATE}" +%Y%m%d%H%M%S)
 
+
 # Init matter
 # ===========
 if [[ "${LM_BEGIN_DATE}" == "${LM_START_DATE}" ]]; then
@@ -144,6 +116,7 @@ if [[ "${LM_BEGIN_DATE}" == "${LM_START_DATE}" ]]; then
     # do some cleaning
     rm -f ${status_file}
 fi
+
 
 # Submit jobs
 # ===========
@@ -153,103 +126,28 @@ fi
 echo "====>  jobs for the priod ${LM_BEGIN_DATE_FR} -- ${LM_END_DATE_FR}  <===="  >> ${status_file}
 echo "" >> ${status_file}
 
+export LM_RUN_OUTPUT="run_${LM_BEGIN_DATE_DG}_${LM_END_DATE_DG}.out"
+
 for part in ${SB_PARTS} ; do
     short=${part#[0-9]*_}
     SHORT=$(echo ${short} | tr '[:lower:]' '[:upper:]')
-    mkdir -p output/${short}
 
-    cd ${part}
-
-    # Build sbatch command
+    # Enter part directory
     # --------------------
-    cmd="sbatch --parsable -C gpu"
-    
-    # Common options
-    export LM_RUN_OUTPUT="run_${LM_BEGIN_DATE_DG}_${LM_END_DATE_DG}.out"
-    cmd+=" --output ${LM_RUN_OUTPUT}"
-    cmd+=" --job-name ${short}"
-    cmd+=" --account=${ACCOUNT}"
+    pushd ${part} >&/dev/null
 
-    # number of nodes and potentitally number of tasks per node
-    ntpn=12
-    case ${short} in
-        ifs2lm)
-            nodes=$(compute_cosmo_nodes ${NQS_NXIFS2LM} ${NQS_NYIFS2LM} ${NQS_NIOIFS2LM} ${ntpn});;
-        lm2lm)
-            nodes=$(compute_cosmo_nodes ${NQS_NXLM2LM} ${NQS_NYLM2LM} ${NQS_NIOLM2LM} ${ntpn});;
-        lm_c)
-            [[ $COSMO_TARGET == "gpu" ]] && ntpn=1
-            nodes=$(compute_cosmo_nodes ${NQS_NXLM_C} ${NQS_NYLM_C} ${NQS_NIOLM_C} ${ntpn});;
-        lm_f)
-            [[ $COSMO_TARGET == "gpu" ]] && ntpn=1
-            nodes=$(compute_cosmo_nodes ${NQS_NXLM_F} ${NQS_NYLM_F} ${NQS_NIOLM_F} ${ntpn});;
-        *)
-            eval nodes=\${NQS_NODES_${SHORT}}
-            [[ -z "${nodes}" ]] && nodes=1;;
-    esac
-    cmd+=" --nodes=${nodes} --ntasks-per-node=${ntpn}"
-
-    # dependencies
-    dep_ids=$(get_dep_ids ${short})
-    [[ -n "${dep_ids}" ]] && cmd+=" --dependency=afterok:${dep_ids}"
-
-    # wall time
-    eval time=\${NQS_ELAPSED_${SHORT}}
-    [[ -z "${time}" ]] && time="00:05:00"
-    cmd+=" --time=${time}"
-                 
-    # partition
-    eval partition=\${NQS_QUEUE_${SHORT}}
-    [[ -z "${partition}" ]] && partition=${QUEUE}
-    cmd+=" --partition=${partition}"
-
-    # job file
-    cmd+=" ./run"
-
-    if [[ "${short}" == "lm_c" ]] && (( LM_NL_ENS_NUMBER_C > 1 )); then
-        
-        # Ensemble execution
-        # ------------------
-        echo "running lm_c in ensemble mode with ${LM_NL_ENS_NUMBER_C} realizations" >> ${status_file}
-
-        # Loop over ensemble members
-        (( max_k = ${LM_NL_ENS_NUMBER_C} - 1 ))
-        for (( k=0; k<=$max_k; k++ )); do
-            # create 0-padded member directory
-            member=$(printf "%0${#max_k}d" $k)
-            mkdir -p $member
-            cd $member
-
-            # link necessary paths and exe
-            ln -sf ../clean
-            ln -sf ../run
-            ln -sf ../output/$member output
-            ln -sf ../input
-            ln -sf ../cosmo
-
-            # Submit job and store job id
-            jobid=$(${cmd})
-            jobids+=" ${jobid}"
-            
-            cd ..
-        done
-        
-        # gather all member ids in a :-separated list and export
-        jobid=$(id_list ${jobids})
-        eval export current_${short}_id=\${jobid}
-        
+    # Submit job
+    # ----------
+    if [[ -e submit.sh ]]; then
+        jobid=$(./submit.sh)
     else
-        
-        # Normal execution
-        # ----------------
-        # Submit job and get job id
-        jobid=$(${cmd})
-        
-        # Store job id
-        eval export current_${short}_id=\${jobid}
-        
+        jobid=$(submit)
     fi
-    
+
+    # Store job id
+    # ------------
+    eval export current_${short}_id=\${jobid}
+
     # Status log
     # ----------
     GREEN="\033[32m"
@@ -261,8 +159,10 @@ for part in ${SB_PARTS} ; do
     echo "[ dependencies ] ${dep_ids}" >> ${status_file}
     echo "[ job id       ] ${jobid}" >> ${status_file}
     echo "[ status       ] submitted" >> ${status_file}
-    
-    cd - 1>/dev/null 2>/dev/null
+
+    # Exit part directory
+    # -------------------
+    popd >&/dev/null
     
 done
 

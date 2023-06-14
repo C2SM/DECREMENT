@@ -52,5 +52,6 @@ export PACK_CREATE_ARCHIVE=true
 export PACK_REMOVE_ORIGINAL=true
 
 # Ensemble runs
+export LM_NL_ENS_NUMBER_C=1
 export LM_NL_ITYPE_PERT_C=0
 export LM_NL_RPERTURB_C=0.00001
