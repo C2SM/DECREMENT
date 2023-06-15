@@ -129,8 +129,8 @@ echo "" >> ${status_file}
 export LM_RUN_OUTPUT="run_${LM_BEGIN_DATE_DG}_${LM_END_DATE_DG}.out"
 
 for part in ${SB_PARTS} ; do
-    short=${part#[0-9]*_}
-    SHORT=$(echo ${short} | tr '[:lower:]' '[:upper:]')
+    export short=${part#[0-9]*_}
+    export SHORT=$(echo ${short} | tr '[:lower:]' '[:upper:]')
 
     # Enter part directory
     # --------------------

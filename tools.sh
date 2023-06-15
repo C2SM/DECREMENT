@@ -117,7 +117,7 @@ submit(){
     
     # Build sbatch command
     # --------------------
-    cmd="sbatch --parsable -C gpu --output ${LM_RUN_OUTPUT} --job-name ${short} --account=${ACCOUNT}"
+    cmd="sbatch --parsable -C gpu --output=${LM_RUN_OUTPUT} --job-name=${short} --account=${ACCOUNT}"
     
     # number of nodes
     eval nodes=\${NQS_NODES_${SHORT}}
