@@ -1,18 +1,13 @@
 #!/bin/bash
 
-# Load defaults
-# =============
+# Load settings from defaults, config and user
+# ============================================
+
+# Load general defaults
 source tools.sh
 source defaults.sh
-source Default_namelists/ifs2lm_defaults.sh
-source Default_namelists/lm_c_defaults.sh 
-source Default_namelists/lm2lm_defaults.sh 
-source Default_namelists/lm_f_defaults.sh
 
-# Load user defined parameters
-# ============================
-# Load once here, just to have access to COSMO_TARGET when sourcing config
-
+# Load config and user settings once here, just to have access to SB_PARTS
 if [[ ! -f config ]]; then
     echo "ERROR : No config file found. Copy or link one from simulation_configs, e.g., ln -s simulation_configs/SIMULATION_EU_CORDEX_50km config"
     exit 1
@@ -23,21 +18,21 @@ else
     source user_settings    
 fi
 
+# Load Defaults from parts
+for part in ${SB_PARTS}; do
+    for f in ${part}/Defaults/*; do
+        source $f
+    done
+done
 
-# Load simualtion config
-# ======================
+# Reload config and user settings to ensure user_settings > config > defaults
 source config
-
-
-# Reload user settings
-# ====================
-# Source user settings again so that they take precedence over anything else
-# user_settings > config > Default_namelists/*
-source user_settings
+[[ -f user_settings ]] && source user_settings
 
 
 # Daint specific settings
 # =======================
+
 export QUEUE="normal"
 export RUNCMD="srun"
 export CORES_PER_NODE=12
@@ -45,6 +40,7 @@ export CORES_PER_NODE=12
 
 # Handle dates
 # ============
+
 # Convert dates to formats capable of handling addition of arbitrary time intervals
 export LM_INI_DATE=$(date -d "${LM_INI_DATE}" +%c)
 export LM_FIN_DATE=$(date -d "${LM_FIN_DATE}" +%c)
@@ -111,6 +107,7 @@ export LM_END_DATE_DG=$(date -d "${LM_END_DATE}" +%Y%m%d%H%M%S)
 
 # Init matter
 # ===========
+
 if [[ "${LM_BEGIN_DATE}" == "${LM_START_DATE}" ]]; then
     export status_file=$(realpath "./status.log")
     # do some cleaning
@@ -120,6 +117,7 @@ fi
 
 # Submit jobs
 # ===========
+
 if [[ "${LM_BEGIN_DATE}" != "${LM_START_DATE}" ]]; then
     echo "" >> ${status_file}
 fi
