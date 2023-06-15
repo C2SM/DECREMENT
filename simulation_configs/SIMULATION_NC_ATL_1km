@@ -14,7 +14,7 @@ export LM_FIN_DATE="2012-01-01T00:00"
 export LM_CHAIN_INTERVAL=1month     #Current options: "1year", "1month", "1day".
 
 # Parts that will be executed. Same as folder names.
-export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c 3_lm2lm 4_lm_f 6_chain"
+export SB_PARTS="00_get_data 10_ifs2lm 20_lm_c 30_lm2lm 40_lm_f 60_chain"
 
 # List of output folders to compress and pack (use spaces between the folders)
 export LM_COMPRESS_DIRS="lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev lm_f/1h_2D lm_f/24h lm_f/3h_3D_zlev"
@@ -24,13 +24,13 @@ export LM_COMPRESS_DIRS="lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev lm_f/1h_2D lm_f/24h
 #                   NODES AND WALL TIME
 # ===================================================
 
-# 1_ifs2lm
+# 10_ifs2lm
 export NQS_NXIFS2LM=8               # number of CPUs in x direction (12 per node on daint-gpu)
 export NQS_NYIFS2LM=12              # number of CPUs in y direction
 export NQS_NIOIFS2LM=0              # number of CPUs for asyncronous IO
 export NQS_ELAPSED_IFS2LM=02:45:00  # maximum wall-clock time (HH:mm:ss)
 
-# 2_lm_c
+# 20_lm_c
 if [[ $COSMO_TARGET == "cpu" ]]; then
     export NQS_NXLM_C=21              # number of CPUs in x direction (12 per node on daint-gpu)
     export NQS_NYLM_C=12              # number of CPUs in y direction
@@ -42,19 +42,19 @@ export NQS_NIOLM_C=0                # number of NODEs for asyncronous IO
 export NQS_ELAPSED_LM_C=07:00:00    # maximum wall-clock time (HH:mm:ss)
 
 
-# 3_lm2lm
+# 30_lm2lm
 export NQS_NXLM2LM=8                # number of CPUs in x direction (12 per node on daint-gpu)
 export NQS_NYLM2LM=12               # number of CPUs in y direction
 export NQS_NIOLM2LM=0               # number of CPUs for asyncronous IO
 export NQS_ELAPSED_LM2LM=14:30:00   # maximum wall-clock time (HH:mm:ss)
 
-# 4_lm_f
+# 40_lm_f
 export NQS_NXLM_F=24                # number of NODEs in x direction
 export NQS_NYLM_F=12                # number of NODEs in y direction
 export NQS_NIOLM_F=0                # number of NODEs for asyncronous IO
 export NQS_ELAPSED_LM_F=20:00:00    # maximum wall-clock time (HH:mm:ss)
 
-#5_pack_data
+#50_pack_data
 export NQS_ELAPSED_PACK_DATA=12:00:00    # maximum wall-clock time (HH:mm:ss)
 
 

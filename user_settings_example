@@ -42,7 +42,7 @@ export LM_CHAIN_INTERVAL=1day # Anything human readable like "2 hours", "1 month
 # Parts that will be executed. Same as folder names.
 # CAUTION: make sure the order of the parts is compatible with the dependencies,
 # i.e. any dependency of a part should be submitted before the part
-export SB_PARTS="0_get_data 1_ifs2lm 2_lm_c"
+export SB_PARTS="00_get_data 10_ifs2lm 20_lm_c"
 
 # Dependencies
 # The format is xxx_deps="current_yyy previous_zzz ..."

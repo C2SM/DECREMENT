@@ -58,7 +58,7 @@ else
 fi
 
 # Begin date of current step
-# If set in 6_chain, keep the value, otherwise, use LM_START_DATE
+# If set in 60_chain, keep the value, otherwise, use LM_START_DATE
 if [[ -z "${LM_BEGIN_DATE}" ]]; then
     export LM_BEGIN_DATE=$(date -d "${LM_START_DATE}" +%c)
 fi
