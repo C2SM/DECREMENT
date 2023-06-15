@@ -22,7 +22,7 @@ The scripts are loading settings from different locations with the following pri
 
 ## Changing arbitrary namelist parameters
 
-A design idea of DECREMENT is that parameters that users change most often have a corresponding environment variable defined either in `defaults.sh` or in the `config` file. For instance, `LM_NL_DT_C` is the time step for the coarse reslution domain. In order to be able to modify any parameter, the namelsts are generated in exported functions (see files in the `kk_part_name/Defaults` directory). These can be redefined either in the `config`or `user_settings` file and exported from there in order to take precedence over the default ones. This is tipically the way to go to modify the output streams. If this generates too much cluttering of these files, one can always source a custom file from inside them to keep a good level of readability.
+A design idea of DECREMENT is that parameters that users change most often have a corresponding environment variable defined either in `part_name/Defaults/*` or in the `config` file. For instance, `LM_NL_DT_C` is the time step for the coarse reslution domain corresponding to the `dt` namelist parameter in the `20_lm_c` part. In order to be able to modify any parameter, the namelsts are generated in exported functions (see files in the `kk_part_name/Defaults` directory). These can be redefined either in the `config`or `user_settings` file and exported from there in order to take precedence over the default ones. This is tipically the way to go to modify the output streams. If this generates too much cluttering of these files, one can always source a custom file from inside them to keep a good level of readability.
 
 
 ## Basic usage
