@@ -151,7 +151,7 @@ submit(){
     jobid=$(${cmd})
     echo ${jobid}
 }
-
+export -f submit
 
 compute_cosmo_nodes(){
     echo $(( ($1 * $2 + $3 + $4 - 1) / $4 ))
