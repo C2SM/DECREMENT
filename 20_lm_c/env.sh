@@ -23,7 +23,7 @@ fi
 # =====
 [[ $COSMO_TARGET == "gpu" ]] && ntpn=1 || ntpn=12
 export NQS_NODES_LM_C=$(compute_cosmo_nodes ${NQS_NXLM_C} ${NQS_NYLM_C} ${NQS_NIOLM_C} ${ntpn})
-export NQS_NTPN_LM_C=ntpn
+export NQS_NTPN_LM_C=${ntpn}
 
 # Spack
 # =====

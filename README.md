@@ -1,6 +1,6 @@
 # DECREMENT, The DirEctory COSMO Runtime EnvironMENT
 
-A set of scripts used to run weather and climate simulations with COSMO. It is is intended to be simple and easy to extend. It is originally a stripped down version of the LM_package (hence all the variable names starting wit `LM_`) and evolved later into a more generic workflow tool with async capabilities.
+A set of scripts used to run weather and climate simulations with COSMO. It is is intended to be simple and easy to extend. It is originally a stripped down version of the LM_package (hence all the variable names starting with `LM_`) and evolved later into a more generic workflow tool with async capabilities.
 
 
 ## The default chain of tasks
