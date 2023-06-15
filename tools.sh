@@ -135,8 +135,8 @@ submit(){
     cmd+=" --time=${time}"
 
     # partition
-    eval partition=\${NQS_QUEUE_${SHORT}}
-    [[ -z "${partition}" ]] && partition=${QUEUE}
+    eval partition=\${NQS_PARTITION_${SHORT}}
+    [[ -z "${partition}" ]] && partition=${PARTITION}
     cmd+=" --partition=${partition}"
 
     # dependencies

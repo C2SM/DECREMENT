@@ -1,6 +1,6 @@
 # DECREMENT, The DirEctory COSMO Runtime EnvironMENT
 
-A set of scripts used to run weather and climate simulations with COSMO. It is is intended to be simple and easy to extend. For more comprehensive solution consider using the LM Package.
+A set of scripts used to run weather and climate simulations with COSMO. It is is intended to be simple and easy to extend. It is originally a stripped down version of the LM_package (hence all the variable names starting wit `LM_`) and evolved later into a more generic workflow tool with async capabilities.
 
 
 ## The default chain of tasks
@@ -17,12 +17,12 @@ By default, DECREMENT is intended to run a so-called *coarse* resolution domain 
 
 ## How settings are prescribed
 
-The scripts are loading settings from different locations with the following priority: default < config < user settings. The defaults can come from `defaults.sh` or `Default_namelists/*`. The idea is that the `config` file hosts settings related to the simulation configuration (domain, physical parametrizations, etc) and must be located in the rot directory. It can either be a link to a stock configuration, e.g. `ln -sf simulation_configs/SIMULATION_EU_CORDEX_50km config`, or a personal configuration written from scratch. Finally the optional but almost always needed `user_settings` file, which must also be located in the root directory, hosts settings one wants to modify or even create and takes precedence over others.
+The scripts are loading settings from different locations with the following priority: defaults < config < user settings. The defaults can come from the `defaults.sh` or anyting under `kk_part_name/Defaults`. The idea is that the `config` file hosts settings related to the simulation configuration (domain, physical parametrizations, etc) and must be located in the rot directory. It can either be a link to a stock configuration, e.g. `ln -sf simulation_configs/SIMULATION_EU_CORDEX_50km config`, or a personal configuration written from scratch. Finally the optional but almost always needed `user_settings` file, which must also be located in the root directory, hosts settings one wants to modify or even create and takes precedence over others.
 
 
 ## Changing arbitrary namelist parameters
 
-A design idea of DECREMENT is that parameters that users change most often have a corresponding environment variable defined either in `defaults.sh` or in the `config` file. For instance, `LM_NL_DT_C` is the time step for the coarse reslution domain. In order to be able to modify any parameter, the namelsts are generated in exported functions (see files in the `Default_namelists` directory). These can be redefined either in the `config`or `user_settings` file and exported from there in order to take precedence over the default ones. This is tipically the way to go to modify the output streams. If this generates too much cluttering of these files, one can always source a custom file from inside them to keep a good level of readability.
+A design idea of DECREMENT is that parameters that users change most often have a corresponding environment variable defined either in `defaults.sh` or in the `config` file. For instance, `LM_NL_DT_C` is the time step for the coarse reslution domain. In order to be able to modify any parameter, the namelsts are generated in exported functions (see files in the `kk_part_name/Defaults` directory). These can be redefined either in the `config`or `user_settings` file and exported from there in order to take precedence over the default ones. This is tipically the way to go to modify the output streams. If this generates too much cluttering of these files, one can always source a custom file from inside them to keep a good level of readability.
 
 
 ## Basic usage
@@ -49,16 +49,21 @@ The current version of DECREMENT enables asynchronous execution of tasks, i.e. t
 
 ## Ensembles
 
-It is possible to run the `20_lm_c` step in perturbed-intial-conditions ensemble mode. To this end, uncomment the corresponding block of env. vars in `user_settings`. Doing so will create sub-directories in in `20_lm_c`and and output. Note that in COSMO6 the random seed cannot be set explicitly and is based on machine time [in ms].
+It is possible to run the `20_lm_c` step in perturbed-intial-conditions ensemble mode. To this end, uncomment the corresponding block of env. vars in `user_settings`. Doing so will create member sub-directories in in `20_lm_c`. Note that in COSMO6 the random seed cannot be set explicitly and is based on machine time [in ms].
 
 
 ## Integrating a custom task in the chain
 
 DECREMENT is generic enough to allow integration of custom parts in the chain which can be very helpful for *online* post-processing, archiving or custom pre-processing (like the PGW method).
 
-[//]: # (- ML- CONTINUE HERE)
+A part is a directory directly placed in the root dir (like the stock parts for INT2LM and COSMO). It's name can contain leading digits to indicate the position in the chain for readability but doesn't have to. from now on, let's assume we want to insert the part `45_my_post_proc`. It is expected to contain the following elements, some of them being optional:
+* the `submit.sh` script. It's optional. When present, it is used to submit the part and the automated submit mechanism is skipped
+* A `Defaults` directory. Any file in that directory will be sourced and `config` and `user_settings` can overwrite the settings. Like for stock parts, it can for instance contain the definition of default parameters or the default functions to generate namelists.
+* a `run` file. If `submit.sh` is not present, it has to be there. It will be the file submitted with environment variables controling the resources used. The later must have a name that follows a certain pattern containing the uppercase name of the part without optional leading digits. In our case, they would be the following:
+    * `NQS_NODES_MY_POST_PROC` for the nodes number (defaults to 1)
+    * `NQS_NTPN_MY_POST_PROC` for the number of tasks per nodes (defaults to the number of cores per node, so 12 on Piz'Daint)
+    * `NQS_ELAPSED_MY_POST_PROC` for the wall time (defaults to 5 min)
+    * `NQS_PARTITION_MY_POST_PROC` for the machine partition (defaults to `"normal"`)
+* an `env.sh` file. It's optional. If present and `submit.sh` is not present, it will be sourced before submitting the job. It can for instance contain operations to determine the `NQS_XXX` env vars if they need be calculated rather than prescribed in `user_settings`or source a spack environement.
 
-To do so, follow these steps:
-1. Create a corresponding directory, like `25_my_post_proc`. It can contain digits at the start to indicate the position in the chain but doesn't have to.
-2. In that directory, put a `run` file which will be executed at runtime
-3. In `user_settings`, define environment variables that control the scheduling resources for nodes, walltime and partition. Their name must follow a certain pattern containing the uppercase name of the part, in our case "MY\_POST\_PROC" (without the preprending digits): `NQS_NODES_MY_POST_PROC`, `NQS_ELAPSED_MY_POST_PROC` and `NQS_QUEUE_MY_POST_PROC`. IF sepcial calculations are needed to infer these environmental variables or if others are needed at runtime, one can use an optional `env.sh` file inside the part directory. If found, it will be sourced just before submitting the job.
+The last required setting relates to the job dependencies. You can check in `defaults.sh` how it's set for the stock parts. The format is `export xxx_deps="current_yyy previous_zzz ..."`where `xxx`, `yyy` and `zzz` are valid *short names* of parts to be ran, i.e without the leading digits "kk_" in front of the name. In our case, we would add `export my_post_proc_deps="current_lm_f"` to either wome file under `Defaults` or `user_settings`. If an newly inserted part needs to make other parts wait for it (e.g. a custom pre processing step like PGW), don't forget to modify their dependencies as well.

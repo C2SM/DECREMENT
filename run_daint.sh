@@ -20,9 +20,11 @@ fi
 
 # Load Defaults from parts
 for part in ${SB_PARTS}; do
-    for f in ${part}/Defaults/*; do
-        source $f
-    done
+    if [[ -d ${part}/Defaults ]]; then
+        for f in ${part}/Defaults/*; do
+            source $f
+        done
+    fi
 done
 
 # Reload config and user settings to ensure user_settings > config > defaults
@@ -33,7 +35,7 @@ source config
 # Daint specific settings
 # =======================
 
-export QUEUE="normal"
+export PARTITION="normal"
 export RUNCMD="srun"
 export CORES_PER_NODE=12
 
