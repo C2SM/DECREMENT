@@ -33,7 +33,7 @@ A design idea of DECREMENT is that parameters that users change most often have 
     spack load --sh cosmo@c2sm-features %nvhpc cosmo_target=gpu +cppdycore ^mpich%nvhpc > spack_env_cosmo.sh
     ```
     and place the `spack_env_cosmo.sh` file in both directories running cosmo, i.e. `20_lm_c` and `40_lm_f`. In order to keep things tidy, one can also put this file in the `bin` directory with a more descriptive name, like `spack_env_cosmo_gpu.sh`, and link it as `spack_env_cosmo.sh` in the right directories. Same thing applies to INT2LM: if a `spack_env_int2lm.sh` file is found in `10_ifs2lm` or `30_lm2lm`, it will be sourced before submitting the corresponding job.
-    * In order to run INT2LM, copy the necessary extpar file in `bin` as well. Commands to get the extpar files for the stock configurations are listed in `./get_extpar_data.sh` (no need to execute the whole file). If necessary, adapt the `LM_NL_EXTPAR_?`environment variables accordingly.
+    * In order to run INT2LM, copy the necessary extpar file in `bin` as well. Commands to get the extpar files for the stock configurations are listed in `./get_extpar_data.sh` (no need to execute the whole file). If necessary, adapt the `LM_NL_EXTPAR_?` environment variables accordingly.
 2. Link the simulation configuration file like
     ```bash
     ln -s simulation_configs/SIMULATION_EU_CORDEX_50km config
@@ -45,7 +45,7 @@ A design idea of DECREMENT is that parameters that users change most often have 
     * chaining interval
     * output variables defined in the `&GRIBOUT` namelists by proceeding like described for [arbitrary namelist parameters](#changing-arbitrary-namelist-parameters).
     * anything else defined in `defaults.sh`, `kk_part_name/Defaults/*` or `config`
-4. Launch the simulation with `./run_daint.sh`.
+4. Launch the simulation with `./run_daint.sh`. You can monitor the overall status in the `status.log` file.
 5. Transfer your output data to a safe place!
 
 
@@ -73,7 +73,11 @@ A part is a directory directly placed in the root dir (like the stock parts for 
     * `NQS_PARTITION_MY_POST_PROC` : machine partition (defaults to `"normal"`)
 * an `env.sh` file. It's optional. If present and `submit.sh` is not present, it will be sourced before submitting the job. It can for instance contain operations to determine the `NQS_XXX` env vars if they need be calculated rather than prescribed in `user_settings`or source a spack environement (see examples in stock parts).
 
-The last required setting relates to the job dependencies. You can check in `defaults.sh` how it's set for the stock parts. The format is `export xxx_deps="current_yyy previous_zzz ..."`where `xxx`, `yyy` and `zzz` are valid *short names* of parts to be ran, i.e without the leading digits "kk_" in front of the name. In our case, in order to insert the new part between `40_lm_f` and `50_pack_data`, we would add the following lines either to any file under `Defaults` or in `user_settings`:
+The last required setting relates to the job dependencies. You can check in `defaults.sh` how it's set for the stock parts. The format is
+``` bash
+export xxx_deps="current_yyy previous_zzz ..."
+```
+where `xxx`, `yyy` and `zzz` are valid *short names* of parts to be ran, i.e without the leading digits "kk_" in front of the name. In our case, in order to insert the new part between `40_lm_f` and `50_pack_data`, we would add the following lines either to any file under `Defaults` or in `user_settings`:
 ```bash
 export my_post_proc_deps="current_lm_f"
 export pack_data_deps="current_my_post_proc"
