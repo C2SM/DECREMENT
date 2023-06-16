@@ -34,7 +34,7 @@ A design idea of DECREMENT is that parameters that users change most often have 
         ```bash
         spack load --sh cosmo@c2sm-features %nvhpc cosmo_target=gpu +cppdycore ^mpich%nvhpc > spack_env_cosmo.sh
         ```
-    and place the `spack_env_cosmo.sh` file in both directories running cosmo, i.e. `20_lm_c` and `40_lm_f`. In order to keep things tidy, one can also put this file in the `bin` directory with a more descriptive name, like `spack_env_cosmo_gpu.sh`, and link it as `spack_env_cosmo.sh` in the right directories. Same thing applies to INT2LM: if a `spack_env_int2lm.sh` file is found in `10_ifs2lm` or `30_lm2lm`, it will be sourced before submitting the corresponding job.
+        and place the `spack_env_cosmo.sh` file in both directories running cosmo, i.e. `20_lm_c` and `40_lm_f`. In order to keep things tidy, one can also put this file in the `bin` directory with a more descriptive name, like `spack_env_cosmo_gpu.sh`, and link it as `spack_env_cosmo.sh` in the right directories. Same thing applies to INT2LM: if a `spack_env_int2lm.sh` file is found in `10_ifs2lm` or `30_lm2lm`, it will be sourced before submitting the corresponding job.
     * In order to run INT2LM, copy the necessary extpar file in `bin` as well. Commands to get the extpar files for the stock configurations are listed in `./get_extpar_data.sh` (no need to execute the whole file). If necessary, adapt the `LM_NL_EXTPAR_?` environment variables accordingly.
 2. Link the simulation configuration file like
     ```bash
