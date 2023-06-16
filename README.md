@@ -75,6 +75,6 @@ A part is a directory directly placed in the root dir (like the stock parts for 
 
 The last required setting relates to the job dependencies. You can check in `defaults.sh` how it's set for the stock parts. The format is `export xxx_deps="current_yyy previous_zzz ..."`where `xxx`, `yyy` and `zzz` are valid *short names* of parts to be ran, i.e without the leading digits "kk_" in front of the name. In our case, in order to insert the new part between `40_lm_f` and `50_pack_data`, we would add the following lines either to any file under `Defaults` or in `user_settings`:
 ```bash
-export my_post_proc_deps="current_lm_f
-export pack_data_deps="current_my_post_proc
+export my_post_proc_deps="current_lm_f"
+export pack_data_deps="current_my_post_proc"
 ```
