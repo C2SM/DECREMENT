@@ -6,13 +6,13 @@ A set of scripts used to run weather and climate simulations with COSMO. It is i
 ## The default chain of tasks
 
 By default, DECREMENT is intended to run a so-called *coarse* resolution domain (just refering to the outer domain, doesn't have to actaully be coarse) and potentially a *fine* nested one. Concretely the following sequence of tasks - potentially a subset of it - is executed, each in a separate folder under the root directory:
-`00_get_data`transfers input data (mostly reanalysis data) for the INT2LM preprocessing software
-`10_ifs2lm`produces input data for COSMO at coarse resolution.
-`20_lm_c`runs COSMO on the coarse resolution domain.
-`30_lm2lm`runs INT2LM with output from the coarse reolution cosmo as input data and produces input data for the fine resolution one.
-`40_lm_f`runs cosmo in the fine resolution nested domain
-`50_pack_data` compresses the output netcdf files and gathers them into tar balls.
-`60_chain` manages the chaining of the simulation chuncks 
+* `00_get_data`transfers input data (mostly reanalysis data) for the INT2LM preprocessing software
+* `10_ifs2lm`produces input data for COSMO at coarse resolution.
+* `20_lm_c`runs COSMO on the coarse resolution domain.
+* `30_lm2lm`runs INT2LM with output from the coarse reolution cosmo as input data and produces input data for the fine resolution one.
+* `40_lm_f`runs cosmo in the fine resolution nested domain
+* `50_pack_data` compresses the output netcdf files and gathers them into tar balls.
+* `60_chain` manages the chaining of the simulation chuncks 
 
 
 ## How settings are prescribed
