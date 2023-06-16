@@ -47,7 +47,11 @@ A design idea of DECREMENT is that parameters that users change most often have 
     * chaining interval
     * output variables defined in the `&GRIBOUT` namelists by proceeding like described for [arbitrary namelist parameters](#changing-arbitrary-namelist-parameters).
     * anything else defined in `defaults.sh`, `kk_part_name/Defaults/*` or `config`
-4. Launch the simulation with `./run_daint.sh`. You can monitor the overall status in the `status.log` file.
+4. Launch the simulation with
+```bash
+./run_daint.sh
+```
+You can monitor the overall status in the `status.log` file.
 5. Transfer your output data to a safe place!
 
 
