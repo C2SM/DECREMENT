@@ -6,23 +6,23 @@ A set of scripts used to run weather and climate simulations with COSMO. It is i
 ## The default chain of tasks
 
 By default, DECREMENT is intended to run a so-called *coarse* resolution domain (just refering to the outer domain, doesn't have to actaully be coarse) and potentially a *fine* nested one. Concretely the following sequence of tasks - potentially a subset of it - is executed, each in a separate folder under the root directory:
-* `00_get_data` transfers input data (mostly reanalysis data) for the INT2LM preprocessing software
+* `00_get_data` transfers input data (mostly reanalysis data) for the INT2LM preprocessing software.
 * `10_ifs2lm` produces input data for COSMO at coarse resolution.
 * `20_lm_c` runs COSMO on the coarse resolution domain.
-* `30_lm2lm` runs INT2LM with output from the coarse reolution cosmo as input data and produces input data for the fine resolution one.
-* `40_lm_f` runs cosmo in the fine resolution nested domain
+* `30_lm2lm` runs INT2LM with output from the coarse reolution COSMO as input data and produces input data for the fine resolution one.
+* `40_lm_f` runs COSMO in the fine resolution nested domain.
 * `50_pack_data` compresses the output netcdf files and gathers them into tar balls.
-* `60_chain` manages the chaining of the simulation chuncks 
+* `60_chain` manages the chaining of the simulation chuncks.
 
 
 ## How settings are prescribed
 
-The scripts are loading settings from different locations with the following priority: defaults < config < user settings. The defaults can come from the `defaults.sh` or anyting under `kk_part_name/Defaults`. The idea is that the `config` file hosts settings related to the simulation configuration (domain, physical parametrizations, etc) and must be located in the rot directory. It can either be a link to a stock configuration, e.g. `ln -sf simulation_configs/SIMULATION_EU_CORDEX_50km config`, or a personal configuration written from scratch. Finally the optional but almost always needed `user_settings` file, which must also be located in the root directory, hosts settings one wants to modify or even create and takes precedence over others.
+The scripts are loading settings from different locations with the following priority: **defaults < config < user settings**. The defaults can come from the `defaults.sh` file or anyting under `kk_part_name/Defaults`. The idea is that the `config` file hosts settings related to the simulation configuration (domain, physical parametrizations, domain decomposition, etc...) and must be located in the root directory. It can either be a link to a stock configuration, e.g. `ln -sf simulation_configs/SIMULATION_EU_CORDEX_50km config`, or a personal configuration written from scratch. Finally the optional but almost always needed `user_settings` file, which must also be located in the root directory, hosts settings one wants to modify (or even create) and takes precedence over others.
 
 
 ## Changing arbitrary namelist parameters
 
-A design idea of DECREMENT is that parameters that users change most often have a corresponding environment variable defined either in `part_name/Defaults/*` or in the `config` file. For instance, `LM_NL_DT_C` is the time step for the coarse reslution domain corresponding to the `dt` namelist parameter in the `20_lm_c` part. In order to be able to modify any parameter, the namelsts are generated in exported functions (see files in the `kk_part_name/Defaults` directory). These can be redefined either in the `config`or `user_settings` file and exported from there in order to take precedence over the default ones. This is tipically the way to go to modify the output streams. If this generates too much cluttering of these files, one can always source a custom file from inside them to keep a good level of readability.
+A design idea of DECREMENT is that parameters that users change most often have a corresponding environment variable defined either in `part_name/Defaults/*` or in the `config` file. For instance, `LM_NL_DT_C` is the time step for the coarse reslution domain corresponding to the `dt` namelist parameter in the `20_lm_c` part. In order to be able to modify any parameter, the namelsts are generated in exported functions (see files in the `kk_part_name/Defaults` directory). These can be redefined either in the `config`or `user_settings` file and re-exported from there in order to take precedence over the default ones. This is tipically the way to go to modify the output streams. If this generates too much clutter in `config` or `user_settings`, one can always source a custom file from inside them to keep a good level of readability.
 
 
 ## Basic usage
@@ -71,4 +71,3 @@ The last required setting relates to the job dependencies. You can check in `def
 export my_post_proc_deps="current_lm_f
 export pack_data_deps="current_my_post_proc
 ```
-
