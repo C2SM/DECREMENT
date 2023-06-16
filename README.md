@@ -2,12 +2,12 @@
 
 ***The DirEctory COSMO Runtime EnvironMENT***
 
-A set of scripts used to run weather and climate simulations with COSMO. It is is intended to be simple and easy to extend. It is originally a stripped down version of the LM_package (hence all the variable names starting with `LM_`) and evolved later into a more generic workflow tool with async capabilities.
+A set of scripts used to run weather and climate simulations with COSMO. It is is intended to be simple and easy to extend. It was originally a stripped down version of the LM_package (hence all the variable names starting with `LM_`) and evolved later into a more generic workflow tool with async capabilities.
 
 
 ## The default chain of tasks
 
-By default, DECREMENT is intended to run a so-called *coarse* resolution domain (just refering to the outer domain, doesn't have to actaully be coarse) and potentially a *fine* nested one. Concretely the following sequence of tasks - potentially a subset of it - is executed, each in a separate folder under the root directory:
+By default, DECREMENT is intended to run a so-called *coarse* resolution domain (just refering to the outer domain, doesn't have to actaully be coarse) and potentially a *fine* nested one. Concretely the following sequence of tasks (or a subset of it) is executed, each in a separate folder under the root directory:
 * `00_get_data` transfers input data (mostly reanalysis data) for the INT2LM preprocessing software.
 * `10_ifs2lm` produces input data for COSMO at coarse resolution.
 * `20_lm_c` runs COSMO on the coarse resolution domain.
