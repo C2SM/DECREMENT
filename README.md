@@ -29,15 +29,15 @@ A design idea of DECREMENT is that parameters that users change most often have 
 
 1. Get executable related files:
     * Copy an `int2lm` executable and a `cosmo` executable to `./bin`. When using an executable built with spack, it's recommanded to specify the corresponding spack environment . To this end, generate the environment file with, e.g. for COSMO
-```bash
-spack load --sh cosmo@c2sm-features %nvhpc cosmo_target=gpu +cppdycore ^mpich%nvhpc > spack_env_cosmo.sh
-```
-and place the `spack_env_cosmo.sh`file in both directories running cosmo, i.e. `20_lm_c` and `40_lm_f`. In order to keep things tidy, one can also put this file in the `bin` directory with a more descriptive name, like `spack_env_cosmo_gpu.sh`, and link it as `spack_env_cosmo.sh` in the right directories. Same thing applies to INT2LM: if a `spack_env_int2lm.sh` file is found in `10_ifs2lm` or `30_lm2lm`, it will be sourced before submitting the corresponding job.
+    ```bash
+    spack load --sh cosmo@c2sm-features %nvhpc cosmo_target=gpu +cppdycore ^mpich%nvhpc > spack_env_cosmo.sh
+    ```
+    and place the `spack_env_cosmo.sh` file in both directories running cosmo, i.e. `20_lm_c` and `40_lm_f`. In order to keep things tidy, one can also put this file in the `bin` directory with a more descriptive name, like `spack_env_cosmo_gpu.sh`, and link it as `spack_env_cosmo.sh` in the right directories. Same thing applies to INT2LM: if a `spack_env_int2lm.sh` file is found in `10_ifs2lm` or `30_lm2lm`, it will be sourced before submitting the corresponding job.
     * In order to run INT2LM, copy the necessary extpar file in `bin` as well. Commands to get the extpar files for the stock configurations are listed in `./get_extpar_data.sh` (no need to execute the whole file). If necessary, adapt the `LM_NL_EXTPAR_?`environment variables accordingly.
 2. Link the simulation configuration file like
-```bash
+    ```bash
 ln -s simulation_configs/SIMULATION_EU_CORDEX_50km config
-```
+    ```
 3. Copy the user settings example (`cp user_settings_example user_settings`) where some common settings are commented out with minimal documentation. There you can set anything:
     * startdate end enddate
     * scheduler resources like node numbers or walltime (see settings in `config`)
