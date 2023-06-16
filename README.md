@@ -1,12 +1,11 @@
-DECREMENT
-=========
+# DECREMENT
 
 ***The DirEctory COSMO Runtime EnvironMENT***
 
 A set of scripts used to run weather and climate simulations with COSMO. It is is intended to be simple and easy to extend. It is originally a stripped down version of the LM_package (hence all the variable names starting with `LM_`) and evolved later into a more generic workflow tool with async capabilities.
 
 
-# The default chain of tasks
+## The default chain of tasks
 
 By default, DECREMENT is intended to run a so-called *coarse* resolution domain (just refering to the outer domain, doesn't have to actaully be coarse) and potentially a *fine* nested one. Concretely the following sequence of tasks - potentially a subset of it - is executed, each in a separate folder under the root directory:
 * `00_get_data` transfers input data (mostly reanalysis data) for the INT2LM preprocessing software.
@@ -18,17 +17,17 @@ By default, DECREMENT is intended to run a so-called *coarse* resolution domain 
 * `60_chain` manages the chaining of the simulation chuncks.
 
 
-# How settings are prescribed
+## How settings are prescribed
 
 The scripts are loading settings from different locations with the following priority: **defaults < config < user settings**. The defaults can come from the `defaults.sh` file or anyting under `kk_part_name/Defaults`. The idea is that the `config` file hosts settings related to the simulation configuration (domain, physical parametrizations, domain decomposition, etc...) and must be located in the root directory. It can either be a link to a stock configuration, e.g. `ln -sf simulation_configs/SIMULATION_EU_CORDEX_50km config`, or a personal configuration written from scratch. Finally the optional but almost always needed `user_settings` file, which must also be located in the root directory, hosts settings one wants to modify (or even create) and takes precedence over others.
 
 
-# Changing arbitrary namelist parameters
+## Changing arbitrary namelist parameters
 
 A design idea of DECREMENT is that parameters that users change most often have a corresponding environment variable defined either in `part_name/Defaults/*` or in the `config` file. For instance, `LM_NL_DT_C` is the time step for the coarse reslution domain corresponding to the `dt` namelist parameter in the `20_lm_c` part. In order to be able to modify any parameter, the namelsts are generated in exported functions (see files in the `kk_part_name/Defaults` directory). These can be redefined either in the `config`or `user_settings` file and re-exported from there in order to take precedence over the default ones. This is tipically the way to go to modify the output streams. If this generates too much clutter in `config` or `user_settings`, one can always source a custom file from inside them to keep a good level of readability.
 
 
-# Basic usage
+## Basic usage
 
 1. Get executable related files:
     * Copy an `int2lm` executable and a `cosmo` executable to `./bin`. When using an executable built with spack, it's recommanded to specify the corresponding spack environment . To this end, generate the environment file with, e.g. for COSMO
@@ -52,17 +51,17 @@ A design idea of DECREMENT is that parameters that users change most often have 
 5. Transfer your output data to a safe place!
 
 
-# Asynchronous run
+## Asynchronous run
 
 The current version of DECREMENT enables asynchronous execution of tasks, i.e. the current COSMO chunk runs simultaneously with the postprocessing of the previous one and the preprocessing of the next one. The dependencies between the tasks are described in `defaults.sh`
 
 
-# Ensembles
+## Ensembles
 
 It is possible to run the `20_lm_c` step in perturbed-intial-conditions ensemble mode. To this end, uncomment the corresponding block of env. vars in `user_settings`. Doing so will create member sub-directories in in `20_lm_c`. Note that in COSMO6 the random seed cannot be set explicitly and is based on machine time [in ms].
 
 
-# Integrating a custom task in the chain
+## Integrating a custom task in the chain
 
 DECREMENT is generic enough to allow integration of custom parts in the chain which can be very helpful for *online* post-processing, archiving or custom pre-processing (like the PGW method).
 
