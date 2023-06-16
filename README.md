@@ -36,7 +36,7 @@ A design idea of DECREMENT is that parameters that users change most often have 
     * In order to run INT2LM, copy the necessary extpar file in `bin` as well. Commands to get the extpar files for the stock configurations are listed in `./get_extpar_data.sh` (no need to execute the whole file). If necessary, adapt the `LM_NL_EXTPAR_?`environment variables accordingly.
 2. Link the simulation configuration file like
     ```bash
-ln -s simulation_configs/SIMULATION_EU_CORDEX_50km config
+    ln -s simulation_configs/SIMULATION_EU_CORDEX_50km config
     ```
 3. Copy the user settings example (`cp user_settings_example user_settings`) where some common settings are commented out with minimal documentation. There you can set anything:
     * startdate end enddate
