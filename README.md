@@ -57,13 +57,18 @@ It is possible to run the `20_lm_c` step in perturbed-intial-conditions ensemble
 DECREMENT is generic enough to allow integration of custom parts in the chain which can be very helpful for *online* post-processing, archiving or custom pre-processing (like the PGW method).
 
 A part is a directory directly placed in the root dir (like the stock parts for INT2LM and COSMO). It's name can contain leading digits to indicate the position in the chain for readability but doesn't have to. from now on, let's assume we want to insert the part `45_my_post_proc`. It is expected to contain the following elements, some of them being optional:
-* the `submit.sh` script. It's optional. When present, it is used to submit the part and the automated submit mechanism is skipped
-* A `Defaults` directory. Any file in that directory will be sourced and `config` and `user_settings` can overwrite the settings. Like for stock parts, it can for instance contain the definition of default parameters or the default functions to generate namelists.
+* a `Defaults` directory. Any file in that directory will be sourced and `config` and `user_settings` can overwrite the settings. Like for stock parts, it can for instance contain the definition of default parameters or the default functions to generate namelists.
+* a `submit.sh` script. It's optional. When present, it is used to submit the part and the automated submit mechanism is skipped. The only requirement is that it returns (`echo`) the jobid(s) of the submitted part. This feature is used in `20_lm_c` to handle ensemble runs and a similar procedure could be used for sensitivity runs.
 * a `run` file. If `submit.sh` is not present, it has to be there. It will be the file submitted with environment variables controling the resources used. The later must have a name that follows a certain pattern containing the uppercase name of the part without optional leading digits. In our case, they would be the following:
-    * `NQS_NODES_MY_POST_PROC` for the nodes number (defaults to 1)
-    * `NQS_NTPN_MY_POST_PROC` for the number of tasks per nodes (defaults to the number of cores per node, so 12 on Piz'Daint)
-    * `NQS_ELAPSED_MY_POST_PROC` for the wall time (defaults to 5 min)
-    * `NQS_PARTITION_MY_POST_PROC` for the machine partition (defaults to `"normal"`)
-* an `env.sh` file. It's optional. If present and `submit.sh` is not present, it will be sourced before submitting the job. It can for instance contain operations to determine the `NQS_XXX` env vars if they need be calculated rather than prescribed in `user_settings`or source a spack environement.
+    * `NQS_NODES_MY_POST_PROC` : nodes number (defaults to 1)
+    * `NQS_NTPN_MY_POST_PROC` : number of tasks per nodes (defaults to the number of cores per node, so 12 on Piz'Daint)
+    * `NQS_ELAPSED_MY_POST_PROC` : wall time (defaults to 5 min)
+    * `NQS_PARTITION_MY_POST_PROC` : machine partition (defaults to `"normal"`)
+* an `env.sh` file. It's optional. If present and `submit.sh` is not present, it will be sourced before submitting the job. It can for instance contain operations to determine the `NQS_XXX` env vars if they need be calculated rather than prescribed in `user_settings`or source a spack environement (see examples in stock parts).
 
-The last required setting relates to the job dependencies. You can check in `defaults.sh` how it's set for the stock parts. The format is `export xxx_deps="current_yyy previous_zzz ..."`where `xxx`, `yyy` and `zzz` are valid *short names* of parts to be ran, i.e without the leading digits "kk_" in front of the name. In our case, we would add `export my_post_proc_deps="current_lm_f"` to either wome file under `Defaults` or `user_settings`. If an newly inserted part needs to make other parts wait for it (e.g. a custom pre processing step like PGW), don't forget to modify their dependencies as well.
+The last required setting relates to the job dependencies. You can check in `defaults.sh` how it's set for the stock parts. The format is `export xxx_deps="current_yyy previous_zzz ..."`where `xxx`, `yyy` and `zzz` are valid *short names* of parts to be ran, i.e without the leading digits "kk_" in front of the name. In our case, in order to insert the new part between `40_lm_f` and `50_pack_data`, we would add the following lines either to any file under `Defaults` or in `user_settings`:
+```
+export my_post_proc_deps="current_lm_f
+export pack_data_deps="current_my_post_proc
+```
+
