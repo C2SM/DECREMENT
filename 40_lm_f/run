@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Update job status
-update_status "running"
+[[ ${LM_NL_STATUS_F} == "true" ]] && update_status "running"
 
 # Initialization
 set verbose
@@ -59,7 +59,7 @@ date
 sacct -j ${SLURM_JOB_ID} --format="User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPUFreq"
 
 # Update job status
-update_status "done"
+[[ ${LM_NL_STATUS_F} == "true" ]] && update_status "done"
 
 # Exit
 exit ${status}

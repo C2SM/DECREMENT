@@ -28,3 +28,7 @@ export NQS_NTPN_LM_C=${ntpn}
 # Spack
 # =====
 [[ -e spack_env_cosmo.sh ]] && source spack_env_cosmo.sh
+
+# Misc
+# ====
+(( LM_NL_ENS_NUMBER_C > 1 )) && export LM_NL_STATUS_C="false"

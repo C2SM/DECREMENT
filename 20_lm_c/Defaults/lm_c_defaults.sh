@@ -20,6 +20,9 @@ export LM_NL_ENS_NUMBER_C=1
 export LM_NL_ITYPE_PERT_C=0
 export LM_NL_RPERTURB_C=0.00001
 
+# update status of running job in status.log
+export LM_NL_STATUS_C="true"
+
 # ---------------------------------------------------------------
 #                            INPUT_ORG
 # ---------------------------------------------------------------

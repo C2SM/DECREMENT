@@ -15,6 +15,9 @@ export LM_NL_RESTART_FMT_F='bina'
 # radiation scheme
 export LM_NL_LRADTOPO_F=.FALSE.
 
+# update status of running job in status.log
+export LM_NL_STATUS_F="true"
+
 
 # ---------------------------------------------------------------
 #                            INPUT_ORG

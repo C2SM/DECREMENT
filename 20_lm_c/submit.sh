@@ -40,6 +40,7 @@ else
     # Normal execution
     # ----------------
     jobid=$(submit)
+    
 fi
 
 # Return job id(s)
