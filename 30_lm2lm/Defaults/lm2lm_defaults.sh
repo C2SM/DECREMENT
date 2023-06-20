@@ -55,7 +55,7 @@ lm2lm_INPUT(){
   itype_albedo = ${LM_NL_ITYPE_ALBEDO_F}
   lradtopo = $LM_NL_LRADTOPO_F
 EONL
-    [[ -n ${LM_NL_NHORI_F} ]] && echo "  nhori = $LM_NL_NHORI_F" >> INPUT_PHY
+    [[ -n ${LM_NL_NHORI_F} ]] && echo "  nhori = $LM_NL_NHORI_F" >> INPUT
     cat >> INPUT << EONL
  /END
 
