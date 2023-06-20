@@ -40,7 +40,7 @@ while ((current_date_sec <= end_date_sec)); do
             tar_cmd+=" -xvf ${tar_file}"
             ;;
         ERA5-scClim)
-            tar_file=${LM_NL_BC_DATA_PATH}/${YYYY}/${YYYY}_${MM}.tar
+            tar_file=${LM_NL_BC_DATA_PATH}/${YYYY}/ERA5_${YYYY}_${MM}_europe.tar
             tar_cmd+=" --strip-components=1 --transform 's/.nc/0000.nc/' -xvf ${tar_file}"
             ;;
         *)
