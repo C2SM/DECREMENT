@@ -43,6 +43,7 @@ cclm2_exe_files(){
   
   # COSMO
   cat > cosmo.sh << EOF
+#!/bin/bash
 source env_cosmo.sh
 ${EXE_COSMO} 2>&1 > cosmo_${LM_BEGIN_DATE_DG}_${LM_END_DATE_DG}${TASK_SUFFIX}.out
 EOF
@@ -50,6 +51,7 @@ EOF
 
   # CESM
   cat > cesm.sh << EOF
+#!/bin/bash
 source env_cesm.sh
 ${EXE_CESM} 2>&1 > cesm_${LM_BEGIN_DATE_DG}_${LM_END_DATE_DG}${TASK_SUFFIX}.out 
 EOF
