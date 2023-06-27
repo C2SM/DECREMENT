@@ -5,7 +5,7 @@
 # ---------------------------------------------------------------
 
 # Source all default settings from lm_c
-for f in ../../20_lm_c/Defaults/*; do
+for f in 20_lm_c/Defaults/*; do
     source $f
 done
 
