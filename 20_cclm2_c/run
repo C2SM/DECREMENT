@@ -74,7 +74,7 @@ cclm2_c_namcouple
 # Create missing directories
 # ==========================
 
-mkydirs
+mkydirs INPUT_IO
 mkdir -p cesm_input cesm_output
 mkcesmdirs
 
