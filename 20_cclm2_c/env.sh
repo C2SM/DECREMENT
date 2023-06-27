@@ -17,6 +17,8 @@ else
     export LM_NL_NUM_IOPE_PERCOMM_C=0
     export LM_NL_LPREFETCH_C=.FALSE.
 fi
+export LM_NL_NSTART_C=$((LM_NL_HSTART*3600/LM_NL_DT_C))
+export LM_NL_NSTOP_C=$((LM_NL_HSTOP*3600/LM_NL_DT_C))
 
 # Overall Number of nodes
 # =======================
