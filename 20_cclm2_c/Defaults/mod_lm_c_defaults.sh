@@ -15,7 +15,7 @@ done
 
 lm_c_mod_INPUT_ORG(){
     # Replace hstop setting by nstop in INPUT_ORG
-    sed -i 's/^\s*hstop\s*=$/'"nstop = $((LM_NL_NSTOP_C-1))"'/' INPUT_ORG
+    sed -i 's/\(^\s*\)hstop\(\s*\)=\(\s*\).*$/\1nstop\2=\3'"$((LM_NL_NSTOP_C-1))"'/' INPUT_ORG
 }
 export -f lm_c_mod_INPUT_ORG
 
