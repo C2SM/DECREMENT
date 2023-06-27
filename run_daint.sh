@@ -18,12 +18,14 @@ else
     source user_settings    
 fi
 
-# Load Defaults from parts
+# Load Defaults from parts if a non empty "Defaults" directory is found 
 for part in ${SB_PARTS}; do
     if [[ -d ${part}/Defaults ]]; then
-        for f in ${part}/Defaults/*; do
-            source $f
-        done
+        if [[ "$(ls -A ${part}/Defaults)" ]]; then
+            for f in ${part}/Defaults/*; do
+                source $f
+            done
+        fi
     fi
 done
 
