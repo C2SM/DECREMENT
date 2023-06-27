@@ -1,0 +1,30 @@
+#!/bin/bash
+#CCLM2 EURO-CORDEX 50km configuration
+
+
+# ===================================================
+#                   COSMO
+# ===================================================
+
+# COSMO related settings are from EU_CORDEX_50km
+source ../SIMULATION_EU_CORDEX_50km
+
+# Adapt some settings
+export SB_PARTS="00_get_data 10_ifs2lm 20_cclm2_c 50_pack_data 60_chain"
+export LM_COMPRESS_DIRS="cclm2_c/1h_2D cclm2_c/24h cclm2_c/3h_3D_zlev"
+
+
+# ===================================================
+#                   CESM
+# ===================================================
+
+source clm_c_datm_streams.sh
+export CLM_C_NTASKS=12
+export CLM_COMPIlER=gcc
+
+
+# ===================================================
+#                   CCLM2
+# ===================================================
+
+export NQS_ELAPSED_CCLM2_C=00:30:00    # maximum wall-clock time (HH:mm:ss)

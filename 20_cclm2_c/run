@@ -1,0 +1,118 @@
+#!/bin/bash
+
+# Update job status
+[[ ${LM_NL_STATUS_C} == "true" ]] && update_status "running"
+
+# Initialization
+set verbose
+set echo
+
+# Load "local" tools (as opposed to "global" tools in ../tools.sh)
+# These will only be known here as run_daint will launch this as a
+# subprocess
+soure tools.sh
+
+# echo date
+date
+
+# clean
+./clean
+
+# Set this to avoid segmentation faults
+ulimit -s unlimited
+ulimit -a
+
+
+# ==============================
+# Generate input parameter files
+# ==============================
+
+# COSMO namelists
+# ---------------
+lm_c_INPUT_ORG
+lm_c_mod_INPUT_ORG
+lm_c_INPUT_DYN
+lm_c_INPUT_PHY
+lm_c_INPUT_IO
+lm_c_INPUT_DIA
+lm_c_INPUT_INI
+lm_c_INPUT_SAT
+lm_c_INPUT_ASS
+lm_c_INPUT_OAS
+
+# CESM
+# ----
+# main namelist settings
+clm_c_drv_in
+clm_c_datm_in
+clm_c_drv_flds_in
+clm_c_lnd_in
+clm_c_mosart_in
+# data atmosphere streams
+clm_c_datm_stream_Precip
+clm_c_datm_stream_Solar
+clm_c_datm_stream_TPQW
+clm_c_datm_stream_presaero
+clm_c_datm_stream_topo
+# I/O namelists
+clm_c_atm_modelio
+clm_c_cpl_modelio
+clm_c_esp_modelio
+clm_c_glc_modelio
+clm_c_ice_modelio
+clm_c_lnd_modelio
+clm_c_ocn_modelio
+clm_c_rof_modelio
+clm_c_wav_modelio
+
+# OASIS namcouple
+# ---------------
+cclm2_c_namcouple 
+
+
+# ==========================
+# Create missing directories
+# ==========================
+
+mkydirs
+mkdir -p cesm_input cesm_output
+mkcesmdirs
+
+
+# ===
+# Run
+# ===
+
+# Generate Executable files
+# -------------------------
+# In order to separate (potentially) conflicting parts of the cosmo
+# and cesm environments, we need to put the loading of these
+# conflicting settings and the invocation of the actual cosmo and cesm
+# executables in separate executable files.
+cclm2_exe_files
+
+# Generate resources distribution file
+# ------------------------------------
+TASK_DISPATCH="prog_config"
+cclm2_task_dispatch ${NQS_NXLM_C} ${NQS_NYLM_C} ${NQS_NIOLM_C} ${CLM_C_NTASKS} ${TASK_DISPATCH}
+
+# Run in multi-prog mode
+# ----------------------
+srun -u --multi-prog ${TASK_DISPATCH}
+# - ML TODO - Find a way to detect successful termination for CESM
+#             For now keep standard $?
+status=$?
+
+# Finalize
+# --------
+# echo date
+date
+
+# Print accounting file
+sacct -j ${SLURM_JOB_ID} --format="User,JobID,Jobname,partition,state,time,start,end,elapsed,MaxRss,MaxVMSize,nnodes,ncpus,nodelist,AveCPUFreq"
+
+# Update job status
+[[ ${LM_NL_STATUS_C} == "true" ]] && update_status "done"
+
+# Exit
+exit ${status}
