@@ -10,7 +10,7 @@ set echo
 # Load "local" tools (as opposed to "global" tools in ../tools.sh)
 # These will only be known here as run_daint will launch this as a
 # subprocess
-soure tools.sh
+source tools.sh
 
 # echo date
 date
