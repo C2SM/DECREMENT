@@ -74,7 +74,7 @@ A part is a directory directly placed in the root dir (like the stock parts for 
 * a `submit.sh` script. It's optional. When present, it is used to submit the part and the automated submit mechanism is skipped. The only requirement is that it returns (`echo`) the jobid(s) of the submitted part. This feature is used in `20_lm_c` to handle ensemble runs and a similar procedure could be used for sensitivity runs.
 * a `run` file. If `submit.sh` is not present, it has to be there. It will be the file submitted with environment variables controling the resources used. The later must have a name that follows a certain pattern containing the uppercase name of the part without optional leading digits. In our case, they would be the following:
     * `NQS_NODES_MY_POST_PROC` : nodes number (defaults to 1)
-    * `NQS_NTPN_MY_POST_PROC` : number of tasks per nodes (defaults to the number of cores per node, so 12 on Piz'Daint)
+    * `NQS_NTPN_MY_POST_PROC` (optional) : number of tasks per nodes (defaults to the number of cores per node, so 12 on Piz'Daint)
     * `NQS_ELAPSED_MY_POST_PROC` : wall time (defaults to 5 min)
     * `NQS_PARTITION_MY_POST_PROC` : machine partition (defaults to `"normal"`)
 * an `env.sh` file. It's optional. If present and `submit.sh` is not present, it will be sourced before submitting the job. It can for instance contain operations to determine the `NQS_XXX` env vars if they need be calculated rather than prescribed in `user_settings`or source a spack environement (see examples in stock parts).
