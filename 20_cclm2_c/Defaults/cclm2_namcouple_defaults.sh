@@ -300,8 +300,7 @@ LOCTRANS   SCRIPR
  DISTWGT U SCALAR LATLON 10 4
 #
 # --- end field 17 ---
- \$
-END
+ \$END
 EONL
 }
 export -f cclm2_c_namcouple
