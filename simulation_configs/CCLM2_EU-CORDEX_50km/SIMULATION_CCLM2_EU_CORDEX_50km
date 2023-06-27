@@ -14,6 +14,8 @@ source simulation_configs/SIMULATION_EU_CORDEX_50km
 # Adapt some settings
 export SB_PARTS="00_get_data 10_ifs2lm 20_cclm2_c 50_pack_data 60_chain"
 export LM_COMPRESS_DIRS="cclm2_c/1h_2D cclm2_c/24h cclm2_c/3h_3D_zlev"
+export cclm2_c_deps="previous_cclm2_c current_ifs2lm"
+export chain_deps="previous_cclm2_c"
 
 
 # ===================================================
