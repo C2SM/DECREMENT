@@ -1,15 +1,15 @@
 #!/bin/bash
 
-# Architecture specific settings
-# ==============================
+# COSMO parameters
+# ================
+# cpp dycore
 if [[ $COSMO_TARGET == "cpu" ]]; then
     export LM_NL_LCPP_DYCORE=.False.
 else
     export LM_NL_LCPP_DYCORE=.True.
 fi
 
-# Async IO settings
-# =================
+# IO settings
 if (( ${NQS_NIOLM_C} > 0 )); then
     export LM_NL_LASYNC_IO_C=.TRUE.
     export LM_NL_NUM_IOPE_PERCOMM_C=1
@@ -18,6 +18,8 @@ else
     export LM_NL_NUM_IOPE_PERCOMM_C=0
     export LM_NL_LPREFETCH_C=.FALSE.
 fi
+export LM_NL_NSTART_C=$((LM_NL_HSTART*3600/LM_NL_DT_C))
+export LM_NL_NSTOP_C=$((LM_NL_HSTOP*3600/LM_NL_DT_C))
 
 # Nodes
 # =====

@@ -89,16 +89,9 @@ export LM_MM_END=$(date -d "${LM_END_DATE}" +%m)
 export LM_DD_END=$(date -d "${LM_END_DATE}" +%d)
 export LM_ZZ_END=$(date -d "${LM_END_DATE}" +%H)
 
-# Compute HSTART, HSTOP and corresponding NSTART, NSTOP
-
+# Compute HSTART and HSTOP
 export LM_NL_HSTART=$(diff_hours "${LM_INI_DATE}" "${LM_BEGIN_DATE}")
 export LM_NL_HSTOP=$(diff_hours "${LM_INI_DATE}" "${LM_END_DATE}")
-
-export LM_NL_NSTART_C=$((LM_NL_HSTART*3600/LM_NL_DT_C))
-export LM_NL_NSTOP_C=$((LM_NL_HSTOP*3600/LM_NL_DT_C))
-
-export LM_NL_NSTART_F=$((LM_NL_HSTART*3600/LM_NL_DT_F))
-export LM_NL_NSTOP_F=$((LM_NL_HSTOP*3600/LM_NL_DT_F))
 
 # Dates for filenames or log messages
 export LM_BEGIN_DATE_FR=$(date -d "${LM_BEGIN_DATE}" +%FT%R)
