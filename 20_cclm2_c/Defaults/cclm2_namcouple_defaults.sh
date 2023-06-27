@@ -14,34 +14,34 @@ cclm2_c_namcouple(){
 # Any line beginning with # is ignored. Blank lines are not allowed.
 #
 #########################################################################
- $NFIELDS
+ \$NFIELDS
 # This is the total number of fields being exchanged. 
 # For the definition of the fields, see under $STRINGS keyword
 #
        17
- $END
+ \$END
 ##########################################################################
- $NBMODEL
+ \$NBMODEL
 # This gives you the number of models running in this experiment +
 # their names (6 characters) + , in option, the maximum Fortran unit
 # number used by each model; 1024 will be used if none are given.
 #
   2  cosmoc   clmxxx   99  99
- $END
+ \$END
 ###########################################################################
- $RUNTIME
+ \$RUNTIME
 # This gives you the total simulated time for this run in seconds (here 6 days)
 #
   $(((LM_NL_HSTOP-LM_NL_HSTART)*3600))
- $END
+ \$END
 ###########################################################################
- $NLOGPRT
+ \$NLOGPRT
 # Index of printing level in output file cplout: 0 = no printing
 #  1 = main routines and field names when treated, 2 = complete output
   2
- $END
+ \$END
 ###########################################################################
- $STRINGS
+ \$STRINGS
 #
 # The above variables are the general parameters for the experiment.
 # Everything below has to do with the fields being exchanged.
@@ -300,7 +300,8 @@ LOCTRANS   SCRIPR
  DISTWGT U SCALAR LATLON 10 4
 #
 # --- end field 17 ---
- $END
+ \$
+END
 EONL
 }
 export -f cclm2_c_namcouple
