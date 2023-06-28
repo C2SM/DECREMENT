@@ -153,13 +153,16 @@ submit(){
     # ----------
     GREEN="\033[32m"
     NORMAL="\033[0;39m"
-    echo -e "${GREEN}[[ ${part} ]]${NORMAL}" >> ${status_file}
-    echo "[ nodes        ] ${nodes}" >> ${status_file}
-    echo "[ time         ] ${time}" >> ${status_file}
-    echo "[ queue        ] ${partition}" >> ${status_file}
-    echo "[ dependencies ] ${dep_ids}" >> ${status_file}
-    echo "[ job id       ] ${jobid}" >> ${status_file}
-    echo "[ status       ] submitted" >> ${status_file}
+    # Only update status log file if argument $1 is empty (whatever value)
+    if [[ -z "$1" ]]; then
+        echo -e "${GREEN}[[ ${part} ]]${NORMAL}" >> ${status_file}
+        echo "[ nodes        ] ${nodes}" >> ${status_file}
+        echo "[ time         ] ${time}" >> ${status_file}
+        echo "[ queue        ] ${partition}" >> ${status_file}
+        echo "[ dependencies ] ${dep_ids}" >> ${status_file}
+        echo "[ job id       ] ${jobid}" >> ${status_file}
+        echo "[ status       ] submitted" >> ${status_file}
+    fi
 
     # Return job id
     # -------------

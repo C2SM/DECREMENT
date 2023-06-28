@@ -34,7 +34,18 @@ if (( LM_NL_ENS_NUMBER_C > 1 )); then
     
     # gather all member ids in a :-separated list and export
     jobid=$(id_list ${jobids})
-    
+
+    # Status log
+    GREEN="\033[32m"
+    NORMAL="\033[0;39m"
+    echo -e "${GREEN}[[ ${part} ]]${NORMAL}" >> ${status_file}
+    echo "[ nodes        ] ${NQS_NODES_LM_C}" >> ${status_file}
+    echo "[ time         ] ${NQS_ELAPSED_LM_C}" >> ${status_file}
+    echo "[ queue        ] ${NQS_PARTITION_LM_C}" >> ${status_file}
+    echo "[ dependencies ] $(get_dep_ids lm_c)" >> ${status_file}
+    echo "[ job id       ] ${jobid}" >> ${status_file}
+    echo "[ status       ] submitted" >> ${status_file}
+        
 else
 
     # Normal execution
