@@ -18,10 +18,6 @@ export LM_NL_LRADTOPO_F=.FALSE.
 # update status of running job in status.log
 export LM_NL_STATUS_F="true"
 
-# input and output directory names
-export LM_NL_INPUT_DIR_F=input
-export LM_NL_OUTPUT_DIR_F=output
-
 
 # ---------------------------------------------------------------
 #                            INPUT_ORG
@@ -233,8 +229,8 @@ lm_f_INPUT_IO(){
   ngribout = 3
   itype_gather = 2
   yform_restart = '${LM_NL_RESTART_FMT_F}'
-  ydir_restart_in = '${LM_NL_OUTPUT_DIR_F}/restart'
-  ydir_restart_out = '${LM_NL_OUTPUT_DIR_F}/restart'
+  ydir_restart_in = 'output/restart'
+  ydir_restart_out = 'output/restart'
   ytunit_restart = 'd'
   lbdclim = .TRUE.
   yncglob_title = "COSMO driven by 4 km COSMO"
@@ -246,10 +242,10 @@ lm_f_INPUT_IO(){
 
  &GRIBIN
   lbdana = .FALSE.
-  ydirini = '${LM_NL_INPUT_DIR_F}'
+  ydirini = 'input'
   lchkini = .TRUE.
   hincbound = $LM_NL_HINCBOUND_F
-  ydirbd = '${LM_NL_INPUT_DIR_F}'
+  ydirbd = 'input'
   lchkbd = .FALSE.
   lana_qi = $LM_NL_LANA_QI_F
   llb_qi = $LM_NL_LANA_QI_F
@@ -290,7 +286,7 @@ lm_f_INPUT_IO(){
   lcheck = .TRUE.
   luvmasspoint = .FALSE.
   lwrite_const = .TRUE.
-  ydir = '${LM_NL_OUTPUT_DIR_F}/1h_2D'
+  ydir = 'output/1h_2D'
   l_z_filter = .FALSE.
   l_p_filter = .FALSE.
   l_fi_pmsl_smooth = .FALSE.
@@ -309,7 +305,7 @@ lm_f_INPUT_IO(){
   lcheck = .FALSE.
   luvmasspoint = .FALSE.
   lwrite_const = .FALSE.
-  ydir = '${LM_NL_OUTPUT_DIR_F}/3h_3D_zlev'
+  ydir = 'output/3h_3D_zlev'
   l_z_filter = .FALSE.
   l_p_filter = .FALSE.
   l_fi_pmsl_smooth = .FALSE.
@@ -327,7 +323,7 @@ lm_f_INPUT_IO(){
   lcheck = .FALSE.
   luvmasspoint = .FALSE.
   lwrite_const = .FALSE.
-  ydir = '${LM_NL_OUTPUT_DIR_F}/24h'
+  ydir = 'output/24h'
   l_z_filter = .FALSE.
   l_p_filter = .FALSE.
   l_fi_pmsl_smooth = .FALSE.
