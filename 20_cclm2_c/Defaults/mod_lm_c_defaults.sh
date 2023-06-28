@@ -10,7 +10,7 @@ for f in 20_lm_c/Defaults/*; do
 done
 
 # ---------------------------------------------------------------
-#                            INPUT_ORG
+#                       Modify lm_c defaults
 # ---------------------------------------------------------------
 
 lm_c_mod_INPUT_ORG(){
@@ -18,6 +18,10 @@ lm_c_mod_INPUT_ORG(){
     sed -i 's/\(^\s*\)hstop\(\s*\)=\(\s*\).*$/\1nstop\2=\3'"$((LM_NL_NSTOP_C-1))"'/' INPUT_ORG
 }
 export -f lm_c_mod_INPUT_ORG
+
+# input and output directory names
+export LM_NL_INPUT_DIR_C=cosmo_input
+export LM_NL_OUTPUT_DIR_C=cosmo_output
 
 
 # ---------------------------------------------------------------
