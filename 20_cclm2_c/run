@@ -29,8 +29,8 @@ ulimit -a
 
 # COSMO namelists
 # ---------------
+# Generate "normal" COSMO namelists
 lm_c_INPUT_ORG
-lm_c_mod_INPUT_ORG
 lm_c_INPUT_DYN
 lm_c_INPUT_PHY
 lm_c_INPUT_IO
@@ -39,6 +39,9 @@ lm_c_INPUT_INI
 lm_c_INPUT_SAT
 lm_c_INPUT_ASS
 lm_c_INPUT_OAS
+# Modify COSMO namelists for CCLM2
+lm_c_mod_INPUT_ORG
+lm_c_mod_INPUT_IO
 
 # CESM
 # ----

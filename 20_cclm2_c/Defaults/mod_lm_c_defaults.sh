@@ -19,10 +19,12 @@ lm_c_mod_INPUT_ORG(){
 }
 export -f lm_c_mod_INPUT_ORG
 
-# input and output directory names
-export LM_NL_INPUT_DIR_C=cosmo_input
-export LM_NL_OUTPUT_DIR_C=cosmo_output
-
+lm_c_mod_INPUT_IO(){
+    # Replace input and output by cesm_input and cesm_output
+    sed -i 's/input/cesm_input/g' INPUT_IO
+    sed -i 's/output/cesm_output/g' INPUT_IO
+}
+export -f lm_c_mod_INPUT_IO
 
 # ---------------------------------------------------------------
 #                            INPUT_OAS
