@@ -7,8 +7,8 @@ export COSMO_TARGET="gpu"
 export ACCOUNT="pr133"
 
 # Name of the executables
-export EXE_INT2LM="./int2lm"
-export EXE_COSMO="./cosmo"
+export EXE_INT2LM="../bin/int2lm"
+export EXE_COSMO="../bin/cosmo"
 
 # Define default dependencies
 # The format is xxx_deps="current_yyy previous_zzz ..."
