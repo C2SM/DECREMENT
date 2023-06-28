@@ -18,17 +18,6 @@ module load NCO
 # Go to input dir
 cd input
 
-# Create missing links if needed
-if [[ "${LM_COMPRESS_DIRS}" == *"lm_c"* ]]; then
-    ln -sfn ../../20_lm_c/${LM_NL_OUTPUT_DIR_C} lm_c
-fi
-if [[ "${LM_COMPRESS_DIRS}" == *"lm_f"* ]]; then
-    ln -sfn ../../40_lm_f/${LM_NL_OUTPUT_DIR_F} lm_f
-fi
-if [[ "${LM_COMPRESS_DIRS}" == *"cclm2_c"* ]]; then
-    ln -sfn ../../20_cclm2_c/${LM_NL_OUTPUT_DIR_C} cclm2_c
-fi
-
 # Compress, archive and remove originals
 for direc in ${LM_COMPRESS_DIRS}; do
     echo ${direc}

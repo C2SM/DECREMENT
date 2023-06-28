@@ -23,10 +23,6 @@ export LM_NL_RPERTURB_C=0.00001
 # update status of running job in status.log
 export LM_NL_STATUS_C="true"
 
-# input and output directory names
-export LM_NL_INPUT_DIR_C=input
-export LM_NL_OUTPUT_DIR_C=output
-
 # ---------------------------------------------------------------
 #                            INPUT_ORG
 # ---------------------------------------------------------------
@@ -236,8 +232,8 @@ lm_c_INPUT_IO(){
   ngribout = 4
   itype_gather = 2
   yform_restart = '${LM_NL_RESTART_FMT_C}'
-  ydir_restart_in = '${LM_NL_OUTPUT_DIR_C}/restart'
-  ydir_restart_out = '${LM_NL_OUTPUT_DIR_C}/restart'
+  ydir_restart_in = 'output/restart'
+  ydir_restart_out = 'output/restart'
   ytunit_restart = 'd'
   lbdclim = .TRUE.
   yncglob_title = "COSMO driven by ERA5"
@@ -249,10 +245,10 @@ lm_c_INPUT_IO(){
 
  &GRIBIN
   lbdana = .FALSE.
-  ydirini = '${LM_NL_INPUT_DIR_C}'
+  ydirini = 'input'
   lchkini = .TRUE.
   hincbound = $LM_NL_HINCBOUND_C
-  ydirbd = '${LM_NL_INPUT_DIR_C}'
+  ydirbd = 'input'
   lchkbd =.TRUE.
   lana_qi = $LM_NL_LANA_QI_C
   llb_qi = $LM_NL_LANA_QI_C
@@ -290,7 +286,7 @@ lm_c_INPUT_IO(){
   lcheck = .FALSE.
   luvmasspoint = .FALSE.
   lwrite_const = .TRUE.
-  ydir = '${LM_NL_OUTPUT_DIR_C}/bc'
+  ydir = 'output/bc'
   l_z_filter = .FALSE.
   l_p_filter = .FALSE.
   l_fi_pmsl_smooth = .FALSE.
@@ -313,7 +309,7 @@ lm_c_INPUT_IO(){
   lcheck = .TRUE.
   luvmasspoint = .FALSE.
   lwrite_const = .FALSE.
-  ydir = '${LM_NL_OUTPUT_DIR_C}/1h_2D'
+  ydir = 'output/1h_2D'
   l_z_filter = .FALSE.
   l_p_filter = .FALSE.
   l_fi_pmsl_smooth = .FALSE.
@@ -332,7 +328,7 @@ lm_c_INPUT_IO(){
   lcheck = .FALSE.
   luvmasspoint = .FALSE.
   lwrite_const = .FALSE.
-  ydir = '${LM_NL_OUTPUT_DIR_C}/3h_3D_zlev'
+  ydir = 'output/3h_3D_zlev'
   l_z_filter = .FALSE.
   l_p_filter = .FALSE.
   l_fi_pmsl_smooth = .FALSE.
@@ -350,7 +346,7 @@ lm_c_INPUT_IO(){
   lcheck = .FALSE.
   luvmasspoint = .FALSE.
   lwrite_const = .FALSE.
-  ydir = '${LM_NL_OUTPUT_DIR_C}/24h'
+  ydir = 'output/24h'
   l_z_filter = .FALSE.
   l_p_filter = .FALSE.
   l_fi_pmsl_smooth = .FALSE.
