@@ -16,7 +16,7 @@ cclm2_c_namcouple(){
 #########################################################################
  \$NFIELDS
 # This is the total number of fields being exchanged. 
-# For the definition of the fields, see under $STRINGS keyword
+# For the definition of the fields, see under \$STRINGS keyword
 #
        17
  \$END
