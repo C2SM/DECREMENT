@@ -17,13 +17,20 @@ export LM_COMPRESS_DIRS="cclm2_c/1h_2D cclm2_c/24h cclm2_c/3h_3D_zlev"
 export cclm2_c_deps="previous_cclm2_c current_ifs2lm"
 export chain_deps="previous_cclm2_c"
 
+if [[ $COSMO_TARGET == "cpu" ]]; then
+    export NQS_NXLM_C=6               # number of CPUs in x direction (12 per node on daint-gpu)
+    export NQS_NYLM_C=6               # number of CPUs in y direction
+else
+    export NQS_NXLM_C=2               # number of CPUs in x direction (12 per node on daint-gpu)
+    export NQS_NYLM_C=2               # number of CPUs in y direction
+fi
 
 # ===================================================
 #                   CESM
 # ===================================================
 
 source simulation_configs/CCLM2_EU-CORDEX_50km/clm_c_datm_streams.sh
-export CLM_C_NTASKS=12
+export CLM_C_NTASKS=12   # only used on cpu, else use idling cpus, i.e. (2x2)x(12-1)=44 tasks
 export CLM_COMPIlER=gcc
 
 
