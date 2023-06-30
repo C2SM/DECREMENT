@@ -4,15 +4,7 @@
 
 A set of scripts used to run weather and climate simulations with COSMO. It is is intended to be simple and easy to extend. It was originally a stripped down version of the LM_package (hence all the variable names starting with `LM_`) and evolved later into a more generic workflow tool with async capabilities.
 
-----
-
-## On this page
-{:.no_toc}
-
-- TOC
-{:toc}
-
-----
+[[_TOC_]]
 
 
 ## The default chain of tasks
