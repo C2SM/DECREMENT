@@ -21,6 +21,9 @@ By default, DECREMENT is intended to run a so-called *coarse* resolution domain 
 
 The scripts are loading settings from different locations with the following priority: **defaults < config < user settings**. The defaults can come from the `defaults.sh` file or anyting under `kk_part_name/Defaults`. The idea is that the `config` file hosts settings related to the simulation configuration (domain, physical parametrizations, domain decomposition, etc...) and must be located in the root directory. It can either be a link to a stock configuration, e.g. `ln -sf simulation_configs/SIMULATION_EU_CORDEX_50km config`, or a personal configuration written from scratch. Finally the optional but almost always needed `user_settings` file, which must also be located in the root directory, hosts settings one wants to modify (or even create) and takes precedence over others.
 
+**Note:** `config` and `user_settings`are sourced from `run_daint.sh` in the root directory, so if one wants to source another file inside of them, the path has to be relative to the root directory. This also applies to nested sourcing.
+{: .note}
+
 
 ## Changing arbitrary namelist parameters
 
@@ -65,19 +68,22 @@ The current version of DECREMENT enables asynchronous execution of tasks, i.e. t
 It is possible to run the `20_lm_c` step in perturbed-intial-conditions ensemble mode. To this end, uncomment the corresponding block of env. vars in `user_settings`. Doing so will create member sub-directories in in `20_lm_c`. Note that in COSMO6 the random seed cannot be set explicitly and is based on machine time [in ms].
 
 
-## Integrating a custom task in the chain
+## Integrating a custom part in the chain
 
 DECREMENT is generic enough to allow integration of custom parts in the chain which can be very helpful for *online* post-processing, archiving or custom pre-processing (like the PGW method).
 
 A part is a directory directly placed in the root dir (like the stock parts for INT2LM and COSMO). It's name can contain leading digits to indicate the position in the chain for readability but doesn't have to. from now on, let's assume we want to insert the part `45_my_post_proc`. It is expected to contain the following elements, some of them being optional:
 * a `Defaults` directory. Any file in that directory will be sourced and `config` and `user_settings` can overwrite the settings. Like for stock parts, it can for instance contain the definition of default parameters or the default functions to generate namelists.
-* a `submit.sh` script. It's optional. When present, it is used to submit the part and the automated submit mechanism is skipped. The only requirement is that it returns (`echo`) the jobid(s) of the submitted part. This feature is used in `20_lm_c` to handle ensemble runs and a similar procedure could be used for sensitivity runs.
+* a `submit.sh` script. It's optional. When present, it is executed (as opposed to sourced) to submit the part and the automated submit mechanism is skipped. The only requirement is that it returns (`echo`) the jobid(s) of the submitted part. This feature is used in `20_lm_c` to handle ensemble runs and a similar procedure could be used for sensitivity runs.
 * a `run` file. If `submit.sh` is not present, it has to be there. It will be the file submitted with environment variables controling the resources used. The later must have a name that follows a certain pattern containing the uppercase name of the part without optional leading digits. In our case, they would be the following:
     * `NQS_NODES_MY_POST_PROC` : nodes number (defaults to 1)
     * `NQS_NTPN_MY_POST_PROC` (optional) : number of tasks per nodes (defaults to the number of cores per node, so 12 on Piz'Daint)
     * `NQS_ELAPSED_MY_POST_PROC` : wall time (defaults to 5 min)
     * `NQS_PARTITION_MY_POST_PROC` : machine partition (defaults to `"normal"`)
 * an `env.sh` file. It's optional. If present and `submit.sh` is not present, it will be sourced before submitting the job. It can for instance contain operations to determine the `NQS_XXX` env vars if they need be calculated rather than prescribed in `user_settings`or source a spack environement (see examples in stock parts).
+
+**Note:** The submission mechanism is ran as a subprocess inside the part directory so any files sourced or executed inside `env.sh` or `submit.sh` must have a path relative to that directory.
+{: .note}
 
 The last required setting relates to the job dependencies. You can check in `defaults.sh` how it's set for the stock parts. The format is
 ``` bash
