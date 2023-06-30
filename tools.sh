@@ -69,6 +69,12 @@ add_s_oro_max(){
 export -f add_s_oro_max
 
 
+compute_cosmo_nodes(){
+    echo $(( ($1 * $2 + $3 + $4 - 1) / $4 ))
+}
+export -f compute_cosmo_nodes
+
+
 id_list(){
     # Convert a space-separated list in a :-separated one,
     # i.e. list ids in the slurm format
@@ -151,17 +157,9 @@ submit(){
 
     # Status log
     # ----------
-    GREEN="\033[32m"
-    NORMAL="\033[0;39m"
-    # Only update status log file if argument $1 is empty (whatever value)
+    # Only create status log file if argument $1 is empty (whatever value)
     if [[ -z "$1" ]]; then
-        echo -e "${GREEN}[[ ${part} ]]${NORMAL}" >> ${status_file}
-        echo "[ nodes        ] ${nodes}" >> ${status_file}
-        echo "[ time         ] ${time}" >> ${status_file}
-        echo "[ queue        ] ${partition}" >> ${status_file}
-        echo "[ dependencies ] ${dep_ids}" >> ${status_file}
-        echo "[ job id       ] ${jobid}" >> ${status_file}
-        echo "[ status       ] submitted" >> ${status_file}
+        status_log ${nodes} ${time} ${partition} ${dep_ids} ${jobid}
     fi
 
     # Return job id
@@ -170,10 +168,19 @@ submit(){
 }
 export -f submit
 
-compute_cosmo_nodes(){
-    echo $(( ($1 * $2 + $3 + $4 - 1) / $4 ))
+
+status_log(){
+    GREEN="\033[32m"
+    NORMAL="\033[0;39m"
+    echo -e "${GREEN}[[ ${part} ]]${NORMAL}" >> ${status_file}
+    echo "[ nodes        ] $1" >> ${status_file}
+    echo "[ time         ] $2" >> ${status_file}
+    echo "[ queue        ] $3" >> ${status_file}
+    echo "[ dependencies ] $4" >> ${status_file}
+    echo "[ job id       ] $5" >> ${status_file}
+    echo "[ status       ] submitted" >> ${status_file}
 }
-export -f compute_cosmo_nodes
+export -f status_log
 
 
 update_status(){
