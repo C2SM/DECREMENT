@@ -25,7 +25,7 @@ if (( LM_NL_ENS_NUMBER_C > 1 )); then
         ln -sf ../env.sh
 
         # Submit job and store job id
-        jobid=$(submit)
+        jobid=$(submit "no_status")
         jobids+=" ${jobid}"
 
         # Exit member directory
@@ -36,15 +36,7 @@ if (( LM_NL_ENS_NUMBER_C > 1 )); then
     jobid=$(id_list ${jobids})
 
     # Status log
-    GREEN="\033[32m"
-    NORMAL="\033[0;39m"
-    echo -e "${GREEN}[[ ${part} ]]${NORMAL}" >> ${status_file}
-    echo "[ nodes        ] ${NQS_NODES_LM_C}" >> ${status_file}
-    echo "[ time         ] ${NQS_ELAPSED_LM_C}" >> ${status_file}
-    echo "[ queue        ] ${NQS_PARTITION_LM_C}" >> ${status_file}
-    echo "[ dependencies ] $(get_dep_ids lm_c)" >> ${status_file}
-    echo "[ job id       ] ${jobid}" >> ${status_file}
-    echo "[ status       ] submitted" >> ${status_file}
+    status_log ${NQS_NODES_LM_C} ${NQS_ELAPSED_LM_C} ${NQS_PARTITION_LM_C} $(get_dep_ids lm_c) ${jobid}
         
 else
 
