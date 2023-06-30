@@ -21,7 +21,7 @@ By default, DECREMENT is intended to run a so-called *coarse* resolution domain 
 
 The scripts are loading settings from different locations with the following priority: **defaults < config < user settings**. The defaults can come from the `defaults.sh` file or anyting under `kk_part_name/Defaults`. The idea is that the `config` file hosts settings related to the simulation configuration (domain, physical parametrizations, domain decomposition, etc...) and must be located in the root directory. It can either be a link to a stock configuration, e.g. `ln -sf simulation_configs/SIMULATION_EU_CORDEX_50km config`, or a personal configuration written from scratch. Finally the optional but almost always needed `user_settings` file, which must also be located in the root directory, hosts settings one wants to modify (or even create) and takes precedence over others.
 
-**Note:** `config` and `user_settings`are sourced from `run_daint.sh` in the root directory, so if one wants to source another file inside of them, the path has to be relative to the root directory. This also applies to nested sourcing.
+**Note:** `config` and `user_settings` are sourced from `run_daint.sh` in the root directory, so if one wants to source another file inside of them, the path has to be relative to the root directory. This also applies to nested sourcing.
 {: .note}
 
 
@@ -39,10 +39,12 @@ A design idea of DECREMENT is that parameters that users change most often have 
         ```
         and place the `spack_env_cosmo.sh` file in both directories running cosmo, i.e. `20_lm_c` and `40_lm_f`. In order to keep things tidy, one can also put this file in the `bin` directory with a more descriptive name, like `spack_env_cosmo_gpu.sh`, and link it as `spack_env_cosmo.sh` in the right directories. Same thing applies to INT2LM: if a `spack_env_int2lm.sh` file is found in `10_ifs2lm` or `30_lm2lm`, it will be sourced before submitting the corresponding job.
     * In order to run INT2LM, copy the necessary extpar file in `bin` as well. Commands to get the extpar files for the stock configurations are listed in `./get_extpar_data.sh` (no need to execute the whole file). If necessary, adapt the `LM_NL_EXTPAR_?` environment variables accordingly.
+
 2. Link the simulation configuration file like
     ```bash
     ln -s simulation_configs/SIMULATION_EU_CORDEX_50km config
     ```
+
 3. Copy the user settings example (`cp user_settings_example user_settings`) where some common settings are commented out with minimal documentation. There you can set anything:
     * startdate end enddate
     * scheduler resources like node numbers or walltime (see settings in `config`)
@@ -50,11 +52,13 @@ A design idea of DECREMENT is that parameters that users change most often have 
     * chaining interval
     * output variables defined in the `&GRIBOUT` namelists by proceeding like described for [arbitrary namelist parameters](#changing-arbitrary-namelist-parameters).
     * anything else defined in `defaults.sh`, `kk_part_name/Defaults/*` or `config`
+
 4. Launch the simulation with
     ```bash
     ./run_daint.sh
     ```
 You can monitor the overall status in the `status.log` file.
+
 5. Transfer your output data to a safe place!
 
 
