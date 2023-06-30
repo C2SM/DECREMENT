@@ -1,19 +1,18 @@
----
-layout: handbook-page-toc
-title: "DECREMENT, The DirEctory COSMO Runtime EnvironMENT"
-description: "The DirEctory COSMO Runtime EnvironMENT"
----
+# DECREMENT
+
+***The DirEctory COSMO Runtime EnvironMENT***
+
+A set of scripts used to run weather and climate simulations with COSMO. It is is intended to be simple and easy to extend. It was originally a stripped down version of the LM_package (hence all the variable names starting with `LM_`) and evolved later into a more generic workflow tool with async capabilities.
+
+----
 
 ## On this page
-{:.no_toc .hidden-md .hidden-lg}
+{:.no_toc}
 
 - TOC
-{:toc .hidden-md .hidden-lg}
+{:toc}
 
-
-## About
-
-**DECREMENT**, *The DirEctory COSMO Runtime EnvironMENT*, is a set of scripts used to run weather and climate simulations with COSMO. It is is intended to be simple and easy to extend. It was originally a stripped down version of the LM_package (hence all the variable names starting with `LM_`) and evolved later into a more generic workflow tool with async capabilities.
+----
 
 
 ## The default chain of tasks
