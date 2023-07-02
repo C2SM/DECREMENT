@@ -24,7 +24,6 @@ By default, DECREMENT is intended to run a so-called *coarse* resolution domain 
 The scripts are loading settings from different locations with the following priority: **defaults < config < user settings**. The defaults can come from the `defaults.sh` file or anyting under `kk_part_name/Defaults`. The idea is that the `config` file hosts settings related to the simulation configuration (domain, physical parametrizations, domain decomposition, etc...) and must be located in the root directory. It can either be a link to a stock configuration, e.g. `ln -sf simulation_configs/SIMULATION_EU_CORDEX_50km config`, or a personal configuration written from scratch. Finally the optional but almost always needed `user_settings` file, which must also be located in the root directory, hosts settings one wants to modify (or even create) and takes precedence over others.
 
 **Note:** `config` and `user_settings` are sourced from `run_daint.sh` in the root directory, so if one wants to source another file inside of them, the path has to be relative to the root directory. This also applies to nested sourcing.
-{: .note}
 
 
 ## Changing arbitrary namelist parameters
@@ -89,7 +88,6 @@ A part is a directory directly placed in the root dir (like the stock parts for 
 * an `env.sh` file. It's optional. If present and `submit.sh` is not present, it will be sourced before submitting the job. It can for instance contain operations to determine the `NQS_XXX` env vars if they need be calculated rather than prescribed in `user_settings`or source a spack environement (see examples in stock parts).
 
 **Note:** The submission mechanism is ran as a subprocess inside the part directory so any files sourced or executed inside `env.sh` or `submit.sh` must have a path relative to that directory.
-{: .note}
 
 The last required setting relates to the job dependencies. You can check in `defaults.sh` how it's set for the stock parts. The format is
 ``` bash
