@@ -87,7 +87,9 @@ A part is a directory directly placed in the root dir (like the stock parts for 
     * `NQS_PARTITION_MY_POST_PROC` : machine partition (defaults to `"normal"`)
 * an `env.sh` file. It's optional. If present and `submit.sh` is not present, it will be sourced before submitting the job. It can for instance contain operations to determine the `NQS_XXX` env vars if they need be calculated rather than prescribed in `user_settings`or source a spack environement (see examples in stock parts).
 
-**Note:** The submission mechanism is ran as a subprocess inside the part directory so any files sourced or executed inside `env.sh` or `submit.sh` must have a path relative to that directory.
+> **Note:** The submission mechanism is ran as a subprocess inside the
+> part directory so any files sourced or executed inside `env.sh` or
+> `submit.sh` must have a path relative to that directory.
 
 The last required setting relates to the job dependencies. You can check in `defaults.sh` how it's set for the stock parts. The format is
 ``` bash
