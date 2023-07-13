@@ -259,7 +259,7 @@ clm_c_drv_in(){
   pause_active_wav = .false.
   pause_n = 0
   pause_option = "never"
-  restart_n = 86400
+  restart_n = ${LM_NL_RUNTIME_S}
   restart_option = "nseconds"
   restart_ymd = -999
   rof_cpl_dt = 10800

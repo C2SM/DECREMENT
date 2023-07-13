@@ -32,7 +32,7 @@ cclm2_c_namcouple(){
  \$RUNTIME
 # This gives you the total simulated time for this run in seconds (here 6 days)
 #
-  $(((LM_NL_HSTOP-LM_NL_HSTART)*3600))
+  ${LM_NL_RUNTIME_S}
  \$END
 ###########################################################################
  \$NLOGPRT
