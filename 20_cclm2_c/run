@@ -70,7 +70,11 @@ clm_c_wav_modelio
 
 # OASIS namcouple
 # ---------------
-cclm2_c_namcouple 
+cclm2_c_namcouple
+
+# Adapt namelists from user
+# -------------------------
+[[ -f mod_nml.sh ]] && source mod_nml.sh 
 
 
 # ==========================
