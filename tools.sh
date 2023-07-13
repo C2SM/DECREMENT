@@ -187,3 +187,11 @@ update_status(){
     sed -i '/\[ job id       \] '"${SLURM_JOB_ID}"'/!b;n;c\[ status       \] '"${1}" ${status_file}
 }
 export -f update_status
+
+
+
+mod_param(){
+    # Replace $2 setting by $3 in $1
+    sed -i 's/\(^\s*'$2'\s*=\s*\).*$/\1'$3'/' $1
+}
+export -f mod_param
