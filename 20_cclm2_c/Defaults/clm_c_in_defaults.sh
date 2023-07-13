@@ -265,7 +265,7 @@ clm_c_drv_in(){
   rof_cpl_dt = 10800
   start_tod = 0
   start_ymd = ${LM_YYYY_BEGIN}${LM_MM_BEGIN}${LM_DD_BEGIN}
-  stop_n = $(((LM_NL_HSTOP-LM_NL_HSTART) * 3600))
+  stop_n = ${LM_NL_RUNTIME_S}
   stop_option = "nseconds"
   stop_ymd = -999
   tprof_n = -999
