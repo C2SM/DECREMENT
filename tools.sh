@@ -3,8 +3,8 @@
 diff_hours(){
     # get difference between 2 dates in hours
     
-    d1=$(date -d "$1" +%s)
-    d2=$(date -d "$2" +%s)
+    d1=$(date -u -d "$1" +%s)
+    d2=$(date -u -d "$2" +%s)
     echo $(( ($d2 - $d1) / 3600 ))
 }
 export -f diff_hours
