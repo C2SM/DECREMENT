@@ -9,7 +9,7 @@ export LM_NL_IDBG_LEVEL_C=4
 
 #I/O
 export LM_NL_ASYNIO_BLOCK_SIZE_C=10
-export LM_NL_LPREFETCH_C='.FALSE.'
+export LM_NL_LPREFETCH_C=.FALSE.
 export LM_NL_RESTART_FMT_C='bina'
 
 # radiation scheme
