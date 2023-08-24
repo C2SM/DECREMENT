@@ -32,34 +32,18 @@ fi
 # General settings
 export CLM_username="psieber"
 export CLM_model_version="release-clm5.0.35-52-gb3e26f715"
+
+export CLM_C_NTASKS=12   # only used on cpu, else use idling cpus, i.e. (2x2)x(12-1)=44 tasks
+export CLM_COMPILER=gcc
 export CLM_paramfile="clm5_params.c171117.nc"
 
-GRID=0.5
-
 # Grid-specific settings
-if [[ $GRID == 0.5 ]]; then
-    source simulation_configs/CCLM2_EU-CORDEX_50km/clm_c_datm_streams.sh
-    export CLM_case_name="clm5.0.gnu-oasis.I2000Clm50SpGs.CLM_USRDAT.eur_0.5.cclm2"
-    export CLM_C_NTASKS=12   # only used on cpu, else use idling cpus, i.e. (2x2)x(12-1)=44 tasks
-    export CLM_COMPILER=gcc
-
-    export CLM_domainfile="domain_EU-CORDEX_0.5_lon360.nc"
-    export CLM_oasisdummy="OASIS_dummy_0.5_lon360.nc"
-    export CLM_fsurdat="surfdata_0.5x0.5_hist_16pfts_Irrig_CMIP6_simyr2000_c190418.nc"
-    export CLM_finidat="clmi.I2000Clm50BgcCrop.2011-01-01.1.9x2.5_gx1v7_gl4_simyr2000_c190312.nc"
-fi
-
-if [[ $GRID == 0.1 ]]; then
-    source simulation_configs/CCLM2_EU-CORDEX_12km/clm_c_datm_streams.sh
-    export CLM_case_name="clm5.0.gnu-oasis.I2000Clm50SpGs.CLM_USRDAT.eur_0.1.cclm2"
-    export CLM_C_NTASKS=12   # only used on cpu, else use idling cpus, i.e. (2x2)x(12-1)=44 tasks
-    export CLM_COMPILER=gcc
-
-    export CLM_domainfile="domain_EU-CORDEX_0.1_lon360.nc"
-    export CLM_oasisdummy="OASIS_dummy_0.1_lon360.nc"
-    export CLM_fsurdat="surfdata_0.1x0.1_EUR_hist_16pfts_Irrig_CMIP6_simyr2005_c230523.nc"
-    export CLM_finidat="clmi.I2000Clm50BgcCrop.2011-01-01.1.9x2.5_gx1v7_gl4_simyr2000_c190312.nc"
-fi
+source simulation_configs/CCLM2_EU-CORDEX_50km/clm_c_datm_streams.sh
+export CLM_case_name="clm5.0.gnu-oasis.I2000Clm50SpGs.CLM_USRDAT.eur_0.5.cclm2"
+export CLM_domainfile="domain_EU-CORDEX_0.5_lon360.nc"
+export CLM_oasisdummy="OASIS_dummy_0.5_lon360.nc"
+export CLM_fsurdat="surfdata_0.5x0.5_hist_16pfts_Irrig_CMIP6_simyr2000_c190418.nc"
+export CLM_finidat="clmi.I2000Clm50BgcCrop.2011-01-01.1.9x2.5_gx1v7_gl4_simyr2000_c190312.nc"
 
 # ===================================================
 #                   CCLM2
