@@ -47,6 +47,9 @@ stream_fldfilename_lai="/scratch/snx3000/psieber/CCLM2_inputdata/cesm_inputdata/
 domainfile_05="/scratch/snx3000/psieber/CCLM2_inputdata/CCLM2_EUR_inputdata/domain/domain_EU-CORDEX_0.5_lon360.nc"
 domainfile_01="/scratch/snx3000/psieber/CCLM2_inputdata/CCLM2_EUR_inputdata/domain/domain_EU-CORDEX_0.1_lon360.nc"
 
+oasisdummy_05="/scratch/snx3000/psieber/CCLM2_inputdata/CCLM2_EUR_inputdata/OASIS_dummy_for_datm/OASIS_dummy_0.5_lon360.nc"
+oasisdummy_01="/scratch/snx3000/psieber/CCLM2_inputdata/CCLM2_EUR_inputdata/OASIS_dummy_for_datm/OASIS_dummy_0.1_lon360.nc"
+
 fsurdat_05="/scratch/snx3000/psieber/CCLM2_inputdata/CCLM2_EUR_inputdata/surfdata/surfdata_0.5x0.5_hist_16pfts_Irrig_CMIP6_simyr2000_c190418.nc"
 fsurdat_01="/scratch/snx3000/psieber/CCLM2_inputdata/CCLM2_EUR_inputdata/surfdata/surfdata_0.1x0.1_EUR_hist_16pfts_Irrig_CMIP6_simyr2005_c230523.nc" # produced with hires_pft option
 
@@ -56,7 +59,7 @@ finidat="/scratch/snx3000/psieber/CCLM2_inputdata/cesm_inputdata/lnd/clm2/initda
 # Collect and loop over files to copy
 flist=($faerosoldep $ftopo $fco2 \
 $megan_factors_file $paramfile_1 $paramfile_2 $fsnowaging $fsnowoptics $stream_fldfilename_urbantv $stream_fldfilename_lai \
-$domainfile_05 $domainfile_01 $fsurdat_05 $fsurdat_01 $finidat)
+$domainfile_05 $domainfile_01 $oasisdummy_05 $oasisdummy_01 $fsurdat_05 $fsurdat_01 $finidat)
 
 for f in ${flist[@]}; do
     cp -u ${f} $PROJECT/decrement/20_cclm2_c/cesm_input/
