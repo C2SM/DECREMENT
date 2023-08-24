@@ -1,0 +1,69 @@
+#!/bin/bash
+#CCLM2 EURO-CORDEX 50km / 12km configuration
+
+# CAUTION: Sourcing is done from the DECREMENT root dir
+#          so path for sourcing are relative to there.
+
+# ===================================================
+#                   CCLM2
+# ===================================================
+
+RESOLUTION="50km"                      # 50km (0.5° for CLM) or 12km (0.1° for CLM)
+export NQS_ELAPSED_CCLM2_C=00:30:00    # maximum wall-clock time (HH:mm:ss)
+
+# ===================================================
+#                   COSMO
+# ===================================================
+
+# Grid-specific settings
+if [[ $RESOLUTION == 50km ]]; then
+    source simulation_configs/SIMULATION_EU_CORDEX_50km
+fi
+
+if [[ $RESOLUTION == 12km ]]; then
+    source simulation_configs/SIMULATION_EU_12km_2km_scClim
+fi
+
+# Adapt some settings
+export SB_PARTS="00_get_data 10_ifs2lm 20_cclm2_c 50_pack_data 60_chain"
+export LM_COMPRESS_DIRS="cclm2_c/1h_2D cclm2_c/24h cclm2_c/3h_3D_zlev"
+export cclm2_c_deps="previous_cclm2_c current_ifs2lm"
+export chain_deps="previous_cclm2_c"
+
+if [[ $COSMO_TARGET == "cpu" ]]; then
+    export NQS_NXLM_C=6               # number of CPUs in x direction (12 per node on daint-gpu)
+    export NQS_NYLM_C=6               # number of CPUs in y direction
+else
+    export NQS_NXLM_C=2               # number of CPUs in x direction (12 per node on daint-gpu)
+    export NQS_NYLM_C=2               # number of CPUs in y direction
+fi
+
+# ===================================================
+#                   CESM
+# ===================================================
+
+# General settings
+export CLM_username="psieber"
+export CLM_model_version="release-clm5.0.35-52-gb3e26f715"
+
+export CLM_C_NTASKS=12   # only used on cpu, else use idling cpus, i.e. (2x2)x(12-1)=44 tasks
+export CLM_COMPILER=gcc
+source simulation_configs/CCLM2_EU-CORDEX/clm_c_datm_streams.sh
+export CLM_paramfile="clm5_params.c171117.nc"
+
+# Grid-specific settings
+if [[ $RESOLUTION == 50km ]]; then
+    export CLM_case_name="clm5.0.gnu-oasis.I2000Clm50SpGs.CLM_USRDAT.eur_0.5.cclm2"
+    export CLM_domainfile="domain_EU-CORDEX_0.5_lon360.nc"
+    export CLM_oasisdummy="OASIS_dummy_0.5_lon360.nc"
+    export CLM_fsurdat="surfdata_0.5x0.5_hist_16pfts_Irrig_CMIP6_simyr2000_c190418.nc"
+    export CLM_finidat="clmi.I2000Clm50BgcCrop.2011-01-01.1.9x2.5_gx1v7_gl4_simyr2000_c190312.nc"
+fi
+
+if [[ $RESOLUTION == 12km ]]; then
+    export CLM_case_name="clm5.0.gnu-oasis.I2000Clm50SpGs.CLM_USRDAT.eur_0.1.cclm2"
+    export CLM_domainfile="domain_EU-CORDEX_0.1_lon360.nc"
+    export CLM_oasisdummy="OASIS_dummy_0.1_lon360.nc"
+    export CLM_fsurdat="surfdata_0.1x0.1_EUR_hist_16pfts_Irrig_CMIP6_simyr2005_c230523.nc"
+    export CLM_finidat="clmi.I2000Clm50BgcCrop.2011-01-01.1.9x2.5_gx1v7_gl4_simyr2000_c190312.nc"
+fi
