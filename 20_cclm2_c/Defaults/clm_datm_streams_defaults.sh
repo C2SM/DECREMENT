@@ -6,28 +6,12 @@ place_holder(){
 }
 
 # ---------------------------------------------------------------
-#                            datm.stream.Precip
+#                            OASIS.stream
 # ---------------------------------------------------------------
-clm_c_datm_stream_Precip(){
+clm_c_OASIS_stream(){
   place_holder ${FUNCNAME[0]}
 }
-export -f clm_c_datm_stream_Precip
-
-# ---------------------------------------------------------------
-#                            datm.stream.Solar
-# ---------------------------------------------------------------
-clm_c_datm_stream_Solar(){
-  place_holder ${FUNCNAME[0]}
-}
-export -f clm_c_datm_stream_Solar
-
-# ---------------------------------------------------------------
-#                            datm.stream.TPQW
-# ---------------------------------------------------------------
-clm_c_datm_stream_TPQW(){
-  place_holder ${FUNCNAME[0]}
-}
-export -f clm_c_datm_stream_TPQW
+export -f clm_c_OASIS_stream
 
 # ---------------------------------------------------------------
 #                            datm.stream.presaero
@@ -44,3 +28,11 @@ clm_c_datm_stream_topo(){
   place_holder ${FUNCNAME[0]}
 }
 export -f clm_c_datm_stream_topo
+
+# ---------------------------------------------------------------
+#                            datm.stream.co2tseries
+# ---------------------------------------------------------------
+clm_c_datm_stream_co2tseries(){
+  place_holder ${FUNCNAME[0]}
+}
+export -f clm_c_datm_stream_co2tseries
