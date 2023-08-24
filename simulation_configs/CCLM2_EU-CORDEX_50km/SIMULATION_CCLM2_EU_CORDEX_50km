@@ -31,7 +31,7 @@ fi
 
 source simulation_configs/CCLM2_EU-CORDEX_50km/clm_c_datm_streams.sh
 export CLM_C_NTASKS=12   # only used on cpu, else use idling cpus, i.e. (2x2)x(12-1)=44 tasks
-export CLM_COMPIlER=gcc
+export CLM_COMPILER=gcc
 
 
 # ===================================================
