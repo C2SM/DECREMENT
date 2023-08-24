@@ -1,4 +1,4 @@
 #!/bin/bash
 
 # CESM defaults
-export EXE_CESM="./cesm.exe"
+export EXE_CESM="../bin/cesm.exe"
