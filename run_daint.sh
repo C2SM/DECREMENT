@@ -94,7 +94,7 @@ export LM_ZZ_END=$(date -d "${LM_END_DATE}" +%H)
 # Compute HSTART, HSTOP and RUNTIME_S
 export LM_NL_HSTART=$(diff_hours "${LM_INI_DATE}" "${LM_BEGIN_DATE}")
 export LM_NL_HSTOP=$(diff_hours "${LM_INI_DATE}" "${LM_END_DATE}")
-export LM_NL_RUNTIME_S=$(((LM_NL_HSTOP-LM_NL_HSTART) * 3600))
+export LM_NL_RUNTIME_S=$(( (LM_NL_HSTOP-LM_NL_HSTART) * 3600 ))
 
 # Dates for filenames or log messages
 export LM_BEGIN_DATE_FR=$(date -d "${LM_BEGIN_DATE}" +%FT%R)
