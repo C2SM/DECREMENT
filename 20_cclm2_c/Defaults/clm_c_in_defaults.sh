@@ -352,6 +352,14 @@ clm_c_lnd_in(){
  glc_do_dynglacier = .false.
  glc_snow_persistence_max_days = 0
  h2osno_max = 10000.0
+ hist_avgflag_pertape = ${CLM_hist_avgflag_pertape}
+ hist_dov2xy = ${CLM_hist_dov2xy}
+ hist_empty_htapes = ${CLM_hist_empty_htapes}
+ hist_fincl1 = ${CLM_hist_fincl1}
+ hist_fincl2 = ${CLM_hist_fincl2}
+ hist_fincl3 = ${CLM_hist_fincl3}
+ hist_mfilt = ${CLM_hist_mfilt}
+ hist_nhtfrq = ${CLM_hist_nhtfrq}
  int_snow_max = 2000.
  irrigate = .true.
  maxpatch_glcmec = 10
