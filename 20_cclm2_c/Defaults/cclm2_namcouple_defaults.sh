@@ -1,5 +1,10 @@
 #!/bin/bash
 
+export COUPLING_TIMESTEP=1800 # should be the same as CLM timestep
+
+# EXPORTED is default for sending/receiving
+# set to EXPOUT to produce 2 netcdf files for the coupling field for values sent and received after interpolation
+
 # ---------------------------------------------------------------
 #                            namcouple
 # ---------------------------------------------------------------
@@ -53,7 +58,7 @@ cclm2_c_namcouple(){
 #
 # --- start Field 1 : Surface temperature
 # 
-COSTEMPE  CLMTEMPE 1  3600  2  cosmo.nc  EXPORTED
+COSTEMPE  CLMTEMPE 1  ${COUPLING_TIMESTEP}  2  cosmo.nc  EXPOUT
  coap  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
@@ -68,7 +73,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 2 : eastward_wind
 # 
-COSUWIND CLMUWIND 182  3600  2  cosmo.nc  EXPORTED
+COSUWIND CLMUWIND 182  ${COUPLING_TIMESTEP}  2  cosmo.nc  EXPORTED
  coap  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
@@ -82,7 +87,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 3 : northward_wind
 # 
-COSVWIND CLMVWIND 262  3600  2  cosmo.nc  EXPORTED
+COSVWIND CLMVWIND 262  ${COUPLING_TIMESTEP}  2  cosmo.nc  EXPORTED
  coap  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
@@ -97,7 +102,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 4 : specific water vapor content
 # 
-COSSPWAT CLMSPWAT 456  3600  2  cosmo.nc  EXPORTED
+COSSPWAT CLMSPWAT 456  ${COUPLING_TIMESTEP}  2  cosmo.nc  EXPORTED
  coap  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
@@ -112,7 +117,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 5 : thickness of lowest level (m)
 # 
-COSTHICK CLMTHICK 116  3600  2  cosmo.nc  EXPORTED
+COSTHICK CLMTHICK 116  ${COUPLING_TIMESTEP}  2  cosmo.nc  EXPORTED
  coap  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
@@ -127,7 +132,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 6 : surface pressure (Pa)
 # 
-COSPRESS CLMPRESS 348  3600  2  cosmo.nc  EXPORTED
+COSPRESS CLMPRESS 348  ${COUPLING_TIMESTEP}  2  cosmo.nc  EXPORTED
  coap  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
@@ -142,7 +147,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 7 : direct shortwave downward radiation (W/m2)
 # 
-COSDIRSW CLMDIRSW  11  3600  2  cosmo.nc  EXPORTED
+COSDIRSW CLMDIRSW  11  ${COUPLING_TIMESTEP}  2  cosmo.nc  EXPORTED
  coap  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
@@ -157,7 +162,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 8 :  diffuse shortwave downward radiation (W/m2)
 # 
-COSDIFSW CLMDIFSW 12  3600  2  cosmo.nc  EXPORTED
+COSDIFSW CLMDIFSW 12  ${COUPLING_TIMESTEP}  2  cosmo.nc  EXPORTED
  coap  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
@@ -172,7 +177,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 9 : longwave downward radiation (W/m2)
 # 
-COSLONGW CLMLONGW 10  3600  2  cosmo.nc  EXPORTED
+COSLONGW CLMLONGW 10  ${COUPLING_TIMESTEP}  2  cosmo.nc  EXPORTED
  coap  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
@@ -187,7 +192,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 10 :  total convective precipitation      (kg/m2*s)
 # 
-COSCVPRE CLMCVPRE 152  3600  2  cosmo.nc  EXPORTED
+COSCVPRE CLMCVPRE 152  ${COUPLING_TIMESTEP}  2  cosmo.nc  EXPORTED
  coap  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
@@ -202,7 +207,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 11 : total large scale precipitation      (kg/m2*s)
 # 
-COSGSPRE CLMGSPRE  210  3600  2  cosmo.nc  EXPORTED
+COSGSPRE CLMGSPRE  210  ${COUPLING_TIMESTEP}  2  cosmo.nc  EXPORTED
  coap  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
@@ -220,7 +225,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 12 :   zonal wind stress
 # 
-CLM_TAUX COS_TAUX 353 3600  2  clm.nc EXPORTED
+CLM_TAUX COS_TAUX 353 ${COUPLING_TIMESTEP}  2  clm.nc EXPORTED
  clme   coap   LAG=+0 SEQ=2
 R  0  R  0
 #
@@ -234,7 +239,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 13 :   meridional wind stress
 # 
-CLM_TAUY COS_TAUY 356 3600  2  clm.nc EXPORTED
+CLM_TAUY COS_TAUY 356 ${COUPLING_TIMESTEP}  2  clm.nc EXPORTED
  clme   coap   LAG=+0 SEQ=2
 R  0  R  0
 #
@@ -248,7 +253,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 14 :  total latent heat flux (W/m**2)
 # 
-CLMLATEN COSLATEN 8 3600  2  clm.nc EXPORTED
+CLMLATEN COSLATEN 8 ${COUPLING_TIMESTEP}  2  clm.nc EXPORTED
  clme   coap   LAG=+0 SEQ=2
 R  0  R  0
 #
@@ -262,7 +267,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 15 :   total sensible heat flux (W/m**2)
 # 
-CLMSENSI COSSENSI 9 3600  2  clm.nc EXPORTED
+CLMSENSI COSSENSI 9 ${COUPLING_TIMESTEP}  2  clm.nc EXPORTED
  clme   coap   LAG=+0 SEQ=2
 R  0  R  0
 #
@@ -276,7 +281,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 16 :   emitted infrared (longwave) radiation (W/m**2)
 # 
-CLMINFRA COSINFRA 5 3600  2  clm.nc EXPORTED
+CLMINFRA COSINFRA 5 ${COUPLING_TIMESTEP}  2  clm.nc EXPORTED
  clme   coap   LAG=+0 SEQ=2
 R  0  R  0
 #
@@ -290,7 +295,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 17 :  albedo
 # 
-CLMALBED COSALBED 17 3600  2  clm.nc EXPORTED
+CLMALBED COSALBED 17 ${COUPLING_TIMESTEP}  2  clm.nc EXPORTED
  clme   coap   LAG=+0 SEQ=2
 R  0  R  0
 #
