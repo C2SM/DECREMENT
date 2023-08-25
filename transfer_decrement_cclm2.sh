@@ -8,9 +8,9 @@
 #============================================================================
 
 
-# --------------------------
+# ---------------------------------------------------------------------------
 # Copy executables to decrement/bin
-# --------------------------
+# ---------------------------------------------------------------------------
 
 CASENAME=clm5.0.gnu-oasis.I2000Clm50SpGs.CLM_USRDAT.eur_0.5.cclm2 # compiled case
 CASEDIR=$SCRATCH/CCLM2_cases/$CASENAME # case directory on scratch
@@ -20,9 +20,9 @@ COSMO_PATH=$(spack location -i cosmo%nvhpc) # $PROJECT/spack-install/cosmo-c2sm-
 cp -u $COSMO_PATH/bin/cosmo_gpu $PROJECT/decrement/bin/
 
 
-# --------------------------
-# Copy input data from SCRATCH (or sm61) to decrement/20_cclm2_c/cesm_input
-# --------------------------
+# ---------------------------------------------------------------------------
+# Copy CESM input data from SCRATCH (or sm61) to decrement/20_cclm2_c/cesm_input
+# ---------------------------------------------------------------------------
 
 # DATM inputs
 # For filenames, check $CASEDIR/Buildconf/datm.input_data_list (only those to keep, renamed)
@@ -63,5 +63,15 @@ $domainfile_05 $domainfile_01 $oasisdummy_05 $oasisdummy_01 $fsurdat_05 $fsurdat
 
 for f in ${flist[@]}; do
     cp -u ${f} $PROJECT/decrement/20_cclm2_c/cesm_input/
-    echo "Copied ${f}"
 done
+
+
+# ---------------------------------------------------------------------------
+# Copy COSMO input data from sm61 to decrement/10_ifs2lm/output to bypass in2lm (testing)
+# ---------------------------------------------------------------------------
+
+# 50km (3 days, 2011-01-01 to 2011-01-03)
+cp -u /project/sm61/leclairm/CCLM2_sandbox_inputdata/cosmo_input_044/* $PROJECT/decrement/10_ifs2lm/output/
+
+# 12km (1 month, 2011-01-01 to 2011-02-01)
+#cp -u /project/sm61/leclairm/CCLM2_sandbox_inputdata/cosmo_input_011/* $PROJECT/decrement/10_ifs2lm/output/
