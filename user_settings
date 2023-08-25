@@ -7,9 +7,6 @@
 export ACCOUNT="sm61"
 export CLM_username='"psieber"'
 
-# Link the appropriate simulation_config
-ln -s simulation_configs/CCLM2_EU-CORDEX/SIMULATION_CCLM2_EU_CORDEX_50km config
-
 # Global Simulation Dates (YYYY-MM-DDTHH:00)
 export LM_INI_DATE="2011-01-01T00:00"     # Initial date of simualtion
 export LM_START_DATE="2011-01-01T00:00"   # use if you don't want to start from LM_INI_DATE
