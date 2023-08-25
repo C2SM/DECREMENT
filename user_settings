@@ -3,16 +3,9 @@
 # These settings will take precedence over any other:
 # user_settings > config > defaults
 
-# COSMO target architecture
-export COSMO_TARGET="gpu"
-
 # Scheduler account and user
 export ACCOUNT="sm61"
 export CLM_username='"psieber"'
-
-# Name of the executables
-#export EXE_INT2LM="../bin/int2lm"
-export EXE_COSMO="../bin/cosmo_gpu"
 
 # Global Simulation Dates (YYYY-MM-DDTHH:00)
 export LM_INI_DATE="2011-01-01T00:00"     # Initial date of simualtion
@@ -25,9 +18,7 @@ export LM_CHAIN_INTERVAL=1day # Anything human readable like "2 hours", "1 month
 # List of output folders to compress and pack (use spaces between the folders)
 #export LM_COMPRESS_DIRS="lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev lm_f/1h_2D lm_f/24h lm_f/3h_3D_zlev"
 
-# Parts that will be executed. Same as folder names.
-# CAUTION: make sure the order of the parts is compatible with the dependencies,
-# i.e. any dependency of a part should be submitted before the said part
+# Parts that will be executed. Same as folder names, order considering dependencies.
 export SB_PARTS="20_cclm2_c 60_chain"
 
 # Dependencies
