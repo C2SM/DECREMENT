@@ -45,11 +45,12 @@ fi
 # General settings
 export CLM_username="psieber"
 export CLM_model_version="release-clm5.0.35-52-gb3e26f715"
-
 export CLM_C_NTASKS=12   # only used on cpu, else use idling cpus, i.e. (2x2)x(12-1)=44 tasks
 export CLM_COMPILER=gcc
-source simulation_configs/CCLM2_EU-CORDEX/clm_c_datm_streams.sh
+export CLM_pio_typename="netcdf"
 export CLM_paramfile="clm5_params.c171117.nc"
+
+source simulation_configs/CCLM2_EU-CORDEX/clm_c_datm_streams.sh
 
 # Grid-specific settings
 if [[ $RESOLUTION == 50km ]]; then
