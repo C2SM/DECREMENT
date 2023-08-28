@@ -132,8 +132,8 @@ clm_c_drv_in(){
   budget_ltann = 1
   budget_ltend = 0
   budget_month = 1
-  case_desc = "UNSET"
-  case_name = ${CLM_case_name}
+  case_desc = ${CLM_case_title}
+  case_name = ${CLM_case_id}
   cime_model = "cesm"
   coldair_outbreak_mod = .true.
   cpl_decomp = 0

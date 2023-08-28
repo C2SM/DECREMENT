@@ -50,7 +50,11 @@ export CLM_paramfile="clm5_params.c171117.nc" # or clm50_params.c211112.nc
 
 # Grid-specific settings
 # ----------------------
-export CLM_case_name='"clm5.0.gnu-oasis.I2000Clm50SpGs.CLM_USRDAT.eur_0.1.cclm2"'
+export CLM_case_title='"clm5.0.gnu-oasis.I2000Clm50SpGs.CLM_USRDAT.eur_0.1.cclm2"' # case name of the CLM exe, ends up in netcdf attributes
+export CLM_case_id='"clm5.0_eur0.1"' # ends up in output file name and netcdf attributes
+export CLM_nx=932 # longitudes (ni) 
+export CLM_ny=427 # latitudes (nj) 
+
 export CLM_domainfile="domain_EU-CORDEX_0.1_lon360.nc"
 export CLM_oasisdummy="OASIS_dummy_0.1_lon360.nc"
 export CLM_fsurdat="surfdata_0.1x0.1_EUR_hist_16pfts_Irrig_CMIP6_simyr2005_c230523.nc"

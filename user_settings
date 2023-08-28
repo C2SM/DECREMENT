@@ -12,6 +12,9 @@ export LM_INI_DATE="2011-01-01T00:00"     # Initial date of simualtion
 export LM_START_DATE="2011-01-01T00:00"   # use if you don't want to start from LM_INI_DATE
 export LM_FIN_DATE="2011-01-03T00:00"     # Overall end of simulation
 
+# OASIS output settings for temperature
+export OASIS_TEMP_OUT=EXPOUT # default=EXPORTED, EXPOUT to produce 2 netcdf files for the coupling field for values sent and received after interpolation
+
 # Chaining interval, i.e., how long one simualtion chunk will be. If unset, run in one chunk
 export LM_CHAIN_INTERVAL=1day # Anything human readable like "2 hours", "1 month", ...
 
