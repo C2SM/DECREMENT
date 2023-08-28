@@ -58,7 +58,7 @@ cclm2_c_namcouple(){
 #
 # --- start Field 1 : Surface temperature
 # 
-COSTEMPE  CLMTEMPE 1  ${COUPLING_TIMESTEP}  2  cosmo.nc  ${OASIS_TEMP_OUT}
+COSTEMPE  CLMTEMPE 1  ${COUPLING_TIMESTEP}  2  cosmo.nc  ${OASIS_OUT}
  ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} coap  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
@@ -177,7 +177,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 9 : longwave downward radiation (W/m2)
 # 
-COSLONGW CLMLONGW 10  ${COUPLING_TIMESTEP}  2  cosmo.nc  EXPORTED
+COSLONGW CLMLONGW 10  ${COUPLING_TIMESTEP}  2  cosmo.nc  ${OASIS_OUT}
  ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} coap  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
@@ -192,7 +192,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 10 :  total convective precipitation      (kg/m2*s)
 # 
-COSCVPRE CLMCVPRE 152  ${COUPLING_TIMESTEP}  2  cosmo.nc  EXPORTED
+COSCVPRE CLMCVPRE 152  ${COUPLING_TIMESTEP}  2  cosmo.nc  ${OASIS_OUT}
  ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} coap  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
@@ -207,7 +207,7 @@ LOCTRANS   SCRIPR
 #
 # --- start Field 11 : total large scale precipitation      (kg/m2*s)
 # 
-COSGSPRE CLMGSPRE  210  ${COUPLING_TIMESTEP}  2  cosmo.nc  EXPORTED
+COSGSPRE CLMGSPRE  210  ${COUPLING_TIMESTEP}  2  cosmo.nc  ${OASIS_OUT}
  ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} coap  clme  LAG=+0 SEQ=1
 R  0  R  0
 #

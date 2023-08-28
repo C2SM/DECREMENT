@@ -69,7 +69,7 @@ export CLM_hist_empty_htapes=.true. # true = turn off default output variables o
 # Tair_from_atm atmospheric air temperature received from atmosphere (pre-downscaling)
 export CLM_hist_fincl1="'TBOT','Tair_from_atm','TSKIN','TG','TV','TSOI','TSA','FSDS','FSR','FLDS','FIRE','FSH','EFLX_LH_TOT','FGR'"
 export CLM_hist_fincl2="'TBOT','Tair_from_atm','TSA','FSDS'"
-export CLM_hist_fincl3="'TBOT','Tair_from_atm','TSA','FSDS'"
+export CLM_hist_fincl3="'TBOT','Tair_from_atm','FSDS','FLDS','RAIN_FROM_ATM'"
 
 export CLM_hist_avgflag_pertape="'A','A','I'"       # averaging over the output interval (A=avg, I=inst, X=max) 
 export CLM_hist_dov2xy=".true.,.false.,.true."      # true = 2D (grid cell level), false = 1D vector (pft output)
