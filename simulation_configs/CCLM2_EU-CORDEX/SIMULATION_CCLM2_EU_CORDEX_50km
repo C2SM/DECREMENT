@@ -67,11 +67,11 @@ export CLM_hist_fincl1="'TBOT','Tair_from_atm','TSKIN','TG','TV','TSOI','TSA','F
 export CLM_hist_fincl2="'TBOT','Tair_from_atm','TSA','FSDS'"
 export CLM_hist_fincl3="'TBOT','Tair_from_atm','TSA','FSDS'"
 
-export CLM_hist_avgflag_pertape="'A','A','X'"       # averaging over the output interval (A=avg, I=inst, X=max) 
+export CLM_hist_avgflag_pertape="'A','A','I'"       # averaging over the output interval (A=avg, I=inst, X=max) 
 export CLM_hist_dov2xy=".true.,.false.,.true."      # true = 2D (grid cell level), false = 1D vector (pft output)
 
-export CLM_hist_mfilt="12,365,8760"                 # number of values per file
-export CLM_hist_nhtfrq="0,-24,-1"                   # output frequency (0=monthly, -24=daily, -1=hourly)
+export CLM_hist_mfilt="12,365,17520"                # number of values per file
+export CLM_hist_nhtfrq="0,-24,1"                    # output frequency (0=monthly, -24=daily, -1=hourly, 1=model-time-step)
 
 
 # ===================================================
