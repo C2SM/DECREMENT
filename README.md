@@ -1,38 +1,197 @@
-# DECREMENT, The DirEctory COSMO Runtime EnvironMENT
-A set of scripts used to run weather and climate simulations with COSMO. It is is intended to be simple and easy to extend. For more comprehensive solution consider using the LM Package.
+# DECREMENT
+
+***The DirEctory COSMO Runtime EnvironMENT***
+
+A set of scripts used to run weather and climate simulations with
+COSMO. It is is intended to be simple and easy to extend. It was
+originally a stripped down version of the LM_package (hence all the
+variable names starting with `LM_`) and evolved later into a more
+generic workflow tool with async capabilities.
+
+[[_TOC_]]
+
+
+## The default chain of tasks
+
+By default, DECREMENT is intended to run a so-called *coarse*
+resolution domain (just refering to the outer domain, doesn't have to
+actaully be coarse) and potentially a *fine* nested one. Concretely
+the following sequence of tasks (or a subset of it) is executed, each
+in a separate folder under the root directory:
+* `00_get_data` transfers input data (mostly reanalysis data) for the
+  INT2LM preprocessing software.
+* `10_ifs2lm` produces input data for COSMO at coarse resolution.
+* `20_lm_c` runs COSMO on the coarse resolution domain.
+* `30_lm2lm` runs INT2LM with output from the coarse reolution COSMO
+  as input data and produces input data for the fine resolution one.
+* `40_lm_f` runs COSMO in the fine resolution nested domain.
+* `50_pack_data` compresses the output netcdf files and gathers them
+  into tar balls.
+* `60_chain` manages the chaining of the simulation chuncks.
+
 
 ## How settings are prescribed
-The scripts are loading settings from 2 different files. The first one contains everything related to the simulation configuration (domain, physical parametrizations, etc). It must be the `config` file in the root directory. Either link a stock configuration, e.g. `ln -sf simulation_configs/SIMULATION_EU_CORDEX_50km config`, or create one for your own case. The second one is the `user_settings` file. It contains some dedicated settings but you can also overwrite there any setting specified in the config file (like dates, chaining interval, nodes distribution, wall time, ...). Anything in `user_config` will take precedence over the config file. The idea being to leave the config file untouched for cleaner workflow and easier git tracking.
+
+The scripts are loading settings from different locations with the
+following priority: **defaults < config < user settings**. The
+defaults can come from the `defaults.sh` file or anyting under
+`kk_part_name/Defaults`. The idea is that the `config` file hosts
+settings related to the simulation configuration (domain, physical
+parametrizations, domain decomposition, etc...) and must be located in
+the root directory. It can either be a link to a stock configuration,
+e.g. `ln -sf simulation_configs/SIMULATION_EU_CORDEX_50km config`, or
+a personal configuration written from scratch. Finally the optional
+but almost always needed `user_settings` file, which must also be
+located in the root directory, hosts settings one wants to modify (or
+even create) and takes precedence over others.
+
+> **Note:** `config` and `user_settings` are sourced from
+> `run_daint.sh` in the root directory, so if one wants to source
+> another file inside of them, the path has to be relative to the root
+> directory. This also applies to nested sourcing.
+
+
+## Changing arbitrary namelist parameters
+
+A design idea of DECREMENT is that parameters that users change most
+often have a corresponding environment variable defined either in
+`part_name/Defaults/*` or in the `config` file. For instance,
+`LM_NL_DT_C` is the time step for the coarse reslution domain
+corresponding to the `dt` namelist parameter in the `20_lm_c` part. In
+order to be able to modify any parameter, the namelsts are generated
+in exported functions (see files in the `kk_part_name/Defaults`
+directory). These can be redefined either in the `config`or
+`user_settings` file and re-exported from there in order to take
+precedence over the default ones. This is tipically the way to go to
+modify the output streams. If this generates too much clutter in
+`config` or `user_settings`, one can always source a custom file from
+inside them to keep a good level of readability.
+
 
 ## Basic usage
-1. Copy an `int2lm` executable and a `cosmo` executable to `./bin`. When using an executable built with spack, it's recommanded to specify the corresponding spack spec in the `LM_INT2LM_SPEC` and/or `LM_COSMO_SPEC` variables in the `user_settings` file. This will enable loading the environment before submitting a job. If theses variables are unset or empty, loading the environment will be disabled. If you want to run a stock simulation, you can get the external parameter data by runnng `./get_extpar_data.sh` (or just type the corresponding commands from that file in order to avoid long and unnecessary copies for other configurations). Otherwise you need to copy them to `./bin` as well and adapt the corresponding `LM_NL_EXTPAR_?` env. variable.
-2. Copy the simulation configuration file: `cp simulation_configs/SIMULATION_EU_CORDEX_50km config`.
-3. Copy the user settings: `cp user_settings_example user_settings`. 
-4. Open `./run_daint.sh`, adapt startdate and enddate of your simualtion, check that all the simulation setps you want to run are in the `parts` string.
-5. Adapt the output variables in GRIBOUT, you might want to adapt the respektive `mkdir` in `./clean` 
-6. Run the simulation: `./run_daint.sh`
-7. Copy your data from `output/*` to `/project`
 
-## Simualtion configuration
-Basic configuration is done by environmental variables in `config`. They are collected in the folder `simulation_configs/`. Consider sharing your configs with the group. If you need to introduce new environmental variables `export ...`, remember to adapt the existing configutations accordingly so they keep running.
+1. Get executable related files:
+    * Copy an `int2lm` executable and a `cosmo` executable to
+      `./bin`. When using an executable built with spack, it's
+      recommanded to specify the corresponding spack environment. To
+      this end, generate the environment file with, e.g. for COSMO
+      ```bash
+        spack load --sh cosmo@c2sm-features %nvhpc cosmo_target=gpu +cppdycore ^mpich%nvhpc > spack_env_cosmo.sh
+        ```
+      and place the `spack_env_cosmo.sh` file in both directories
+      running cosmo, i.e. `20_lm_c` and `40_lm_f`. In order to keep
+      things tidy, one can also put this file in the `bin` directory
+      with a more descriptive name, like `spack_env_cosmo_gpu.sh`, and
+      link it as `spack_env_cosmo.sh` in the right directories. Same
+      thing applies to INT2LM: if a `spack_env_int2lm.sh` file is
+      found in `10_ifs2lm` or `30_lm2lm`, it will be sourced before
+      submitting the corresponding job.
+    * In order to run INT2LM, copy the necessary extpar file in `bin`
+      as well. Commands to get the extpar files for the stock
+      configurations are listed in `./get_extpar_data.sh` (no need to
+      execute the whole file). If necessary, adapt the
+      `LM_NL_EXTPAR_?` environment variables accordingly.
 
-### Ensembles
-You can run the `2_lm_c` step in perturbed-intial-conditions ensemble mode. To this end, uncomment the corresponding block of env. vars in `user_settings`. Doing so will create sub-directories in in `2_lm_c`and and output and call the `2_lm_c/run_ensemble` wrapper. Note that in COSMO6 the random seed cannot be set explicitly and is based on machine time [in ms].
+2. Link the simulation configuration file like
+   ```bash
+    ln -s simulation_configs/SIMULATION_EU_CORDEX_50km config
+   ```
 
-## Chain
-If a simulation does not complete within 24h, you can split it up into smaller chucks and submit them one after the other. To this end, set the `*_INI` and `*_FINISHED` variables to the values of the entire simulation period. The corresponding `*_BEGIN`and `_END` variables are used for the current step and changed by the chain functionality.
+3. Copy the user settings example (`cp user_settings_example
+   user_settings`) where some common settings are commented out with
+   minimal documentation. There you can set anything:
+    * startdate end enddate
+    * scheduler resources like node numbers or walltime (see settings
+      in `config`)
+    * parts of the chain to be ran
+    * chaining interval
+    * output variables defined in the `&GRIBOUT` namelists by
+      proceeding like described for [arbitrary namelist
+      parameters](#changing-arbitrary-namelist-parameters).
+    * anything else defined in `defaults.sh`,
+      `kk_part_name/Defaults/*` or `config`
 
-## Cleanup
-Each directory contains a cleaning script `./clean`. To clean the entire package  run `./distclean.sh`
+4. Launch the simulation with
+    ```bash
+    ./run_daint.sh
+    ```
+You can monitor the overall status in the `status.log` file.
 
-## Asynchronous execution
-The individual parts are chained together by using `--dependency=afterok:JOBID` feature of [SLURM](https://slurm.schedmd.com/sbatch.html). The option `afterok` in each `./run` means that a dependent job is started after the parent job completed successfully. For jobs to execute in paralell this can be changed to `after`. Then the dependent job is started after the parted has started running. 
-
-For certain scenarios it may make sense to move `0_get_data` and `1_ifs2lm` after `6_chain`. Then the infut for the next step is already computed while the current simulation still runs.
+5. Transfer your output data to a safe place!
 
 
-## Branch
-The current branch is inteneded for COSMO-ORG.
+## Asynchronous run
 
-## Modify the parts
-The number of parts (`0_get_data`, `1_ifs2lm`, etc.) or their order can be changed quite easily. They are executed in ordered fashion based on the folder name. So lets say you want to modify the boundary conditions after `1_ifs2lm` (e.g, for PGW). Just make a new directory called `2_PGW` contaning the scripts. Rename the remaining directories (`2_lm_c` becomes `3_lm_c`) and then adjust the `SB_PARTS` env. variable in `config`. 
+The current version of DECREMENT enables asynchronous execution of
+tasks, i.e. the current COSMO chunk runs simultaneously with the
+postprocessing of the previous one and the preprocessing of the next
+one. The dependencies between the tasks are described in `defaults.sh`
+
+
+## Ensembles
+
+It is possible to run the `20_lm_c` step in
+perturbed-intial-conditions ensemble mode. To this end, uncomment the
+corresponding block of env. vars in `user_settings`. Doing so will
+create member sub-directories in in `20_lm_c`. Note that in COSMO6 the
+random seed cannot be set explicitly and is based on machine time [in
+ms].
+
+
+## Integrating a custom part in the chain
+
+DECREMENT is generic enough to allow integration of custom parts in
+the chain which can be very helpful for *online* post-processing,
+archiving or custom pre-processing (like the PGW method).
+
+A part is a directory directly placed in the root dir (like the stock
+parts for INT2LM and COSMO). It's name can contain leading digits to
+indicate the position in the chain for readability but doesn't have
+to. from now on, let's assume we want to insert the part
+`45_my_post_proc`. It is expected to contain the following elements,
+some of them being optional:
+* a `Defaults` directory. Any file in that directory will be sourced
+  and `config` and `user_settings` can overwrite the settings. Like
+  for stock parts, it can for instance contain the definition of
+  default parameters or the default functions to generate namelists.
+* a `submit.sh` script. It's optional. When present, it is executed
+  (as opposed to sourced) to submit the part and the automated submit
+  mechanism is skipped. The only requirement is that it returns
+  (`echo`) the jobid(s) of the submitted part. This feature is used in
+  `20_lm_c` to handle ensemble runs and a similar procedure could be
+  used for sensitivity runs.
+* a `run` file. If `submit.sh` is not present, it has to be there. It
+  will be the file submitted with environment variables controling the
+  resources used. The later must have a name that follows a certain
+  pattern containing the uppercase name of the part without optional
+  leading digits. In our case, they would be the following:
+    * `NQS_NODES_MY_POST_PROC` : nodes number (defaults to 1)
+    * `NQS_NTPN_MY_POST_PROC` (optional) : number of tasks per nodes
+      (defaults to the number of cores per node, so 12 on Piz'Daint)
+    * `NQS_ELAPSED_MY_POST_PROC` : wall time (defaults to 5 min)
+    * `NQS_PARTITION_MY_POST_PROC` : machine partition (defaults to
+      `"normal"`)
+* an `env.sh` file. It's optional. If present and `submit.sh` is not
+  present, it will be sourced before submitting the job. It can for
+  instance contain operations to determine the `NQS_XXX` env vars if
+  they need be calculated rather than prescribed in `user_settings`or
+  source a spack environement (see examples in stock parts).
+
+> **Note:** The submission mechanism is ran as a subprocess inside the
+> part directory so any files sourced or executed inside `env.sh` or
+> `submit.sh` must have a path relative to that directory.
+
+The last required setting relates to the job dependencies. You can
+check in `defaults.sh` how it's set for the stock parts. The format is
+``` bash
+export xxx_deps="current_yyy previous_zzz ..."
+```
+where `xxx`, `yyy` and `zzz` are valid *short names* of parts to be
+ran, i.e without the leading digits "kk_". In our case, in order to
+insert the new part between `40_lm_f` and `50_pack_data`, we would add
+the following lines either to any file under `Defaults` or in
+`user_settings`:
+```bash
+export my_post_proc_deps="current_lm_f"
+export pack_data_deps="current_my_post_proc"
+```
