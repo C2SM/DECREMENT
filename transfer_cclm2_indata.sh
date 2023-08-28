@@ -8,9 +8,9 @@
 CASENAME=clm5.0.gnu-oasis.I2000Clm50SpGs.CLM_USRDAT.eur_0.5.cclm2 # compiled case
 CASEDIR=$SCRATCH/CCLM2_cases/$CASENAME # case directory on scratch
 
-cp -u $CASEDIR/bld/cesm.exe $PROJECT/decrement/bin/
+rsync -av $CASEDIR/bld/cesm.exe $PROJECT/decrement/bin/
 COSMO_PATH=$(spack location -i cosmo%nvhpc) # $PROJECT/spack-install/cosmo-c2sm-features/nvhpc-21.3/ozd2dbszafn3mpcxd2ywzcnf75swdpir
-cp -u $COSMO_PATH/bin/cosmo_gpu $PROJECT/decrement/bin/
+rsync -av $COSMO_PATH/bin/cosmo_gpu $PROJECT/decrement/bin/
 
 
 # ---------------------------------------------------------------------------
@@ -55,16 +55,5 @@ $megan_factors_file $paramfile_1 $paramfile_2 $fsnowaging $fsnowoptics $stream_f
 $domainfile_05 $domainfile_01 $oasisdummy_05 $oasisdummy_01 $fsurdat_05 $fsurdat_01 $finidat)
 
 for f in ${flist[@]}; do
-    cp -u ${f} $PROJECT/decrement/20_cclm2_c/cesm_input/
+    rsync -av ${f} $PROJECT/decrement/20_cclm2_c/cesm_input/
 done
-
-
-# ---------------------------------------------------------------------------
-# Copy COSMO input data from sm61 to decrement/10_ifs2lm/output to bypass in2lm (testing)
-# ---------------------------------------------------------------------------
-
-# 50km (3 days, 2011-01-01 to 2011-01-03)
-cp -u /project/sm61/leclairm/CCLM2_sandbox_inputdata/cosmo_input_044/* $PROJECT/decrement/10_ifs2lm/output/
-
-# 12km (1 month, 2011-01-01 to 2011-02-01)
-#cp -u /project/sm61/leclairm/CCLM2_sandbox_inputdata/cosmo_input_011/* $PROJECT/decrement/10_ifs2lm/output/

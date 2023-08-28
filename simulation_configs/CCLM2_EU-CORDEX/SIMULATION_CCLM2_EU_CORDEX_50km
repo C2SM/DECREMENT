@@ -82,4 +82,4 @@ export CLM_hist_nhtfrq="0,-24,1"                    # output frequency (0=monthl
 #                   CCLM2
 # ===================================================
 
-export NQS_ELAPSED_CCLM2_C=00:30:00    # maximum wall-clock time (HH:mm:ss)
+export NQS_ELAPSED_CCLM2_C=01:00:00    # maximum wall-clock time (HH:mm:ss)

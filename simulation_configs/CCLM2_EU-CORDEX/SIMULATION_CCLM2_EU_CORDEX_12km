@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# CCLM2 EURO-CORDEX 12km (0.5° for CLM) configuration
+# CCLM2 EURO-CORDEX 12km (0.1° for CLM) configuration
 
 # CAUTION: Sourcing is done from the DECREMENT root dir
 #          so path for sourcing are relative to there.
@@ -12,7 +12,7 @@
 
 # Grid-specific settings
 # ----------------------
-source simulation_configs/SIMULATION_EU_12km_2km_scClim
+source simulation_configs/SIMULATION_EU_12km_2km # _scClim does not start, possibly not compatible with BC data?
 
 # General settings
 # ----------------------
@@ -34,6 +34,8 @@ else
     export NQS_NXLM_C=2               # number of CPUs in x direction (12 per node on daint-gpu)
     export NQS_NYLM_C=2               # number of CPUs in y direction
 fi
+
+#export NQS_NIOLM_C=0 # override defaults for 12km to remove I/O processor
 
 
 # ===================================================
@@ -69,17 +71,17 @@ export CLM_hist_empty_htapes=.true. # true = turn off default output variables o
 # Tair_from_atm atmospheric air temperature received from atmosphere (pre-downscaling)
 export CLM_hist_fincl1="'TBOT','Tair_from_atm','TSKIN','TG','TV','TSOI','TSA','FSDS','FSR','FLDS','FIRE','FSH','EFLX_LH_TOT','FGR'"
 export CLM_hist_fincl2="'TBOT','Tair_from_atm','TSA','FSDS'"
-export CLM_hist_fincl3="'TBOT','Tair_from_atm','TSA','FSDS'"
+export CLM_hist_fincl3="'TBOT','Tair_from_atm','FSDS','FLDS','RAIN_FROM_ATM'"
 
-export CLM_hist_avgflag_pertape="'A','A','X'"       # averaging over the output interval (A=avg, I=inst, X=max) 
+export CLM_hist_avgflag_pertape="'A','A','I'"       # averaging over the output interval (A=avg, I=inst, X=max) 
 export CLM_hist_dov2xy=".true.,.false.,.true."      # true = 2D (grid cell level), false = 1D vector (pft output)
 
-export CLM_hist_mfilt="12,365,8760"                 # number of values per file
-export CLM_hist_nhtfrq="0,-24,-1"                   # output frequency (0=monthly, -24=daily, -1=hourly)
+export CLM_hist_mfilt="12,365,17520"                # number of values per file
+export CLM_hist_nhtfrq="0,-24,1"                    # output frequency (0=monthly, -24=daily, -1=hourly, 1=model-time-step)
 
 
 # ===================================================
 #                   CCLM2
 # ===================================================
 
-export NQS_ELAPSED_CCLM2_C=00:30:00    # maximum wall-clock time (HH:mm:ss)
+export NQS_ELAPSED_CCLM2_C=01:00:00    # maximum wall-clock time (HH:mm:ss)
