@@ -78,7 +78,7 @@ export LM_NL_POLLAMIFS=180.0
 export LM_NL_IEIFS=544
 #export LM_NL_IEIFS=427
 export LM_NL_JEIFS=224
-export LM_NL_KEIFS=98
+export LM_NL_KEIFS=108
 #export LM_NL_KEIFS=108
 export LM_NL_DLAMIFS=0.28125
 export LM_NL_DPHIIFS=0.28125
@@ -88,7 +88,9 @@ export LM_NL_PHIROIFS=81.92025  # endlat_in_tot
 #export LM_NL_LAMROIFS=74.8125 #endlon_in_tot
 export LM_NL_LAMLUIFS=-68.90625
 export LM_NL_LAMROIFS=83.8125
-export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.945,
+export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.945
+# After some date, these soil levels have to be used for ERA-5 ... go figure ...
+# export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.775
 export LM_NL_LUSE_T_SKIN=.TRUE.
 
 #COSMO Levels
