@@ -218,7 +218,7 @@ lm_c_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_C}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 1
   yvarml = 'U','V','W','T','PP',
      'QV','QC', 'QS','QR','QI','QG',
@@ -238,7 +238,7 @@ lm_c_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_C}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 1
   yvarml = 'U_10M', 'V_10M', 'T_2M', 'RELHUM_2M', 'PS', 'QV_2M',
            'ALHFL_S', 'ASHFL_S', 'AUMFL_S', 'AVMFL_S', 'CAPE_ML',
@@ -261,7 +261,7 @@ lm_c_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_C}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 3
   yvarml = ' '
   yvarpl = ' ',
@@ -280,7 +280,7 @@ lm_c_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_C}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 24
   yvarml = 'VMAX_10M', 'W_SO', 'TMIN_2M', 'TMAX_2M', 'RUNOFF_S', 'RUNOFF_G',
   yvarpl = ' '
@@ -422,7 +422,7 @@ lm_f_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_F}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 1.0
   yvarml = 'U_10M', 'V_10M', 'VMAX_10M',
            'T_2M', 'TD_2M', 'RELHUM_2M', 'QV_2M','RUNOFF_S', 'RUNOFF_G',
@@ -446,7 +446,7 @@ lm_f_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_F}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 1.0
   yvarml = 'LPI_MAX', 'W_CTMAX'
   yvarpl = ' '
@@ -462,7 +462,7 @@ lm_f_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_F}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 24.0
   yvarml = 'T_SO', 'W_SO', 'W_SNOW', 'H_SNOW', 'TMIN_2M', 'TMAX_2M', 'VABSMX_10M'
   yvarpl = ' '
@@ -480,7 +480,7 @@ lm_f_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_F}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 1.0
   yvarml = ' '
   yvarpl = 'P', 'T', 'FI', 'RELHUM', 'U', 'V', 'W'
@@ -497,7 +497,7 @@ lm_f_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_F}'
   ncomb = ${LM_NL_NSTART_F}, ${LM_NL_NSTOP_F}, 15
   yvarml = 'TOT_PREC','TOT_SNOW', 'DHAIL_MX'
   yvarpl = ' '
