@@ -1,15 +1,17 @@
 #!/bin/bash
 
-RES=$1
+RES=$1      # resolution, 50km or 12km
+NAME=$2     # name of the decrement directory on scratch, e.g. decrement_12km_test
 
 # ---------------------------------------------------------------------------
 # Sync decrement to scratch for desired resolution
 # ---------------------------------------------------------------------------
-rsync -av $PROJECT/decrement/* $SCRATCH/decrement_${RES}/.
+mkdir -p $SCRATCH/$NAME
+rsync -av $PROJECT/decrement/* $SCRATCH/$NAME/.
 
 # Link the appropriate simulation_config
-rm $SCRATCH/decrement_${RES}/config
-ln -s $SCRATCH/decrement_${RES}/simulation_configs/CCLM2_EU-CORDEX/SIMULATION_CCLM2_EU_CORDEX_${RES} $SCRATCH/decrement_${RES}/config
+rm -f $SCRATCH/$NAME/config
+ln -s ./simulation_configs/CCLM2_EU-CORDEX/SIMULATION_CCLM2_EU_CORDEX_${RES} $SCRATCH/$NAME/config
 
 
 # ---------------------------------------------------------------------------
@@ -20,13 +22,16 @@ ln -s $SCRATCH/decrement_${RES}/simulation_configs/CCLM2_EU-CORDEX/SIMULATION_CC
 rsync -av $PROJECT/cclm2_input_decrement $SCRATCH/
 
 # Link the cesm_input
-cd $SCRATCH/decrement_${RES}/20_cclm2_c/cesm_input
-rm *
-ln -s $SCRATCH/cclm2_input_decrement/cesm_input/* .
-cd $PROJECT/decrement
+#cd $SCRATCH/$NAME/20_cclm2_c/cesm_input
+#rm -f *
+#ln -s $SCRATCH/cclm2_input_decrement/cesm_input/* .
+#cd $PROJECT/decrement
 
-# Sync the oasis_input files (masks, areas, grids; rmp once generated)
-rsync -av $SCRATCH/cclm2_input_decrement/oasis_input_${RES}/* $SCRATCH/decrement_${RES}/20_cclm2_c/.
+# Link the oasis_input files (masks, areas, grids; rmp once generated)
+#cd $SCRATCH/$NAME/20_cclm2_c
+#rm -f areas.nc grids.nc masks.nc rmp*
+#ln -s $SCRATCH/cclm2_input_decrement/oasis_input_${RES}/* .
+#cd $PROJECT/decrement
 
 
 # ---------------------------------------------------------------------------
@@ -41,7 +46,7 @@ rsync -av /project/sm61/leclairm/CCLM2_sandbox_inputdata/cosmo_input_044/* $SCRA
 rsync -av /project/sm61/leclairm/CCLM2_sandbox_inputdata/cosmo_input_011/* $SCRATCH/COSMO_inputdata/bc_12km/
 
 # Link the appropriate COSMO indata
-cd $SCRATCH/decrement_${RES}/10_ifs2lm/output
-rm *
-ln -s $SCRATCH/COSMO_inputdata/bc_${RES}/* .
-cd $PROJECT/decrement
+#cd $SCRATCH/decrement_${RES}/10_ifs2lm/output
+#rm -f *
+#ln -s $SCRATCH/COSMO_inputdata/bc_${RES}/* .
+#cd $PROJECT/decrement

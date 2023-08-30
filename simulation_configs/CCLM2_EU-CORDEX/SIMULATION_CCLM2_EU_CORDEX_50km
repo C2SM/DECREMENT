@@ -20,7 +20,13 @@ source simulation_configs/SIMULATION_EU_CORDEX_50km
 export COSMO_TARGET="gpu"            # COSMO target architecture
 
 export EXE_COSMO="../bin/cosmo_gpu"  # name of the executables
-#export EXE_INT2LM="../bin/int2lm"
+export EXE_INT2LM="../bin/int2lm"
+
+# Link the environment files for spack executables (not done yet for int2lm!)
+cd 20_cclm2_c
+rm -f spack_env_cosmo.sh
+ln -s ../bin/spack_env_cosmo_gpu.sh spack_env_cosmo.sh
+cd ..
 
 export SB_PARTS="00_get_data 10_ifs2lm 20_cclm2_c 50_pack_data 60_chain"
 export LM_COMPRESS_DIRS="cclm2_c/1h_2D cclm2_c/24h cclm2_c/3h_3D_zlev"

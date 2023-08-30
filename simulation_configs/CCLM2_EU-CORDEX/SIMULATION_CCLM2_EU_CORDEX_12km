@@ -12,15 +12,21 @@
 
 # Grid-specific settings
 # ----------------------
-source simulation_configs/SIMULATION_EU_12km_2km # _scClim does not start, possibly not compatible with BC data?
+source simulation_configs/SIMULATION_EU_12km_2km_scClim  # if using int2lm
+#source simulation_configs/SIMULATION_EU_12km_2km        # if using pre-generated bc data
 
 # General settings
 # ----------------------
-
-export COSMO_TARGET="gpu"            # COSMO target architecture
+export COSMO_TARGET="gpu"            # COSMO target architecture, default gpu
 
 export EXE_COSMO="../bin/cosmo_gpu"  # name of the executables
-#export EXE_INT2LM="../bin/int2lm"
+export EXE_INT2LM="../bin/int2lm@2.5.1_demorym"
+
+# Link the environment files for spack executables (not done yet for int2lm!)
+cd 20_cclm2_c
+rm -f spack_env_cosmo.sh
+ln -s ../bin/spack_env_cosmo_gpu.sh spack_env_cosmo.sh
+cd ..
 
 export SB_PARTS="00_get_data 10_ifs2lm 20_cclm2_c 50_pack_data 60_chain"
 export LM_COMPRESS_DIRS="cclm2_c/1h_2D cclm2_c/24h cclm2_c/3h_3D_zlev"
@@ -44,11 +50,11 @@ export NQS_NIOLM_C=0 # override defaults for 12km to remove I/O processor (not y
 
 # General settings
 # ----------------------
-export CLM_model_version='"release-clm5.0.35-52-gb3e26f715"' # tag of the CLM executable (from a CTSM checkout)
+export CLM_model_version='"release-clm5.0.35-52-gb3e26f715"'  # tag of the CLM executable (from a CTSM checkout)
 export CLM_COMPILER=gcc
 export CLM_pio_typename='"netcdf"'
-export CLM_C_NTASKS=12   # only used on cpu, else use idling cpus, i.e. (2x2)x(12-1)=44 tasks
-export CLM_paramfile="clm5_params.c171117.nc" # or clm50_params.c211112.nc
+export CLM_C_NTASKS=12                                        # only used on cpu, else use idling cpus, i.e. (2x2)x(12-1)=44 tasks
+export CLM_paramfile="clm5_params.c171117.nc"                 # or clm50_params.c211112.nc
 
 # Grid-specific settings
 # ----------------------
@@ -84,4 +90,4 @@ export CLM_hist_nhtfrq="0,-24,1"                    # output frequency (0=monthl
 #                   CCLM2
 # ===================================================
 
-export NQS_ELAPSED_CCLM2_C=01:00:00    # maximum wall-clock time (HH:mm:ss)
+export NQS_ELAPSED_CCLM2_C=00:30:00    # maximum wall-clock time (HH:mm:ss)
