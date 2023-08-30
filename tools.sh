@@ -132,7 +132,8 @@ submit(){
     
     # number of tasks per node
     eval ntpn=\${NQS_NTPN_${SHORT}}
-    [[ -n "${ntpn}" ]] && cmd+=" --ntasks-per-node=${ntpn}"
+    [[ -z "${ntpn}" ]] && ntpn=${CORES_PER_NODE}
+    cmd+=" --ntasks-per-node=${ntpn}"
 
     # wall time
     eval time=\${NQS_ELAPSED_${SHORT}}

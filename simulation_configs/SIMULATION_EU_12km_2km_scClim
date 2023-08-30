@@ -78,8 +78,7 @@ export LM_NL_POLLAMIFS=180.0
 export LM_NL_IEIFS=544
 #export LM_NL_IEIFS=427
 export LM_NL_JEIFS=224
-export LM_NL_KEIFS=98
-#export LM_NL_KEIFS=108
+export LM_NL_KEIFS=108
 export LM_NL_DLAMIFS=0.28125
 export LM_NL_DPHIIFS=0.28125
 export LM_NL_PHILUIFS=19.25058 # startlat_in_tot
@@ -88,12 +87,14 @@ export LM_NL_PHIROIFS=81.92025  # endlat_in_tot
 #export LM_NL_LAMROIFS=74.8125 #endlon_in_tot
 export LM_NL_LAMLUIFS=-68.90625
 export LM_NL_LAMROIFS=83.8125
-export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.945,
+export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.945
+# After some date, these soil levels have to be used for ERA-5 ... go figure ...
+# export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.775
 export LM_NL_LUSE_T_SKIN=.TRUE.
 
 #COSMO Levels
 export LM_VCFLAT=11357.0
-export LM_VCOORD_D=23588.50,22395.93,21304.04,20307.39,19399.95,18574.03,17821.88,17135.64,16507.79,15930.60,15396.52,14897.86,14427.98,13981.10,13551.52,13133.53,12721.37,12312.04,11900.03,11485.37,11068.19,10648.54,10226.48,9802.09,9375.43,8946.58,8515.59,8082.55,7647.52,7210.55,6771.96,6332.38,5896.41,5468.04,5050.84,4647.96,4261.91,3893.26,3542.15,3208.52,2892.23,2593.71,2312.95,2049.75,1803.89,1575.57,1364.68,1170.90,993.84,833.44,689.53,561.52,448.82,350.95,267.55,197.67,137.23,87.33,48.44,20.00,0.00,
+export LM_VCOORD_D=23588.50,22395.93,21304.04,20307.39,19399.95,18574.03,17821.88,17135.64,16507.79,15930.60,15396.52,14897.86,14427.98,13981.10,13551.52,13133.53,12721.37,12312.04,11900.03,11485.37,11068.19,10648.54,10226.48,9802.09,9375.43,8946.58,8515.59,8082.55,7647.52,7210.55,6771.96,6332.38,5896.41,5468.04,5050.84,4647.96,4261.91,3893.26,3542.15,3208.52,2892.23,2593.71,2312.95,2049.75,1803.89,1575.57,1364.68,1170.90,993.84,833.44,689.53,561.52,448.82,350.95,267.55,197.67,137.23,87.33,48.44,20.00,0.00
 
 # LM coarse
 # =========
@@ -218,7 +219,7 @@ lm_c_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_C}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 1
   yvarml = 'U','V','W','T','PP',
      'QV','QC', 'QS','QR','QI','QG',
@@ -238,7 +239,7 @@ lm_c_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_C}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 1
   yvarml = 'U_10M', 'V_10M', 'T_2M', 'RELHUM_2M', 'PS', 'QV_2M',
            'ALHFL_S', 'ASHFL_S', 'AUMFL_S', 'AVMFL_S', 'CAPE_ML',
@@ -261,7 +262,7 @@ lm_c_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_C}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 3
   yvarml = ' '
   yvarpl = ' ',
@@ -280,7 +281,7 @@ lm_c_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_C}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 24
   yvarml = 'VMAX_10M', 'W_SO', 'TMIN_2M', 'TMAX_2M', 'RUNOFF_S', 'RUNOFF_G',
   yvarpl = ' '
@@ -422,7 +423,7 @@ lm_f_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_F}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 1.0
   yvarml = 'U_10M', 'V_10M', 'VMAX_10M',
            'T_2M', 'TD_2M', 'RELHUM_2M', 'QV_2M','RUNOFF_S', 'RUNOFF_G',
@@ -446,7 +447,7 @@ lm_f_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_F}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 1.0
   yvarml = 'LPI_MAX', 'W_CTMAX'
   yvarpl = ' '
@@ -462,7 +463,7 @@ lm_f_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_F}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 24.0
   yvarml = 'T_SO', 'W_SO', 'W_SNOW', 'H_SNOW', 'TMIN_2M', 'TMAX_2M', 'VABSMX_10M'
   yvarpl = ' '
@@ -480,7 +481,7 @@ lm_f_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_F}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 1.0
   yvarml = ' '
   yvarpl = 'P', 'T', 'FI', 'RELHUM', 'U', 'V', 'W'
@@ -497,7 +498,7 @@ lm_f_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_F}'
   ncomb = ${LM_NL_NSTART_F}, ${LM_NL_NSTOP_F}, 15
   yvarml = 'TOT_PREC','TOT_SNOW', 'DHAIL_MX'
   yvarpl = ' '
