@@ -34,7 +34,7 @@ lm_c_INPUT_OAS(){
   # - ML TODO - parametrize this
   cat > INPUT_OAS << EONL
 &oasisctl
-IOASISDEBUGLVL = 200
+IOASISDEBUGLVL = ${OASIS_DEBUG}
 lconcurrent_cpl = .FALSE.
 lcoup_oas_clm = .TRUE.
 /

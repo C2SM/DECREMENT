@@ -43,7 +43,7 @@ cclm2_c_namcouple(){
  \$NLOGPRT
 # Index of printing level in output file cplout: 0 = no printing
 #  1 = main routines and field names when treated, 2 = complete output
-  2
+  ${OASIS_PRINTING}
  \$END
 ###########################################################################
  \$STRINGS
