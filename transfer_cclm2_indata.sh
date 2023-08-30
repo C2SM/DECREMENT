@@ -14,7 +14,7 @@ rsync -av $COSMO_PATH/bin/cosmo_gpu $PROJECT/decrement/bin/
 
 
 # ---------------------------------------------------------------------------
-# Copy CESM input data from SCRATCH (or sm61) to decrement/20_cclm2_c/cesm_input
+# Copy CESM input data from SCRATCH (or sm61)
 # ---------------------------------------------------------------------------
 
 # DATM inputs
@@ -55,5 +55,5 @@ $megan_factors_file $paramfile_1 $paramfile_2 $fsnowaging $fsnowoptics $stream_f
 $domainfile_05 $domainfile_01 $oasisdummy_05 $oasisdummy_01 $fsurdat_05 $fsurdat_01 $finidat)
 
 for f in ${flist[@]}; do
-    rsync -av ${f} $PROJECT/decrement/20_cclm2_c/cesm_input/
+    rsync -av ${f} $PROJECT/cclm2_input_decrement/cesm_input/
 done
