@@ -35,7 +35,7 @@ else
     export NQS_NYLM_C=2               # number of CPUs in y direction
 fi
 
-#export NQS_NIOLM_C=0 # override defaults for 12km to remove I/O processor
+export NQS_NIOLM_C=0 # override defaults for 12km to remove I/O processor (not yet implemented with OASIS)
 
 
 # ===================================================

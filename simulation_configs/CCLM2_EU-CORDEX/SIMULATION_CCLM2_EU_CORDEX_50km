@@ -55,7 +55,7 @@ export CLM_case_id='"clm5.0_eur0.5"' # ends up in output file name and netcdf at
 export CLM_nx=288 # longitudes (ni)
 export CLM_ny=128 # latitudes (nj)       
 
-export CLM_domainfile="domain_EU-CORDEX_0.5_lon360.nc"
+export CLM_domainfile="reduced_domain_EU-CORDEX_0.5_lon360.nc"
 export CLM_oasisdummy="OASIS_dummy_0.5_lon360.nc"
 export CLM_fsurdat="surfdata_0.5x0.5_hist_16pfts_Irrig_CMIP6_simyr2000_c190418.nc"
 export CLM_finidat="clmi.I2000Clm50BgcCrop.2011-01-01.1.9x2.5_gx1v7_gl4_simyr2000_c190312.nc"
@@ -82,4 +82,4 @@ export CLM_hist_nhtfrq="0,-24,1"                    # output frequency (0=monthl
 #                   CCLM2
 # ===================================================
 
-export NQS_ELAPSED_CCLM2_C=01:00:00    # maximum wall-clock time (HH:mm:ss)
+export NQS_ELAPSED_CCLM2_C=00:30:00    # maximum wall-clock time (HH:mm:ss)
