@@ -10,6 +10,7 @@ export LM_NL_IDBG_LEVEL_F=4
 #I/O
 export LM_NL_ASYNIO_BLOCK_SIZE_F=10
 export LM_NL_LPREFETCH_F=.FALSE.
+export LM_NL_OUTPUT_FMT_F='ncdf'
 export LM_NL_RESTART_FMT_F='bina'
 
 # radiation scheme
@@ -271,7 +272,7 @@ lm_f_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_F}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 1
   yvarml = 'U_10M', 'V_10M', 'T_2M', 'RELHUM_2M', 'PS', 'QV_2M',
            'ALHFL_S', 'ASHFL_S', 'AUMFL_S', 'AVMFL_S',
@@ -294,7 +295,7 @@ lm_f_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_F}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 3
   yvarml = ' '
   yvarpl = ' '
@@ -313,7 +314,7 @@ lm_f_INPUT_IO(){
  /END
 
  &GRIBOUT
-  yform_write = 'nc-4'
+  yform_write = '${LM_NL_OUTPUT_FMT_F}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 24
   yvarml = 'VMAX_10M', 'W_SO', 'TMIN_2M', 'TMAX_2M', 'RUNOFF_S', 'RUNOFF_G'
   yvarpl = ' '
