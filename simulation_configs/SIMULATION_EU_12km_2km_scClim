@@ -79,7 +79,6 @@ export LM_NL_IEIFS=544
 #export LM_NL_IEIFS=427
 export LM_NL_JEIFS=224
 export LM_NL_KEIFS=108
-#export LM_NL_KEIFS=108
 export LM_NL_DLAMIFS=0.28125
 export LM_NL_DPHIIFS=0.28125
 export LM_NL_PHILUIFS=19.25058 # startlat_in_tot
