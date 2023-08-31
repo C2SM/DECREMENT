@@ -1,6 +1,9 @@
 #!/bin/bash
 
-RES=$1      # resolution, 50km or 12km
+# Transfer decrement and indata to SCRATCH, link the CCLM2 config
+# Use as, e.g. bash transfer_decrement.sh 50km_bc decrement_50km_bc
+
+CONFIG=$1   # configuration: 50km_bc, 12km_bc or 12km_int2lm
 NAME=$2     # name of the decrement directory on scratch, e.g. decrement_12km_test
 
 # ---------------------------------------------------------------------------
@@ -11,7 +14,7 @@ rsync -av $PROJECT/decrement/* $SCRATCH/$NAME/.
 
 # Link the appropriate simulation_config
 rm -f $SCRATCH/$NAME/config
-ln -s ./simulation_configs/CCLM2_EU-CORDEX/SIMULATION_CCLM2_EU_CORDEX_${RES} $SCRATCH/$NAME/config
+ln -s ./simulation_configs/CCLM2/CCLM2_${CONFIG} $SCRATCH/$NAME/config
 
 
 # ---------------------------------------------------------------------------

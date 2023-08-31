@@ -3,14 +3,11 @@
 # These settings will take precedence over any other:
 # user_settings > config > defaults
 
+
 # Scheduler account and user
 # -----------
 export ACCOUNT="sm61"
 export CLM_username='"psieber"'
-
-# Resolution
-# -----------
-export RES="50km"                         # 50km, 12km
 
 
 # Global Simulation Dates (YYYY-MM-DDTHH:00)
@@ -20,72 +17,18 @@ export LM_START_DATE="2011-01-01T00:00"   # use if you don't want to start from 
 export LM_FIN_DATE="2011-01-03T00:00"     # Overall end of simulation
 
 # Chaining interval, i.e., how long one simualtion chunk will be. If unset, run in one chunk
-export LM_CHAIN_INTERVAL="" # Anything human readable like "2 hours", "1 month", ...
+export LM_CHAIN_INTERVAL="" # Anything human readable like "2 hours", "1 month", "" to run in one chunk
+
+export SB_PARTS="20_cclm2_c 60_chain" # needed here again (config sourced after Defaults in run_daint.sh)
 
 
-# OASIS output and verbosity
-# -----------
-export OASIS_DEBUG=1      # sets IOASISDEBUGLVL, 0 = less in cesm/cosmo.out and OASIS aux files not produced (masks.nc, grids.nc, areas.nc and rmp files), 200 = lots (testing)
-export OASIS_PRINTING=0   # printing level in output file cplout: 0 = no printing (default), 1 = main routines and field names when treated, 2 = complete output (testing)
-export OASIS_OUT=EXPORTED # output setting for selected coupling fields; EXPORTED = coupling only (default), EXPOUT = produces 2 netcdf files for values sent (before interp) and received (after interp)
-
-# If already generated, link the oasis_input files (masks, areas, grids, rmp*)
-if [ $OASIS_DEBUG == 0 ]; then
-    cd 20_cclm2_c
-    rm -f areas.nc grids.nc masks.nc rmp*
-    ln -s $SCRATCH/cclm2_input_decrement/oasis_input_${RES}/* .
-    cd ..
-fi
-
-
-# Config and parts executed
-# -----------
-#export COSMO_INDATA="int2lm"                             # if using int2lm to generate bc
-export COSMO_INDATA="bc"                                  # if using pre-generated bc data
-
-if [ $RES == "12km" ]; then
-    if [ $COSMO_INDATA=="int2lm" ]; then
-        source simulation_configs/SIMULATION_EU_12km_2km_scClim       # if using int2lm
-        export SB_PARTS="00_get_data 10_ifs2lm 20_cclm2_c 60_chain"   # parts that will be executed. Same as folder names, order considering dependencies
-    else
-        source simulation_configs/SIMULATION_EU_12km_2km              # if using pre-generated bc data (these are for non-scClim settings)
-        export SB_PARTS="20_cclm2_c 60_chain"                         # fewer parts
-        cd 10_ifs2lm/output                                           # link the bc data
-        rm -f *
-        ln -s $SCRATCH/COSMO_inputdata/bc_${RES}/* .
-        cd ../..
-    fi
-fi
-if [ $RES == "50km" ]; then
-    source simulation_configs/SIMULATION_EU_CORDEX_50km
-    export SB_PARTS="20_cclm2_c 60_chain"
-    cd 10_ifs2lm/output
-    rm -f *
-    ln -s $SCRATCH/COSMO_inputdata/bc_${RES}/* .
-    cd ../..
-fi
-
-# Link the cesm_input
-cd 20_cclm2_c/cesm_input
-rm -f *
-ln -s $SCRATCH/cclm2_input_decrement/cesm_input/* .
-cd ../..
-
-# 10_ifs2lm
-# ERA5 nb of soil vertical levels 
-# export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.945
-export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.775      # after some date, these soil levels have to be used for ERA-5 ... go figure ...
-
-# List of output folders to compress and pack (use spaces between the folders)
-#export LM_COMPRESS_DIRS="lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev lm_f/1h_2D lm_f/24h lm_f/3h_3D_zlev"
-
+#====================================
 
 # Tests
 # -----------
 # Try using Eric's cosmo executable for cpu (did not work, missing access to eccodes lib on pr133)
 #export EXE_COSMO="/scratch/snx3000/emaison/COSMO-CLM2_sandbox/EU-CORDEX_50km/cosmo"
 #export COSMO_TARGET="cpu"            # COSMO target architecture, default gpu
-
 
 # Dependencies
 # -----------
