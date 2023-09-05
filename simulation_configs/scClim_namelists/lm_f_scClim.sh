@@ -86,7 +86,7 @@ lm_f_INPUT_IO(){
   yform_read = 'ncdf'
   l_ke_in_gds = .TRUE.
   lasync_io = $LM_NL_LASYNC_IO_F
-  lprefetch_io = LM_NL_LPREFETCH_F
+  lprefetch_io = ${LM_NL_LPREFETCH_F}
   ymode_read = 'r  '
   ymode_write = 'w  '
   nincwait = 10

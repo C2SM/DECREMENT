@@ -162,7 +162,7 @@ export LM_NL_EXTPAR_C=extpar_euro_12km_771x771.nc #extpar_12km_europe_771x771.nc
 export LM_NL_LPREFETCH_C=.FALSE.           # Needs async IO, i.e. NQS_NIOLM_C > 0
 
 # Other namelist changes not possible through environment variables
-source simulation_configs/scClim_namelists/lm_c.sh
+source simulation_configs/scClim_namelists/lm_c_scClim.sh
 
 
 # LM fine 
