@@ -13,6 +13,7 @@
 
 # Grid-specific settings
 # ----------------------
+# COSMO config (source first to avoid overriding CCLM2 settings!)
 source simulation_configs/SIMULATION_EU_12km_2km_scClim  # if using int2lm
 
 # General settings
@@ -99,7 +100,7 @@ export CLM_hist_nhtfrq="0,-24,1"                    # output frequency (0=monthl
 #                   CCLM2
 # ===================================================
 
-export RES="50km"
+export RES="12km"
 export NQS_ELAPSED_CCLM2_C=00:30:00    # maximum wall-clock time (HH:mm:ss)
 
 # OASIS output and verbosity
@@ -112,7 +113,7 @@ export OASIS_OUT=EXPORTED # output setting for selected coupling fields; EXPORTE
 if [ $OASIS_DEBUG == 0 ]; then
     cd 20_cclm2_c
     rm -f areas.nc grids.nc masks.nc rmp*
-    ln -s $SCRATCH/cclm2_input_decrement/oasis_input_${RES}_reduced/* .
+    ln -s $SCRATCH/cclm2_input_decrement/oasis_input_${RES}/* .
     cd ..
 fi
 

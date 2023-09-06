@@ -1,7 +1,11 @@
 #!/bin/bash
 
 # Transfer decrement and indata to SCRATCH, link the CCLM2 config
-# Use as, e.g. bash transfer_decrement.sh 50km_bc decrement_50km_bc
+
+# USAGE
+# bash transfer_decrement.sh 50km_bc decrement_50km_bc
+# bash transfer_decrement.sh 12km_bc decrement_12km_bc
+# bash transfer_decrement.sh 12km_int2lm decrement_12km_int2lm
 
 CONFIG=$1   # configuration: 50km_bc, 12km_bc or 12km_int2lm
 NAME=$2     # name of the decrement directory on scratch, e.g. decrement_12km_test
