@@ -21,6 +21,8 @@ export LM_CHAIN_INTERVAL="" # Anything human readable like "2 hours", "1 month",
 
 export SB_PARTS="20_cclm2_c 60_chain" # needed here again (config sourced after Defaults in run_daint.sh)
 
+export NQS_ELAPSED_CCLM2_C=01:00:00    # maximum wall-clock time (HH:mm:ss)
+
 
 #====================================
 

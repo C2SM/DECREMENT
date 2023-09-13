@@ -41,8 +41,6 @@ else
     export NQS_NYLM_C=2               # number of CPUs in y direction
 fi
 
-export NQS_NIOLM_C=0 # override defaults for 12km to remove I/O processor (not yet implemented with OASIS)
-
 # 10_ifs2lm
 # ERA5 nb of soil vertical levels 
 # export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.945    # default
@@ -73,7 +71,7 @@ export CLM_case_id='"clm5.0_eur0.1"' # ends up in output file name and netcdf at
 export CLM_nx=932 # longitudes (ni) 
 export CLM_ny=427 # latitudes (nj) 
 
-export CLM_domainfile="domain_EU-CORDEX_0.1_lon360.nc" # "reduced" has to correspond to oasis aux files
+export CLM_domainfile="domain_EU-CORDEX_0.1_lon360_reduced.nc" # "reduced" has to correspond to oasis aux files
 export CLM_oasisdummy="OASIS_dummy_0.1_lon360.nc"
 export CLM_fsurdat="surfdata_0.1x0.1_EUR_hist_16pfts_Irrig_CMIP6_simyr2005_c230523.nc"
 export CLM_finidat="clmi.I2000Clm50BgcCrop.2011-01-01.1.9x2.5_gx1v7_gl4_simyr2000_c190312.nc"
@@ -101,7 +99,7 @@ export CLM_hist_nhtfrq="0,-24,1"                    # output frequency (0=monthl
 # ===================================================
 
 export RES="12km"
-export NQS_ELAPSED_CCLM2_C=00:30:00    # maximum wall-clock time (HH:mm:ss)
+export NQS_ELAPSED_CCLM2_C=01:00:00    # maximum wall-clock time (HH:mm:ss)
 
 # OASIS output and verbosity
 # -----------
@@ -113,7 +111,7 @@ export OASIS_OUT=EXPORTED # output setting for selected coupling fields; EXPORTE
 if [ $OASIS_DEBUG == 0 ]; then
     cd 20_cclm2_c
     rm -f areas.nc grids.nc masks.nc rmp*
-    ln -s $SCRATCH/cclm2_input_decrement/oasis_input_${RES}/* .
+    ln -s $SCRATCH/cclm2_input_decrement/oasis_input_${RES}_reduced/* .
     cd ..
 fi
 
