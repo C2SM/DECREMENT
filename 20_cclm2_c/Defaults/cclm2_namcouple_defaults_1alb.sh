@@ -5,7 +5,7 @@ export COUPLING_TIMESTEP=1800 # should be the same as CLM timestep
 # EXPORTED is default for sending/receiving
 # set to EXPOUT to produce 2 netcdf files for the coupling field for values sent and received after interpolation
 
-# adapted to exchange direct and diffuse albedo separately (18 coupling fields)
+# NOT adapted to exchange direct and diffuse albedo separately (17 coupling fields)
 
 # ---------------------------------------------------------------
 #                            namcouple
@@ -25,7 +25,7 @@ cclm2_c_namcouple(){
 # This is the total number of fields being exchanged. 
 # For the definition of the fields, see under \$STRINGS keyword
 #
-       18
+       17
  \$END
 ##########################################################################
  \$NBMODEL
@@ -295,9 +295,9 @@ LOCTRANS   SCRIPR
 # --- end field 16 ---
 #########################################################################
 #
-# --- start Field 17 :  albedo direct (VIS+NIR)
+# --- start Field 17 :  albedo
 # 
-CLMALBDR COSALBDR 17 ${COUPLING_TIMESTEP}  2  clm.nc ${OASIS_OUT}
+CLMALBED COSALBED 17 ${COUPLING_TIMESTEP}  2  clm.nc ${OASIS_OUT}
  ${CLM_nx} ${CLM_ny} ${LM_NL_IELM_C} ${LM_NL_JELM_C} clme   coap   LAG=+0 SEQ=2
 R  0  R  0
 #
@@ -307,20 +307,6 @@ LOCTRANS   SCRIPR
  DISTWGT U SCALAR LATLON 10 4
 #
 # --- end field 17 ---
-#########################################################################
-#
-# --- start Field 18 :  albedo diffuse (VIS+NIR)
-# 
-CLMALBDF COSALBDF 17 ${COUPLING_TIMESTEP}  2  clm.nc ${OASIS_OUT}
- ${CLM_nx} ${CLM_ny} ${LM_NL_IELM_C} ${LM_NL_JELM_C} clme   coap   LAG=+0 SEQ=2
-R  0  R  0
-#
-LOCTRANS   SCRIPR 
-#
- AVERAGE
- DISTWGT U SCALAR LATLON 10 4
-#
-# --- end field 18 ---
  \$END
 EONL
 }
