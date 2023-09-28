@@ -9,9 +9,13 @@ source defaults.sh
 
 # Load config and user settings once here, just to have access to SB_PARTS
 if [[ ! -f config ]]; then
-    echo "ERROR : No config file found. Copy or link one from simulation_configs, e.g., ln -s simulation_configs/SIMULATION_EU_CORDEX_50km config"
+    echo "ERROR : No config file found."
+    echo "- Either use one from simulation_configs e.g. with \`ln -s simulation_configs/SIMULATION_EU_CORDEX_50km ./config\`"
+    echo "- or write your own ./config"
     exit 1
 fi
+source config
+
 if [[ ! -f user_settings ]]; then 
     echo "WARNING : No user_setting file found. You could start from the user_settings_example file if needed."
 else

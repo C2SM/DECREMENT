@@ -20,11 +20,11 @@ export LM_FIN_DATE="2011-01-03T00:00"     # Overall end of simulation
 export LM_CHAIN_INTERVAL="" # Anything human readable like "2 hours", "1 month", "" to run in one chunk
 
 
-# Parts to be executed (needed here again because config sourced after Defaults in run_daint.sh)
+# Parts to be executed (also in config)
 # ----------------------
 #export SB_PARTS="00_get_data 10_ifs2lm 20_cclm2_c 50_pack_data 60_chain"
-export SB_PARTS="20_cclm2_c 60_chain" # CCLM2 only
 #export SB_PARTS="00_get_data 10_ifs2lm 20_cclm2_c 60_chain" # generate COSMO boundary conditions with INT2LM
+export SB_PARTS="20_cclm2_c 60_chain" # CCLM2 only
 
 export NQS_ELAPSED_CCLM2_C=01:00:00    # maximum wall-clock time (HH:mm:ss)
 
@@ -52,5 +52,6 @@ export NQS_ELAPSED_CCLM2_C=01:00:00    # maximum wall-clock time (HH:mm:ss)
 #export LM_NL_ITYPE_PERT_C=1
 #export LM_NL_RPERTURB_C=0.00001
 #export LM_NL_ENS_NUMBER_C=10 #Set the number of ensemble members. Leave commented to use normal mode.
+
 
 
