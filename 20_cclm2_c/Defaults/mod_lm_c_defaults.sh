@@ -20,7 +20,7 @@ lm_c_mod_INPUT_ORG(){
 export -f lm_c_mod_INPUT_ORG
 
 lm_c_mod_INPUT_IO(){
-    # Replace input and output by cesm_input and cesm_output
+    # Replace dir names input and output by cosmo_input and cosmo_output
     sed -i 's/input/cosmo_input/g' INPUT_IO
     sed -i 's/output/cosmo_output/g' INPUT_IO
 }
