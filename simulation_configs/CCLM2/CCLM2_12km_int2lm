@@ -14,7 +14,7 @@
 # Grid-specific settings
 # ----------------------
 # COSMO config (source first to avoid overriding CCLM2 settings!)
-source simulation_configs/SIMULATION_EU_12km_2km_scClim  # if using int2lm
+source simulation_configs/SIMULATION_EU_12km_2km_scClim  # if using int2lm with ERA5
 
 # General settings
 # ----------------------
@@ -22,13 +22,16 @@ export COSMO_TARGET="gpu"            # COSMO target architecture, default gpu
 
 # Names of the executables
 export EXE_COSMO="../bin/cosmo_${COSMO_TARGET}"
-export EXE_INT2LM="../bin/int2lm@2.5.1_demorym"
+export EXE_INT2LM="../bin/int2lm@c2sm-features"
+#source simulation_configs/CCLM2/link_spack_env.sh # Link the environment files for spack executables for COSMO and INT2LM
 
-# Link the environment files for spack executables (not done yet for int2lm!)
-cd 20_cclm2_c
-rm -f spack_env_cosmo.sh
-ln -s ../bin/spack_env_cosmo_${COSMO_TARGET}.sh spack_env_cosmo.sh
-cd ..
+#export EXE_INT2LM="../bin/int2lm@2.5.1_demorym"
+#source simulation_configs/CCLM2/ifs2lm_INPUT_int2lm@2.5.1_demorym.sh # when using int2lm@2.5.1_demorym: redefine ifs2lm_INPUT, the namelist function for ifs2lm
+# Link the environment files for spack executables
+#cd 20_cclm2_c
+#rm -f spack_env_cosmo.sh
+#ln -s ../bin/spack_env_cosmo_${COSMO_TARGET}.sh spack_env_cosmo.sh
+#cd ..
 
 # List of output folders to compress and pack (use spaces between the folders)
 export LM_COMPRESS_DIRS="cclm2_c/1h_2D cclm2_c/24h cclm2_c/3h_3D_zlev" # should point to cclm2_c/cosmo_output/... ?
@@ -42,9 +45,11 @@ else
 fi
 
 # 10_ifs2lm
-# ERA5 nb of soil vertical levels 
-# export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.945    # default
+export LM_NL_HINCBOUND_C=3.0                          # Input frequency of boundary conditions
+# export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.945    # ERA5 nb of soil vertical levels, default
 export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.775      # after some date, these soil levels have to be used for ERA-5 ... go figure ...
+
+
 
 # ===================================================
 #                   CESM

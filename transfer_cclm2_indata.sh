@@ -5,12 +5,27 @@
 # Copy executables to decrement/bin
 # ---------------------------------------------------------------------------
 
+# CESM
 CASENAME=clm5.0.gnu-oasis.I2000Clm50SpGs.CLM_USRDAT.eur_0.5.cclm2 # compiled case
 CASEDIR=$SCRATCH/CCLM2_cases/$CASENAME # case directory on scratch
-
 rsync -av $CASEDIR/bld/cesm.exe $PROJECT/decrement/bin/
+
+# COSMO
 COSMO_PATH=$(spack location -i cosmo%nvhpc) # $PROJECT/spack-install/cosmo-c2sm-features/nvhpc-21.3/ozd2dbszafn3mpcxd2ywzcnf75swdpir
 rsync -av $COSMO_PATH/bin/cosmo_gpu $PROJECT/decrement/bin/
+
+# INT2LM
+INT2LM_PATH=$(spack location -i int2lm%nvhpc) # $PROJECT/spack-install/int2lm-c2sm-features/nvhpc-21.3/eyg6ffi7rb5r3bnbp6ukque5ejet7z5u
+rsync -av $INT2LM_PATH/bin $PROJECT/decrement/bin/int2lm@c2sm-features
+
+
+# ---------------------------------------------------------------------------
+# Specify the spack environment for COSMO and INT2LM in bin
+# ---------------------------------------------------------------------------
+spack load --sh cosmo@c2sm-features%nvhpc +oasis ^mpich%nvhpc ^oasis+fix_mct_conflict > $PROJECT/decrement/bin/spack_env_cosmo_gpu.sh
+spack load --sh int2lm@c2sm-features%nvhpc > $PROJECT/decrement/bin/spack_env_int2lm.sh
+
+# Linked from bin to the directories in which the executables are run in the CCLM2 config
 
 
 # ---------------------------------------------------------------------------

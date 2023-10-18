@@ -22,9 +22,8 @@ export COSMO_TARGET="gpu"            # COSMO target architecture, default gpu
 
 # Names of the executables
 export EXE_COSMO="../bin/cosmo_${COSMO_TARGET}"
-#export EXE_INT2LM="../bin/int2lm@2.5.1_demorym"
 
-# Link the environment files for spack executables (not done yet for int2lm!)
+# Link the environment files for spack executables
 cd 20_cclm2_c
 rm -f spack_env_cosmo.sh
 ln -s ../bin/spack_env_cosmo_${COSMO_TARGET}.sh spack_env_cosmo.sh
