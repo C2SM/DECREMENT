@@ -1,6 +1,7 @@
 #!/bin/bash
-#Simulation setup for CCLM2 over Europe
-#Using COSMO6 recommended parameters from COPAT2
+
+# Simulation setup for CCLM2 over Europe
+# Using COSMO6 recommended parameters from COPAT2
 
 # ===================================================
 #                   GENERAL SETTINGS
@@ -14,7 +15,7 @@ export LM_FIN_DATE="2012-01-01T00:00"
 export LM_CHAIN_INTERVAL=1month     #Current options: "1year", "1month", "1day".
 
 # Parts that will be executed. Same as folder names.
-export SB_PARTS="00_get_data 10_ifs2lm 20_lm_c 30_lm2lm 40_lm_f 50_pack_data 60_chain"
+export SB_PARTS="00_get_data 10_ifs2lm 20_lm_c 50_pack_data 60_chain"
 
 # List of output folders to compress and pack (use spaces between the folders)
 export LM_COMPRESS_DIRS="lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev lm_f/1h_2D lm_f/24h lm_f/3h_3D_zlev lm_f/1h_2D_LPI lm_f/1h_3D_plev lm_f/5min_2D"
@@ -41,24 +42,6 @@ else
     export NQS_NIOLM_C=1            # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
 fi
 export NQS_ELAPSED_LM_C=24:00:00    # maximum wall-clock time (HH:mm:ss)
-
-# 30_lm2lm
-export NQS_NXLM2LM=8                # number of CPUs in x direction (12 per node on daint-gpu)
-export NQS_NYLM2LM=12               # number of CPUs in y direction
-export NQS_NIOLM2LM=0               # number of CPUs for asyncronous IO
-export NQS_ELAPSED_LM2LM=10:00:00   # maximum wall-clock time (HH:mm:ss)
-
-# 40_lm_f
-if [[ $COSMO_TARGET == "cpu" ]]; then
-    export NQS_NXLM_F=28            # number of NODEs in x direction
-    export NQS_NYLM_F=35            # number of NODEs in y direction
-    export NQS_NIOLM_F=4            # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
-else
-    export NQS_NXLM_F=10            # number of NODEs in x direction
-    export NQS_NYLM_F=10            # number of NODEs in y direction
-    export NQS_NIOLM_F=4            # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
-fi
-export NQS_ELAPSED_LM_F=24:00:00    # maximum wall-clock time (HH:mm:ss)
 
 # 50_pack_data
 export NQS_ELAPSED_PACK_DATA=07:00:00    # maximum wall-clock time (HH:mm:ss)
@@ -92,10 +75,15 @@ export LM_VCFLAT=11357.0
 export LM_VCOORD_D=23588.50,22395.93,21304.04,20307.39,19399.95,18574.03,17821.88,17135.64,16507.79,15930.60,15396.52,14897.86,14427.98,13981.10,13551.52,13133.53,12721.37,12312.04,11900.03,11485.37,11068.19,10648.54,10226.48,9802.09,9375.43,8946.58,8515.59,8082.55,7647.52,7210.55,6771.96,6332.38,5896.41,5468.04,5050.84,4647.96,4261.91,3893.26,3542.15,3208.52,2892.23,2593.71,2312.95,2049.75,1803.89,1575.57,1364.68,1170.90,993.84,833.44,689.53,561.52,448.82,350.95,267.55,197.67,137.23,87.33,48.44,20.00,0.00
 
 # INT2LM
-export LM_NL_HINCBOUND_C=6.0                         # Input frequency of boundary conditions
-export LM_NL_EXTPAR_C=extpar_12km_europe_771x771.nc  # Coarse extpar file in /bin, use this for CCLM2 with itype_albedo=2
-export LM_NL_EXT_IE_C=771                            # Number of grid points (I: zonal, J: meridional)
-export LM_NL_EXT_JE_C=771                            # in your external parameter file (containing topology etc.)
+export LM_NL_HINCBOUND_C=6.0                                        # Input frequency of boundary conditions
+#export LM_NL_EXTPAR_C=extpar_12km_europe_771x771.nc                # Coarse extpar file in /bin, use this for CCLM2 with itype_albedo=2
+#export LM_NL_EXT_IE_C=771                                          # Number of grid points (I: zonal, J: meridional)
+#export LM_NL_EXT_JE_C=771                                          # in your external parameter file (containing topology etc.)
+
+# new with COPAT2 settings
+export LM_NL_EXTPAR_C=extpar_euro-cordex_12km_COPAT2_S_ORO_MAX.nc   # Coarse extpar file in /bin, use this for CCLM2 with itype_albedo=2
+export LM_NL_EXT_IE_C=361                                           # Number of grid points (I: zonal, J: meridional)
+export LM_NL_EXT_JE_C=361                                           # in your external parameter file (containing topology etc.)
 
 
 # LM coarse
@@ -104,8 +92,8 @@ export LM_NL_EXT_JE_C=771                            # in your external paramete
 # INPUT_ORG
 # ---------
 #LMGRID (for COSMO and INT2LM)               # needs to be within the boundaries of the BC data above AND co-located with the extpar data
-export LM_NL_POLLONLM_C=43.0                 # Longitude of the North pole (EUR-11 -162.0)
-export LM_NL_POLLATLM_C=-170.0               # Latitude of the North pole (EUR-11 39.25)
+export LM_NL_POLLONLM_C=-170.0               # Longitude of the North pole (EUR-11 -162.0)
+export LM_NL_POLLATLM_C=43.0                 # Latitude of the North pole (EUR-11 39.25)
 export LM_NL_DLONLM_C=0.11                   # Delta longitude (in degrees) (EUR-11)
 export LM_NL_DLATLM_C=0.11                   # Delta latitude (in degrees) (EUR-11)
 export LM_NL_STARTLON_TOT_C=-23.33           # Starting longitude left
@@ -157,10 +145,10 @@ export LM_NL_ITYPE_ALBEDO_C=2              # has to be 2 for CCLM2 coupling (ALB
 # INPUT_IO
 # ---------
 #IOCTL
-$LM_NL_YNCGLOB_SOURCE="COSMO6.0-clm1 driven by ERA5 / OASIS3-MCT4.0 / CLM5.0"
-$LM_NL_YNCGLOB_PROJECT_ID="FeedBaCks"
-$LM_NL_YNCGLOB_EXPERIMENT_ID="Test"
-$LM_NL_YNCGLOB_CONTACT="Petra Sieber (petra.sieber@env.ethz.ch)"
+LM_NL_YNCGLOB_SOURCE="COSMO6.0-clm1 driven by ERA5 / OASIS3-MCT4.0 / CLM5.0"
+LM_NL_YNCGLOB_PROJECT_ID="FeedBaCks"
+LM_NL_YNCGLOB_EXPERIMENT_ID="Test"
+LM_NL_YNCGLOB_CONTACT="Petra Sieber (petra.sieber@env.ethz.ch)"
 export LM_NL_LPREFETCH_C=.FALSE.           # Needs async IO, i.e. NQS_NIOLM_C > 0
 
 #GRIBIN
@@ -168,4 +156,5 @@ export LM_NL_LANA_QI_C=.TRUE.              # .FALSE. produces a segmentation fau
 export LM_NL_LAN_RHO_SNOW_C=.FALSE.
 
 # Other namelist changes not possible through environment variables
-source simulation_configs/scClim_namelists/lm_c_scClim.sh
+source simulation_configs/CCLM2/lm_c_COPAT2_cclm2.sh
+source simulation_configs/CCLM2/ifs2lm_COPAT2_cclm2.sh

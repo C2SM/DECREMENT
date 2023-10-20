@@ -6,9 +6,9 @@
 
 # Experiment info for COSMO's IOCTL and INT2LM's INPUT
 # -----------
-$LM_NL_YNCGLOB_PROJECT_ID="FeedBaCks"
-$LM_NL_YNCGLOB_EXPERIMENT_ID="Test"
-$LM_NL_YNCGLOB_CONTACT="Petra Sieber (petra.sieber@env.ethz.ch)"
+LM_NL_YNCGLOB_PROJECT_ID="FeedBaCks"
+LM_NL_YNCGLOB_EXPERIMENT_ID="Test"
+LM_NL_YNCGLOB_CONTACT="Petra Sieber (petra.sieber@env.ethz.ch)"
 
 
 # Scheduler account and user
@@ -16,17 +16,23 @@ $LM_NL_YNCGLOB_CONTACT="Petra Sieber (petra.sieber@env.ethz.ch)"
 export ACCOUNT="s1256"
 export CLM_username='"psieber"'
 
-# Old executables, still change namcouple file name manually!
+
+# Executables and albedo coupling
+# -----------
+# Old executables
 export EXE_COSMO="../bin/cosmo_gpu_noIO_1alb"
-EXE_CESM="../bin/cesm_1alb.exe"
+export EXE_CESM="../bin/cesm_1alb.exe"
 export NQS_NIOLM_C=0                             # IO has to be turned off for the old COSMO exe
+cd 20_cclm2_c/Defaults
+ln -s cclm2_namcouple_defaults_1alb.sh cclm2_namcouple_defaults.sh
+cd ../..
 
 
 # Global Simulation Dates (YYYY-MM-DDTHH:00)
 # -----------
 export LM_INI_DATE="2011-01-01T00:00"     # Initial date of simualtion
-#export LM_START_DATE="2011-01-01T00:00"   # use if you don't want to start from LM_INI_DATE
-export LM_FIN_DATE="2011-01-03T00:00"     # Overall end of simulation
+export LM_START_DATE="2011-01-01T00:00"   # use if you don't want to start from LM_INI_DATE
+export LM_FIN_DATE="2011-01-06T00:00"     # Overall end of simulation
 
 # Chaining interval, i.e., how long one simualtion chunk will be. If unset, run in one chunk
 export LM_CHAIN_INTERVAL="" # Anything human readable like "2 hours", "1 month", "1 day", "" to run in one chunk
@@ -42,7 +48,7 @@ export LM_CHAIN_INTERVAL="" # Anything human readable like "2 hours", "1 month",
 # Maximum wall-clock time (HH:mm:ss)
 # ----------------------
 export NQS_ELAPSED_GET_DATA=03:00:00   # default 01:00:00
-export NQS_ELAPSED_IFS2LM=00:30:00     # default 00:30:00
+export NQS_ELAPSED_IFS2LM=01:00:00     # default 00:30:00
 export NQS_ELAPSED_CCLM2_C=01:00:00    # default 01:00:00
 
 export LM_NL_IDBG_LEVEL_C=6 # increase COSMO debug level for more output in cosmo*.out
@@ -54,13 +60,6 @@ rm -f *
 ln -s $SCRATCH/COSMO_inputdata/00_get_data_output_ERA5/* .
 cd ../..
 
-# 10_ifs2lm and 20_cclm2_c
-export LM_NL_HINCBOUND_C=6.0                                       # Input frequency of boundary conditions
-#export LM_NL_EXTPAR_C=extpar_euro_12km_771x771.nc                 # demorym
-#export LM_NL_EXTPAR_C=extpar_euro_12km_771x771_TCL_S_ORO_MAX.nc   # int2lm@c2sm-features and scClim
-export LM_NL_EXTPAR_C=extpar_12km_europe_771x771.nc                # CCLM2 for itype_albedo=2
-export LM_NL_ITYPE_ALBEDO_C=2                                      # CCLM2 for coupling
-
 # Link existing bc files, 6hr
 #export SB_PARTS="20_cclm2_c 60_chain"
 #cd 10_ifs2lm/output
@@ -68,6 +67,10 @@ export LM_NL_ITYPE_ALBEDO_C=2                                      # CCLM2 for c
 #ln -s $SCRATCH/COSMO_inputdata/10_ifs2lm_output_ERA5-6hr/* .
 #cd ../..
 
+
+
+
+#====================================
 
 # COSMO standalone
 # ----------------------
@@ -80,15 +83,17 @@ export LM_NL_ITYPE_ALBEDO_C=2                                      # CCLM2 for c
 #export EXE_INT2LM="../bin/int2lm@c2sm-features"
 #export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.775      # after some date, these soil levels have to be used for ERA5
 
-
-
-#====================================
-
 # Tests
 # -----------
 # Try using Eric's cosmo executable for cpu (did not work, missing access to eccodes lib on pr133)
 #export EXE_COSMO="/scratch/snx3000/emaison/COSMO-CLM2_sandbox/EU-CORDEX_50km/cosmo"
 #export COSMO_TARGET="cpu"            # COSMO target architecture, default gpu
+
+# 10_ifs2lm and 20_cclm2_c
+#export LM_NL_EXTPAR_C=extpar_euro_12km_771x771.nc                 # int2lm@2.5.1_demorym
+#export LM_NL_EXTPAR_C=extpar_euro_12km_771x771_TCL_S_ORO_MAX.nc   # int2lm@c2sm-features and scClim
+#export LM_NL_EXTPAR_C=extpar_12km_europe_771x771.nc                # CCLM2 for itype_albedo=2
+#export LM_NL_ITYPE_ALBEDO_C=2                                      # CCLM2 for coupling
 
 # Dependencies
 # -----------
