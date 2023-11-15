@@ -2,13 +2,23 @@
 
 # COSMO settings
 # ==============
+# DYN and PHY settings for CPU/GPU, mostly related to performance (faster stuff needed on cpu, not implemented for gpu)
+# CPU settings correspond to COPAT2
 if [[ $COSMO_TARGET == "cpu" ]]; then
-    export LM_NL_LCPP_DYCORE=.False.
+    export LM_NL_LCPP_DYCORE=.FALSE.
+    export LM_NL_Y_SCALAR_ADVECT='BOTTDC2'
+    export LM_NL_L_3D_DIV_DAMPING=.TRUE.
+    export LM_NL_LGSP_FIRST=.FALSE. 
 else
-    export LM_NL_LCPP_DYCORE=.True.
+    export LM_NL_LCPP_DYCORE=.TRUE.
+    export LM_NL_Y_SCALAR_ADVECT='BOTT2_STRANG'
+    export LM_NL_L_3D_DIV_DAMPING=.FALSE.
+    export LM_NL_LGSP_FIRST=.TRUE.
+    # Only for CCLM2
     export COSMO_NPROC_NODEVICE=${NQS_NIOLM_C}
 fi
 
+# IO settings
 if (( ${NQS_NIOLM_C} > 0 )); then
     export LM_NL_LASYNC_IO_C=.TRUE.
     export LM_NL_NUM_IOPE_PERCOMM_C=1
