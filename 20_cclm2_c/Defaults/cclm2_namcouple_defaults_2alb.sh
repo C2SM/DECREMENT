@@ -61,7 +61,7 @@ cclm2_c_namcouple(){
 # --- start Field 1 : Surface temperature
 # 
 COSTEMPE  CLMTEMPE 1  ${COUPLING_TIMESTEP}  2  cosmo.nc  ${OASIS_OUT}
- ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} coap  clme  LAG=+0 SEQ=1
+ ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} colp  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
 LOCTRANS   SCRIPR 
@@ -76,7 +76,7 @@ LOCTRANS   SCRIPR
 # --- start Field 2 : eastward_wind
 # 
 COSUWIND CLMUWIND 182  ${COUPLING_TIMESTEP}  2  cosmo.nc  ${OASIS_OUT}
- ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} coap  clme  LAG=+0 SEQ=1
+ ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} colp  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
 LOCTRANS   SCRIPR 
@@ -90,7 +90,7 @@ LOCTRANS   SCRIPR
 # --- start Field 3 : northward_wind
 # 
 COSVWIND CLMVWIND 262  ${COUPLING_TIMESTEP}  2  cosmo.nc  ${OASIS_OUT}
- ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} coap  clme  LAG=+0 SEQ=1
+ ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} colp  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
 LOCTRANS   SCRIPR 
@@ -105,7 +105,7 @@ LOCTRANS   SCRIPR
 # --- start Field 4 : specific water vapor content
 # 
 COSSPWAT CLMSPWAT 456  ${COUPLING_TIMESTEP}  2  cosmo.nc  ${OASIS_OUT}
- ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} coap  clme  LAG=+0 SEQ=1
+ ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} colp  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
 LOCTRANS   SCRIPR 
@@ -120,7 +120,7 @@ LOCTRANS   SCRIPR
 # --- start Field 5 : thickness of lowest level (m)
 # 
 COSTHICK CLMTHICK 116  ${COUPLING_TIMESTEP}  2  cosmo.nc  ${OASIS_OUT}
- ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} coap  clme  LAG=+0 SEQ=1
+ ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} colp  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
 LOCTRANS   SCRIPR 
@@ -135,7 +135,7 @@ LOCTRANS   SCRIPR
 # --- start Field 6 : surface pressure (Pa)
 # 
 COSPRESS CLMPRESS 348  ${COUPLING_TIMESTEP}  2  cosmo.nc  ${OASIS_OUT}
- ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} coap  clme  LAG=+0 SEQ=1
+ ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} colp  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
 LOCTRANS   SCRIPR 
@@ -150,7 +150,7 @@ LOCTRANS   SCRIPR
 # --- start Field 7 : direct shortwave downward radiation (W/m2)
 # 
 COSDIRSW CLMDIRSW  11  ${COUPLING_TIMESTEP}  2  cosmo.nc  ${OASIS_OUT}
- ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} coap  clme  LAG=+0 SEQ=1
+ ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} colp  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
 LOCTRANS   SCRIPR 
@@ -165,7 +165,7 @@ LOCTRANS   SCRIPR
 # --- start Field 8 :  diffuse shortwave downward radiation (W/m2)
 # 
 COSDIFSW CLMDIFSW 12  ${COUPLING_TIMESTEP}  2  cosmo.nc  ${OASIS_OUT}
- ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} coap  clme  LAG=+0 SEQ=1
+ ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} colp  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
 LOCTRANS   SCRIPR 
@@ -180,7 +180,7 @@ LOCTRANS   SCRIPR
 # --- start Field 9 : longwave downward radiation (W/m2)
 # 
 COSLONGW CLMLONGW 10  ${COUPLING_TIMESTEP}  2  cosmo.nc  ${OASIS_OUT}
- ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} coap  clme  LAG=+0 SEQ=1
+ ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} colp  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
 LOCTRANS   SCRIPR 
@@ -195,7 +195,7 @@ LOCTRANS   SCRIPR
 # --- start Field 10 :  total convective precipitation      (kg/m2*s)
 # 
 COSCVPRE CLMCVPRE 152  ${COUPLING_TIMESTEP}  2  cosmo.nc  ${OASIS_OUT}
- ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} coap  clme  LAG=+0 SEQ=1
+ ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} colp  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
 LOCTRANS   SCRIPR 
@@ -210,7 +210,7 @@ LOCTRANS   SCRIPR
 # --- start Field 11 : total large scale precipitation      (kg/m2*s)
 # 
 COSGSPRE CLMGSPRE  210  ${COUPLING_TIMESTEP}  2  cosmo.nc  ${OASIS_OUT}
- ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} coap  clme  LAG=+0 SEQ=1
+ ${LM_NL_IELM_C} ${LM_NL_JELM_C} ${CLM_nx} ${CLM_ny} colp  clme  LAG=+0 SEQ=1
 R  0  R  0
 #
 LOCTRANS   SCRIPR 
@@ -228,7 +228,7 @@ LOCTRANS   SCRIPR
 # --- start Field 12 :   zonal wind stress
 # 
 CLM_TAUX COS_TAUX 353 ${COUPLING_TIMESTEP}  2  clm.nc ${OASIS_OUT}
- ${CLM_nx} ${CLM_ny} ${LM_NL_IELM_C} ${LM_NL_JELM_C} clme   coap   LAG=+0 SEQ=2
+ ${CLM_nx} ${CLM_ny} ${LM_NL_IELM_C} ${LM_NL_JELM_C} clme   colp   LAG=+0 SEQ=2
 R  0  R  0
 #
 LOCTRANS   SCRIPR 
@@ -242,7 +242,7 @@ LOCTRANS   SCRIPR
 # --- start Field 13 :   meridional wind stress
 # 
 CLM_TAUY COS_TAUY 356 ${COUPLING_TIMESTEP}  2  clm.nc ${OASIS_OUT}
- ${CLM_nx} ${CLM_ny} ${LM_NL_IELM_C} ${LM_NL_JELM_C} clme   coap   LAG=+0 SEQ=2
+ ${CLM_nx} ${CLM_ny} ${LM_NL_IELM_C} ${LM_NL_JELM_C} clme   colp   LAG=+0 SEQ=2
 R  0  R  0
 #
 LOCTRANS   SCRIPR 
@@ -256,7 +256,7 @@ LOCTRANS   SCRIPR
 # --- start Field 14 :  total latent heat flux (W/m**2)
 # 
 CLMLATEN COSLATEN 8 ${COUPLING_TIMESTEP}  2  clm.nc ${OASIS_OUT}
- ${CLM_nx} ${CLM_ny} ${LM_NL_IELM_C} ${LM_NL_JELM_C} clme   coap   LAG=+0 SEQ=2
+ ${CLM_nx} ${CLM_ny} ${LM_NL_IELM_C} ${LM_NL_JELM_C} clme   colp   LAG=+0 SEQ=2
 R  0  R  0
 #
 LOCTRANS   SCRIPR 
@@ -270,7 +270,7 @@ LOCTRANS   SCRIPR
 # --- start Field 15 :   total sensible heat flux (W/m**2)
 # 
 CLMSENSI COSSENSI 9 ${COUPLING_TIMESTEP}  2  clm.nc ${OASIS_OUT}
- ${CLM_nx} ${CLM_ny} ${LM_NL_IELM_C} ${LM_NL_JELM_C} clme   coap   LAG=+0 SEQ=2
+ ${CLM_nx} ${CLM_ny} ${LM_NL_IELM_C} ${LM_NL_JELM_C} clme   colp   LAG=+0 SEQ=2
 R  0  R  0
 #
 LOCTRANS   SCRIPR 
@@ -284,7 +284,7 @@ LOCTRANS   SCRIPR
 # --- start Field 16 :   emitted infrared (longwave) radiation (W/m**2)
 # 
 CLMINFRA COSINFRA 5 ${COUPLING_TIMESTEP}  2  clm.nc ${OASIS_OUT}
- ${CLM_nx} ${CLM_ny} ${LM_NL_IELM_C} ${LM_NL_JELM_C} clme   coap   LAG=+0 SEQ=2
+ ${CLM_nx} ${CLM_ny} ${LM_NL_IELM_C} ${LM_NL_JELM_C} clme   colp   LAG=+0 SEQ=2
 R  0  R  0
 #
 LOCTRANS   SCRIPR 
@@ -298,7 +298,7 @@ LOCTRANS   SCRIPR
 # --- start Field 17 :  albedo direct (VIS+NIR)
 # 
 CLMALBDR COSALBDR 17 ${COUPLING_TIMESTEP}  2  clm.nc ${OASIS_OUT}
- ${CLM_nx} ${CLM_ny} ${LM_NL_IELM_C} ${LM_NL_JELM_C} clme   coap   LAG=+0 SEQ=2
+ ${CLM_nx} ${CLM_ny} ${LM_NL_IELM_C} ${LM_NL_JELM_C} clme   colp   LAG=+0 SEQ=2
 R  0  R  0
 #
 LOCTRANS   SCRIPR 
@@ -312,7 +312,7 @@ LOCTRANS   SCRIPR
 # --- start Field 18 :  albedo diffuse (VIS+NIR)
 # 
 CLMALBDF COSALBDF 17 ${COUPLING_TIMESTEP}  2  clm.nc ${OASIS_OUT}
- ${CLM_nx} ${CLM_ny} ${LM_NL_IELM_C} ${LM_NL_JELM_C} clme   coap   LAG=+0 SEQ=2
+ ${CLM_nx} ${CLM_ny} ${LM_NL_IELM_C} ${LM_NL_JELM_C} clme   colp   LAG=+0 SEQ=2
 R  0  R  0
 #
 LOCTRANS   SCRIPR 
