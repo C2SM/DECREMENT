@@ -358,6 +358,8 @@ clm_c_lnd_in(){
  hist_fincl1 = ${CLM_hist_fincl1}
  hist_fincl2 = ${CLM_hist_fincl2}
  hist_fincl3 = ${CLM_hist_fincl3}
+ hist_fincl4 = ${CLM_hist_fincl4}
+ hist_fincl5 = ${CLM_hist_fincl5}
  hist_mfilt = ${CLM_hist_mfilt}
  hist_nhtfrq = ${CLM_hist_nhtfrq}
  int_snow_max = 2000.

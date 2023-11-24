@@ -56,14 +56,17 @@ export -f cosmo_file_list
 
 add_s_oro_max(){
     # Add the S_ORO_MAX variable to $1 if missing by copying the S_ORO variable
-    
-    ncdump -h ${1} | grep -q S_ORO_MAX
-    if [[ $? != 0 ]]; then
-        echo "S_ORO_MAX not in ${1}, copying S_ORO as S_ORO_MAX"
-        ncks -O -v S_ORO ${1} tmp.nc
-        ncrename -v S_ORO,S_ORO_MAX tmp.nc
-        ncks -A -v S_ORO_MAX tmp.nc ${1}
-        rm -f tmp.nc
+    # Do this only if S_ORO is on $1 (S_ORO is only on the laf file if l_s_oro = .TRUE.)
+    ncdump -h ${1} | grep -q S_ORO
+    if [[ $? == 0 ]]; then
+        ncdump -h ${1} | grep -q S_ORO_MAX
+        if [[ $? != 0 ]]; then
+            echo "S_ORO_MAX not in ${1}, copying S_ORO as S_ORO_MAX"
+            ncks -O -v S_ORO ${1} tmp.nc
+            ncrename -v S_ORO,S_ORO_MAX tmp.nc
+            ncks -A -v S_ORO_MAX tmp.nc ${1}
+            rm -f tmp.nc
+        fi
     fi
 }
 export -f add_s_oro_max

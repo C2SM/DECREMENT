@@ -14,7 +14,7 @@
 # Grid-specific settings
 # ----------------------
 # COSMO config (source first to avoid overriding CCLM2 settings!)
-source simulation_configs/SIMULATION_EUR11_COPAT2  # COPAT2 params, using int2lm with ERA5
+source simulation_configs/SIMULATION_COSMO-EUR11_COPAT2  # COPAT2 params, using int2lm with ERA5
 
 # General settings
 # ----------------------
@@ -59,43 +59,49 @@ cd ../..
 # ----------------------
 export CLM_case_title='"clm5.0.gnu-oasis.I2000Clm50SpGs.CLM_USRDAT.eur_0.1.cclm2"' # case name of the CLM exe, ends up in netcdf attributes
 export CLM_case_id='"clm5.0_eur0.1"'                                               # ends up in output file name and netcdf attributes
-export CLM_nx=932 # longitudes (ni) 
-export CLM_ny=427 # latitudes (nj) 
+export CLM_nx=1204 # longitudes (ni) 
+export CLM_ny=560 # latitudes (nj)
 
-export CLM_domainfile="domain_EU-CORDEX_0.1_lon360_reduced.nc" # "reduced" has to correspond to oasis aux files
-export CLM_oasisdummy="OASIS_dummy_0.1_lon360.nc"
-export CLM_fsurdat="surfdata_0.1x0.1_EUR_hist_16pfts_Irrig_CMIP6_simyr2005_c230523.nc"
+export CLM_domainfile="domain_EUR11_lon360_reduced.nc" # "reduced" has to correspond to oasis aux files
+export CLM_oasisdummy="OASIS_dummy_EUR11_lon360.nc"
+export CLM_fsurdat="surfdata_0.1x0.1_EUR11_hist_16pfts_Irrig_CMIP6_simyr2005_c230523.nc"
 export CLM_finidat="clmi.I2000Clm50BgcCrop.2011-01-01.1.9x2.5_gx1v7_gl4_simyr2000_c190312.nc"
 
 # Output variables, frequency and averaging
 # ----------------------
-export CLM_hist_empty_htapes=.true. # true = turn off default output variables on h0
+# For other than 4 tapes, change the namelist function!
+# Tape1 (h0): daily mean (fluxes, surface, temp, incl. T2m min/max)
+# Tape2 (h1): daily min (Tskin)
+# Tape3 (h2): daily max (Tskin)
+# Tape4 (h3): 3hr (E fluxes)
+# Tape5 (h4): monthly mean (temp)
+export CLM_hist_empty_htapes=.true.                     # true = turn off default output variables on h0
+export CLM_hist_fincl1="'FSDS','FSR','FLDS','FIRE','EFLX_LH_TOT','FSH','QFLX_EVAP_TOT','QSOIL','QVEGE','QVEGT','QOVER','QDRAI','SOILLIQ','SOILICE','FSNO','SNOW_DEPTH','TSOI','FPSN','TV','TG','TSKIN','TSA','TREFMNAV','TREFMXAV'"
+export CLM_hist_fincl2="'TSKIN'"
+export CLM_hist_fincl3="'TSKIN'"
+export CLM_hist_fincl4="'FSDS','FSR','FLDS','FIRE','EFLX_LH_TOT','FSH'"
+export CLM_hist_fincl5="'TSKIN','TSA','TREFMNAV','TREFMXAV'"
 
-# vars tape1-3: temps and fluxes SWdn, SWup, LWdn, LWup, SH, LH, G
-# TREFMNAV TREFMXAV daily min/max of average 2-m temperature
-# Tair_from_atm atmospheric air temperature received from atmosphere (pre-downscaling)
-export CLM_hist_fincl1="'TBOT','Tair_from_atm','TSKIN','TG','TV','TSOI','TSA','FSDS','FSR','FLDS','FIRE','FSH','EFLX_LH_TOT','FGR'"
-export CLM_hist_fincl2="'TBOT','Tair_from_atm','TSA','FSDS'"
-export CLM_hist_fincl3="'TBOT','Tair_from_atm','FSDS','FLDS','RAIN_FROM_ATM'"
+export CLM_hist_avgflag_pertape="'A','M','X','A','A'"          # averaging over the output interval (A=avg, I=inst, M=min, X=max) 
+export CLM_hist_dov2xy=".true.,.true.,.true.,.true.,.true."    # true = 2D (grid cell level), false = 1D vector (pft output)
+export CLM_hist_mfilt="365,365,365,2920,12"                    # number of values per file
+export CLM_hist_nhtfrq="-24,-24,-24,-3,0"                      # output frequency (0=monthly, -24=daily, -1=hourly, 1=model-time-step)
 
-export CLM_hist_avgflag_pertape="'A','A','I'"       # averaging over the output interval (A=avg, I=inst, X=max) 
-export CLM_hist_dov2xy=".true.,.false.,.true."      # true = 2D (grid cell level), false = 1D vector (pft output)
-
-export CLM_hist_mfilt="12,365,17520"                # number of values per file
-export CLM_hist_nhtfrq="0,-24,1"                    # output frequency (0=monthly, -24=daily, -1=hourly, 1=model-time-step)
+# inactive: 'Z0HV','Z0MV','Z0QV'
+# inactive in SP mode: 'TOTECOSYSC','TOTSOMC'
 
 
 # ===================================================
 #                   CCLM2
 # ===================================================
 
-export RES="12km"                      # needed for input files
+export RES="EUR11"                     # needed for input files
 export NQS_ELAPSED_CCLM2_C=01:00:00    # maximum wall-clock time (HH:mm:ss)
 
 # OASIS output and verbosity
 # -----------
-export OASIS_DEBUG=0      # sets IOASISDEBUGLVL, 0 = less in cesm/cosmo.out and OASIS aux files not produced (masks.nc, grids.nc, areas.nc and rmp files), 200 = lots (testing)
-export OASIS_PRINTING=0   # printing level in output file cplout: 0 = no printing (default), 1 = main routines and field names when treated, 2 = complete output (testing)
+export OASIS_DEBUG=1      # sets IOASISDEBUGLVL, 0 = less in cesm/cosmo.out and OASIS aux files not produced (masks.nc, grids.nc, areas.nc and rmp files), 200 = lots (testing)
+export OASIS_PRINTING=1   # printing level in output file cplout: 0 = no printing (default), 1 = main routines and field names when treated, 2 = complete output (testing)
 export OASIS_OUT=EXPORTED # output setting for selected coupling fields; EXPORTED = coupling only (default), EXPOUT = produces 2 netcdf files for values sent (before interp) and received (after interp)
 
 # If already generated, link the oasis_input files (masks, areas, grids, rmp*)

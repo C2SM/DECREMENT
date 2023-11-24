@@ -1,14 +1,6 @@
 #!/bin/bash
 
 # ---------------------------------------------------------------
-#                      Defaults from 20_lm_c
-# ---------------------------------------------------------------
-# Some settings from 20_lm_c are needed here
-for f in 20_lm_c/Defaults/*; do
-    source $f
-done
-
-# ---------------------------------------------------------------
 #                            INPUT
 # ---------------------------------------------------------------
 ifs2lm_INPUT(){
@@ -28,42 +20,25 @@ ifs2lm_INPUT(){
   nprocx = ${NQS_NXIFS2LM}
   nprocy = ${NQS_NYIFS2LM}
   nprocio = ${NQS_NIOIFS2LM}
-  lfilter_pp = .TRUE.
-  llbc_smooth = .TRUE.
-  lfilter_oro = .FALSE.
-  ilow_pass_oro = 4
-  numfilt_oro = 1
-  ilow_pass_xso = 5
-  lxso_first = .FALSE.
-  numfilt_xso = 1
-  rxso_mask = 750.0
-  eps_filter = 0.1
-  norder_filter = 5
-  l_topo_z = .FALSE.
-  l_s_oro = .TRUE.
-  rfill_valley = 0.0
-  ifill_valley = 7
-  lasync_io = .FALSE.
-  lprog_qi = $LM_NL_LANA_QI_C
   nincwait = 30
   nmaxwait = 300
   lmulti_layer_lm = .TRUE.
   lmulti_layer_in = .TRUE.
-  itype_w_so_rel = 2
+  itype_w_so_rel = 1
   itype_t_cl = 1
   itype_rootdp = 4
   lforest = .TRUE.
+  llake = $LM_NL_LLAKE_C
+  llake_coldstart = $LM_NL_LLAKE_C
   lsso = .TRUE.
+  lskinc = .TRUE.
   lbdclim = .TRUE.
+  lprog_qi = $LM_NL_LANA_QI_C
+  lprog_qr_qs = $LM_NL_LANA_QR_QS_C
   lprog_rho_snow = $LM_NL_LAN_RHO_SNOW_C
-  lvertwind_ini = .TRUE.
-  lvertwind_bd = .TRUE.
   itype_aerosol = $LM_NL_ITYPE_AEROSOL_C
   itype_albedo = $LM_NL_ITYPE_ALBEDO_C
   lradtopo = $LM_NL_LRADTOPO_C
-EONL
-    [[ -n ${LM_NL_NHORI_C} ]] && echo "  nhori = $LM_NL_NHORI_C" >> INPUT
-    cat >> INPUT << EONL
  /END
 
  &GRID_IN
@@ -88,11 +63,9 @@ EONL
   jelm_tot = $LM_NL_JELM_C
   kelm_tot = $LM_NL_KELM_C
   ivctype = 2
-  vcflat = $LM_VCFLAT
   ke_soil_lm = 9
   irefatm = 2
-  czml_soil_lm = 0.005, 0.025, 0.07, 0.16, 0.34, 0.70, 1.42, 2.86, 5.74, 11.50
-  vcoord_d = $LM_VCOORD_D
+  czml_soil_lm = $LM_NL_CZML_SOIL
   pollat = $LM_NL_POLLATLM_C
   pollon =$LM_NL_POLLONLM_C
   dlon = $LM_NL_DLONLM_C
@@ -118,7 +91,7 @@ EONL
   ytunit_out = 'd'
   yncglob_institution = "ETH Zurich, Switzerland"
   yncglob_title = "INT2LM"
-  yncglob_source = int2lm@c2sm-features
+  yncglob_source = "int2lm@c2sm-features"
   yncglob_contact = $LM_NL_YNCGLOB_CONTACT
  /END
 

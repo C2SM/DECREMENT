@@ -6,12 +6,12 @@
 # CPU settings correspond to COPAT2
 if [[ $COSMO_TARGET == "cpu" ]]; then
     export LM_NL_LCPP_DYCORE=.FALSE.
-    export LM_NL_Y_SCALAR_ADVECT='BOTTDC2'
+    export LM_NL_Y_SCALAR_ADVECT='"BOTTDC2"'
     export LM_NL_L_3D_DIV_DAMPING=.TRUE.
     export LM_NL_LGSP_FIRST=.FALSE. 
 else
     export LM_NL_LCPP_DYCORE=.TRUE.
-    export LM_NL_Y_SCALAR_ADVECT='BOTT2_STRANG'
+    export LM_NL_Y_SCALAR_ADVECT='"BOTT2_STRANG"'
     export LM_NL_L_3D_DIV_DAMPING=.FALSE.
     export LM_NL_LGSP_FIRST=.TRUE. 
 fi

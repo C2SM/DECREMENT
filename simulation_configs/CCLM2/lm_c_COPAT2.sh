@@ -1,11 +1,12 @@
 #!/bin/bash
 
 # Recommended parameters for COSMO-6 EURO-CORDEX COPAT2
-# itype_albedo = 2 # needed for CCLM2 coupling
+# itype_albedo = 2 # needed for CCLM2 coupling (also in COPAT2)
+# deviations from COPAT2 on GPU: do NOT set nproma (optimised for cpu/gpu), lgsp_first = .TRUE., y_scalar_advect='BOTT2_STRANG', L_3D_div_damping=.FALSE.
 # To default: hincmxu, ldiagnos, qi0, iadv_order, itype_outflow_qrsg, itype_spubc
-# To default: itype_hydmod, lsoil_init_fill, lan_rho_snow
+# To default: itype_hydmod, lsoil_init_fill, lan_rho_snow, nincwait, nmaxwait
 # New value: ncomm_type, soilhyd, tkhmin, khmmin, rat_sea, c_soil, a_hshr, entr_sc
-# New value: y_scalar_advect, rdheight, hd_corr_*, l_3D_div_damping, lgsp_first, limpltkediff 
+# New value: y_scalar_advect, rdheight, hd_corr_*, l_3D_div_damping, limpltkediff 
 # New value: itype_conv, llake, czml_soil, czbot_w_so, itype_canopy, cskinc, lconf_avg, hincrad
 # New value: nincrad, itype_gscp, ico2_rad, itype_albedo, icapdcycl, lgpshort, nincgp, nincmeanval
 
@@ -77,7 +78,7 @@ lm_c_INPUT_DYN(){
     cat > INPUT_DYN << EONL
  &DYNCTL
   lcpp_dycore = ${LM_NL_LCPP_DYCORE}
-  y_scalar_advect = 'BOTTDC2'
+  y_scalar_advect = ${LM_NL_Y_SCALAR_ADVECT}
   rdheight = $LM_NL_RDHEIGHT_C
   rlwidth = ${LM_NL_RLWIDTH_C}
   nrdtau = ${LM_NL_NRDTAU_C}
@@ -91,7 +92,7 @@ lm_c_INPUT_DYN(){
   hd_corr_t_in = $LM_NL_HD_CORR_T_IN_C
   hd_corr_trcr_in = $LM_NL_HD_CORR_TRCR_IN_C
   hd_corr_p_in = $LM_NL_HD_CORR_P_IN_C
-  l_3D_div_damping = .TRUE.
+  l_3D_div_damping = ${LM_NL_L_3D_DIV_DAMPING}
   isc_sn = 6
   jsc_sn = 6
  /END
@@ -107,18 +108,20 @@ export -f lm_c_INPUT_DYN
 lm_c_INPUT_PHY(){
     cat > INPUT_PHY << EONL
  &PHYCTL
+  lgsp_first = $LM_NL_LGSP_FIRST
   itype_aerosol = $LM_NL_ITYPE_AEROSOL_C
   loldtur = .TRUE.
   limpltkediff = .FALSE.
   lconv = $LM_NL_LCONV_C
   itype_conv = 2
-  lseaice =.FALSE.
-  llake = .FALSE.
+  lseaice = .FALSE.
+  llake = $LM_NL_LLAKE_C
   lsso = $LM_NL_LSSO_C
   ke_soil = 9
-  czml_soil = 0.005, 0.025, 0.07, 0.16, 0.34, 0.70, 1.42, 2.86, 5.74, 11.50
+  czml_soil = $LM_NL_CZML_SOIL
   czbot_w_so = 4.0
   itype_heatcond = 2
+  lsoil_init_fill = .FALSE.
   itype_canopy = 2
   cskinc = -1.0
   itype_root = 2
@@ -147,12 +150,10 @@ export -f lm_c_INPUT_PHY
 #                           INPUT_IO
 # ---------------------------------------------------------------
 
-# nincwait, nmaxwait
-
 lm_c_INPUT_IO(){
     cat >INPUT_IO << EONL
  &IOCTL
-  ngribout = 4
+  ngribout = 3
   nhour_restart = 0, $LM_NL_HSTOP, $LM_NL_HSTOP
   ytunit_restart = 'd'
   ydir_restart_in = 'output/restart'
@@ -183,8 +184,8 @@ lm_c_INPUT_IO(){
   lchkini = .TRUE.
   lana_qi = $LM_NL_LANA_QI_C
   llb_qi = $LM_NL_LANA_QI_C
-  lana_qr_qs = .TRUE.
-  llb_qr_qs  = .TRUE.
+  lana_qr_qs = $LM_NL_LANA_QR_QS_C
+  llb_qr_qs  = $LM_NL_LANA_QR_QS_C
   lana_rho_snow = $LM_NL_LAN_RHO_SNOW_C
   lan_t_so0 = .TRUE.
   lan_t_snow = .TRUE.
@@ -205,44 +206,34 @@ lm_c_INPUT_IO(){
 
  &GRIBOUT
   yform_write = '${LM_NL_OUTPUT_FMT_C}'
-  hcomb = 0.0, ${LM_NL_HSTOP}, 1
-  yvarml = 'U','V','W','T','PP',
-     'QV','QC', 'QS','QR','QI','QG',
-     'VIO3','HMO3',
-     'T_SNOW','QV_S','W_SNOW','W_I','T_S',
-     'T_SO','W_SO','RHO_SNOW','FRESHSNW'
+  hcomb = 0.0, ${LM_NL_HSTOP}, 3
+  yvarml = 'T_2M','T_G','QV_2M','RELHUM_2M','U_10M','V_10M',
+     'TQV','TQI','TQC','CLCT','PS','PMSL','HPBL',
   yvarpl = ' '
   yvarzl = ' '
-  lcheck = .FALSE.
-  luvmasspoint = .FALSE.
-  lwrite_const = .TRUE.
-  ydir = 'output/bc'
-  l_z_filter = .FALSE.
-  l_p_filter = .FALSE.
-  l_fi_pmsl_smooth = .FALSE.
-  ytunit = 'd'
- /END
-
- &GRIBOUT
-  yform_write = '${LM_NL_OUTPUT_FMT_C}'
-  hcomb = 0.0, ${LM_NL_HSTOP}, 1
-  yvarml = 'U_10M', 'V_10M', 'T_2M', 'RELHUM_2M', 'PS', 'QV_2M',
-           'ALHFL_S', 'ASHFL_S', 'AUMFL_S', 'AVMFL_S', 'CAPE_ML',
-           'CIN_ML', 'CLCH', 'CLCM', 'CLCL', 'TOT_PREC',
-           'TQC', 'TQI','TQR','TQV','TQG','TQS',
-           'ASOB_T', 'ASOD_T',  'ATHB_T', 'ASOBC_T', 'ATHBC_T',
-           'ASOB_S', 'ASWDIFD_S','ASWDIR_S', 'ASWDIFU_S', 'ATHB_S', 'ATHD_S',
-           'ASOBC_S', 'ATHBC_S'
-  yvarpl = ' '
-  yvarzl = ' '
-  ireset_sums = 2
   lcheck = .TRUE.
   luvmasspoint = .FALSE.
   lwrite_const = .FALSE.
-  ydir = 'output/1h_2D'
-  l_z_filter = .FALSE.
-  l_p_filter = .FALSE.
-  l_fi_pmsl_smooth = .FALSE.
+  ydir = 'output/3h_2D'
+  ytunit = 'd'
+ /END
+ 
+  &GRIBOUT
+  yform_write = '${LM_NL_OUTPUT_FMT_C}'
+  hcomb = 0.0, ${LM_NL_HSTOP}, 24
+  yvarml = 'ASWDIR_S','ASWDIFD_S','ASWDIFU_S','ALWD_S','ALWU_S',
+     'ALHFL_S','ASHFL_S','AEVAP_S',
+     'TOT_PREC','RAIN_CON','SNOW_CON','TMIN_2M','TMAX_2M','T_2M_AV',
+     'VABSMAX_10M','U_10M_AV','V_10M_AV'
+  yvarpl = ' '
+  yvarzl = ' '
+  ireset_sums = 2
+  ireset_winds = 2
+  ireset_temps = 2
+  lcheck = .TRUE.
+  luvmasspoint = .FALSE.
+  lwrite_const = .FALSE.
+  ydir = 'output/daily_2D'
   ytunit = 'd'
  /END
 
@@ -250,36 +241,12 @@ lm_c_INPUT_IO(){
   yform_write = '${LM_NL_OUTPUT_FMT_C}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 3
   yvarml = ' '
-  yvarpl = ' ',
-  yvarzl = 'U', 'V', 'W', 'T', 'P', 'QV', 'QC', 'QI'
-  zlev = 100, 200, 400, 600, 800, 1000, 1200, 1400, 1600, 1800, 2000,
-         2300, 2600, 2900, 3200, 3500,
-         4000, 4500, 5000, 6000, 7000, 8000, 9000, 10000
-  lcheck = .FALSE.
-  luvmasspoint = .FALSE.
-  lwrite_const = .FALSE.
-  ydir = 'output/3h_3D_zlev'
-  l_z_filter = .FALSE.
-  l_p_filter = .FALSE.
-  l_fi_pmsl_smooth = .FALSE.
-  ytunit = 'd'
- /END
-
- &GRIBOUT
-  yform_write = '${LM_NL_OUTPUT_FMT_C}'
-  hcomb = 0.0, ${LM_NL_HSTOP}, 24
-  yvarml = 'VMAX_10M', 'W_SO', 'TMIN_2M', 'TMAX_2M', 'RUNOFF_S', 'RUNOFF_G',
-  yvarpl = ' '
+  yvarpl = 'T','U','V','W','QV','FI'
   yvarzl = ' '
-  ireset_winds = 2
-  ireset_temps = 2
   lcheck = .FALSE.
-  luvmasspoint = .FALSE.
+  luvmasspoint = .TRUE.
   lwrite_const = .FALSE.
-  ydir = 'output/24h'
-  l_z_filter = .FALSE.
-  l_p_filter = .FALSE.
-  l_fi_pmsl_smooth = .FALSE.
+  ydir = 'output/3h_plev'
   ytunit = 'd'
  /END
 EONL
