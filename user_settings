@@ -3,8 +3,7 @@
 # These settings will take precedence over any other:
 # user_settings > config > defaults
 
-# Settings: test CCLM2 coupling
-# generate OASIS aux and rmp files
+# Settings: CCLM2 production setup (2 months, full chain)
 
 
 # Experiment info for COSMO's IOCTL and INT2LM's INPUT
@@ -35,27 +34,25 @@ cd ../..
 # -----------
 export LM_INI_DATE="2011-01-01T00:00"     # Initial date of simualtion
 export LM_START_DATE="2011-01-01T00:00"   # use if you don't want to start from LM_INI_DATE
-export LM_FIN_DATE="2011-01-02T00:00"     # Overall end of simulation
+export LM_FIN_DATE="2011-03-01T00:00"     # Overall end of simulation
 
 # Chaining interval, i.e., how long one simualtion chunk will be. If unset, run in one chunk
-export LM_CHAIN_INTERVAL="" # Anything human readable like "2 hours", "1 month", "1 day", "" to run in one chunk
+export LM_CHAIN_INTERVAL="1 month" # Anything human readable like "2 hours", "1 month", "1 day", "" to run in one chunk
 
 
 # Parts to be executed (also in config)
 # ----------------------
 #export SB_PARTS="00_get_data 10_ifs2lm 20_cclm2_c 50_pack_data 60_chain"
-#export SB_PARTS="00_get_data 10_ifs2lm 20_cclm2_c 60_chain" # generate COSMO boundary conditions with INT2LM
+export SB_PARTS="00_get_data 10_ifs2lm 20_cclm2_c 60_chain" # generate COSMO boundary conditions with INT2LM
 #export SB_PARTS="20_cclm2_c" # CCLM2 only
 
 
 # Maximum wall-clock time (HH:mm:ss)
 # ----------------------
-export NQS_ELAPSED_GET_DATA=03:00:00   # default 01:00:00
-export NQS_ELAPSED_IFS2LM=01:00:00     # default 00:30:00
-export NQS_ELAPSED_CCLM2_C=01:00:00    # default 01:00:00
+export NQS_ELAPSED_GET_DATA=08:00:00   # default 01:00:00
+export NQS_ELAPSED_IFS2LM=08:00:00     # default 00:30:00
+export NQS_ELAPSED_CCLM2_C=08:00:00    # default 01:00:00
 
-export LM_NL_IDBG_LEVEL_C=6 # 6, increase COSMO debug level for more output in cosmo*.out
-export NQS_NIOLM_C=0        # 1 for production, 0 to generate rmp files
 
 # Link existing cas files instead of running 00_get_data which copies them (possible for Jan 2011)
 #export SB_PARTS="10_ifs2lm" # generate COSMO boundary conditions with INT2LM
@@ -65,11 +62,11 @@ export NQS_NIOLM_C=0        # 1 for production, 0 to generate rmp files
 #cd ../..
 
 # Link existing bc files, 6hr (EUR11 domain)
-export SB_PARTS="20_cclm2_c"
-cd 10_ifs2lm/output
-rm -f *
-ln -s $SCRATCH/COSMO_inputdata/10_ifs2lm_output_ERA5-6hr_EUR11/* .
-cd ../..
+#export SB_PARTS="20_cclm2_c"
+#cd 10_ifs2lm/output
+#rm -f *
+#ln -s $SCRATCH/COSMO_inputdata/10_ifs2lm_output_ERA5-6hr_EUR11/* .
+#cd ../..
 
 
 
@@ -126,6 +123,9 @@ cd ../..
 
 #export NQS_NXIFS2LM=8               # number of CPUs in x direction (12 per node on daint-gpu)
 #export NQS_NYIFS2LM=8               # number of CPUs in y direction
+
+#export LM_NL_IDBG_LEVEL_C=6 # 6, increase COSMO debug level for more output in cosmo*.out
+#export NQS_NIOLM_C=0        # 1 for production, 0 to generate rmp files
 
 
 # Dependencies

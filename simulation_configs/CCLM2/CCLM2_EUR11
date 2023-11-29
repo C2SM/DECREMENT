@@ -32,8 +32,9 @@ if [[ $COSMO_TARGET == "cpu" ]]; then
     export NQS_NXLM_C=6               # number of CPUs in x direction (12 per node on daint-gpu)
     export NQS_NYLM_C=6               # number of CPUs in y direction
 else
-    export NQS_NXLM_C=4               # number of CPUs in x direction (12 per node on daint-gpu)
-    export NQS_NYLM_C=4               # number of CPUs in y direction
+    export NQS_NXLM_C=4               # number of NODEs in x direction (max 4x4=16 for COSMO-CLM2 because CLM crashes with >187 idling CPUs)
+    export NQS_NYLM_C=4               # number of NODEs in y direction
+    export NQS_NIOLM_C=1              # number of NODEs for asyncronous IO (is is sufficient for EUR11)
 fi
 
 
@@ -47,7 +48,7 @@ export CLM_model_version='"release-clm5.0.35-52-gb3e26f715"'  # tag of the CLM e
 export CLM_COMPILER=gcc
 export CLM_pio_typename='"netcdf"'
 export CLM_C_NTASKS=12                                        # only used on cpu, else use idling cpus, i.e. (2x2)x(12-1)=44 tasks
-export CLM_paramfile="clm5_params.c171117.nc"                 # or clm50_params.c211112.nc
+export CLM_paramfile="clm5_params.c171117.nc"                 # phys="clm5_0" default; clm50_params.c211112.nc is from CTSM-dev
 
 # Link the cesm_input
 cd 20_cclm2_c/cesm_input
@@ -76,11 +77,11 @@ export CLM_finidat="clmi.I2000Clm50BgcCrop.2011-01-01.1.9x2.5_gx1v7_gl4_simyr200
 # Tape4 (h3): 3hr (E fluxes)
 # Tape5 (h4): monthly mean (temp)
 export CLM_hist_empty_htapes=.true.                     # true = turn off default output variables on h0
-export CLM_hist_fincl1="'FSDS','FSR','FLDS','FIRE','EFLX_LH_TOT','FSH','QFLX_EVAP_TOT','QSOIL','QVEGE','QVEGT','QOVER','QDRAI','SOILLIQ','SOILICE','FSNO','SNOW_DEPTH','TSOI','FPSN','TV','TG','TSKIN','TSA','TREFMNAV','TREFMXAV'"
-export CLM_hist_fincl2="'TSKIN'"
-export CLM_hist_fincl3="'TSKIN'"
+export CLM_hist_fincl1="'FSDS','FSR','FLDS','FIRE','EFLX_LH_TOT','FSH','QFLX_EVAP_TOT','QSOIL','QVEGE','QVEGT','QOVER','QDRAI','SOILLIQ','SOILICE','FSNO','SNOW_DEPTH','TSOI','FPSN','TV','TG','TSKIN','TSA','TREFMNAV','TREFMXAV','TBOT'"
+export CLM_hist_fincl2="'TSKIN','TBOT'"
+export CLM_hist_fincl3="'TSKIN','TBOT'"
 export CLM_hist_fincl4="'FSDS','FSR','FLDS','FIRE','EFLX_LH_TOT','FSH'"
-export CLM_hist_fincl5="'TSKIN','TSA','TREFMNAV','TREFMXAV'"
+export CLM_hist_fincl5="'TSKIN','TSA','TREFMNAV','TREFMXAV','TBOT'"
 
 export CLM_hist_avgflag_pertape="'A','M','X','A','A'"          # averaging over the output interval (A=avg, I=inst, M=min, X=max) 
 export CLM_hist_dov2xy=".true.,.true.,.true.,.true.,.true."    # true = 2D (grid cell level), false = 1D vector (pft output)
@@ -100,17 +101,21 @@ export NQS_ELAPSED_CCLM2_C=01:00:00    # maximum wall-clock time (HH:mm:ss)
 
 # OASIS output and verbosity
 # -----------
-export OASIS_DEBUG=1      # sets IOASISDEBUGLVL, 0 = less in cesm/cosmo.out and OASIS aux files not produced (masks.nc, grids.nc, areas.nc and rmp files), 200 = lots (testing)
-export OASIS_PRINTING=1   # printing level in output file cplout: 0 = no printing (default), 1 = main routines and field names when treated, 2 = complete output (testing)
-export OASIS_OUT=EXPORTED # output setting for selected coupling fields; EXPORTED = coupling only (default), EXPOUT = produces 2 netcdf files for values sent (before interp) and received (after interp)
+# Production settings
+export OASIS_DEBUG=0        # sets IOASISDEBUGLVL, 0 = less in cesm/cosmo.out and OASIS aux files not produced (masks.nc, grids.nc, areas.nc and rmp files), 200 = lots (testing)
+export OASIS_PRINTING=0     # printing level in output file cplout: 0 = no printing (default), 1 = main routines and field names when treated, 2 = complete output (testing)
+export OASIS_OUT=EXPORTED   # output setting for selected coupling fields; EXPORTED = coupling only (default), EXPOUT = produces 2 netcdf files for values sent (before interp) and received (after interp)
+
+# Development settings
+#export OASIS_DEBUG=200      # sets IOASISDEBUGLVL, 0 = less in cesm/cosmo.out and OASIS aux files not produced (masks.nc, grids.nc, areas.nc and rmp files), 200 = lots (testing)
+#export OASIS_PRINTING=2     # printing level in output file cplout: 0 = no printing (default), 1 = main routines and field names when treated, 2 = complete output (testing)
+#export OASIS_OUT=EXPOUT     # output setting for selected coupling fields; EXPORTED = coupling only (default), EXPOUT = produces 2 netcdf files for values sent (before interp) and received (after interp)
 
 # If already generated, link the oasis_input files (masks, areas, grids, rmp*)
-if [ $OASIS_DEBUG == 0 ]; then
-    cd 20_cclm2_c
-    rm -f areas.nc grids.nc masks.nc rmp*
-    ln -s $SCRATCH/cclm2_input_decrement/oasis_input_${RES}_reduced/* .
-    cd ..
-fi
+cd 20_cclm2_c
+rm -f areas.nc grids.nc masks.nc rmp*
+ln -s $SCRATCH/cclm2_input_decrement/oasis_input_${RES}_reduced/* .
+cd ..
 
 # Parts to be executed
 # ----------------------

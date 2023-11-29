@@ -208,7 +208,8 @@ lm_c_INPUT_IO(){
   yform_write = '${LM_NL_OUTPUT_FMT_C}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 3
   yvarml = 'T_2M','T_G','QV_2M','RELHUM_2M','U_10M','V_10M',
-     'TQV','TQI','TQC','CLCT','PS','PMSL','HPBL',
+     'ASWDIR_S','ASWDIFD_S','ASWDIFU_S','ATHD_S','ATHU_S','ALHFL_S','ASHFL_S',
+     'TQV','TQI','TQC','CLCT','PS','PMSL','HPBL'
   yvarpl = ' '
   yvarzl = ' '
   lcheck = .TRUE.
@@ -221,10 +222,9 @@ lm_c_INPUT_IO(){
   &GRIBOUT
   yform_write = '${LM_NL_OUTPUT_FMT_C}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 24
-  yvarml = 'ASWDIR_S','ASWDIFD_S','ASWDIFU_S','ALWD_S','ALWU_S',
-     'ALHFL_S','ASHFL_S','AEVAP_S',
+  yvarml = 'ASWDIR_S','ASWDIFD_S','ASWDIFU_S','ATHD_S','ATHU_S','ALHFL_S','ASHFL_S','AEVAP_S',
      'TOT_PREC','RAIN_CON','SNOW_CON','TMIN_2M','TMAX_2M','T_2M_AV',
-     'VABSMAX_10M','U_10M_AV','V_10M_AV'
+     'VMAX_10M','VABS_10M','U_10M_AV','V_10M_AV'
   yvarpl = ' '
   yvarzl = ' '
   ireset_sums = 2
@@ -241,7 +241,7 @@ lm_c_INPUT_IO(){
   yform_write = '${LM_NL_OUTPUT_FMT_C}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 3
   yvarml = ' '
-  yvarpl = 'T','U','V','W','QV','FI'
+  yvarpl = 'T','QV','FI'
   yvarzl = ' '
   lcheck = .FALSE.
   luvmasspoint = .TRUE.
