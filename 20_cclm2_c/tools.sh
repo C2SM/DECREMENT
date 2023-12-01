@@ -16,21 +16,11 @@ cclm2_task_dispatch(){
       ((n2 = n0+11))
       cosmo_tasks+="${n0},"
       cesm_tasks+="${n1}-${n2},"
-      
-      # PS: Test limiting the number of tasks for CLM (relevant for >4x4), not working because OASIS distributes the MPI communicators
-      # Test also included writing to ./dummy.sh and using tasks to run it
-      # For cesm, add until max 17 nodes = 187 idling cpus
-      #if (( k<17 )); then
-      #  cesm_tasks+="${n1}-${n2},"
-      #else
-      #  dummy_tasks+="${n1}-${n2},"
-      #fi
     done
     # remove trailing comma
     cosmo_tasks=${cosmo_tasks:0:-1}
     cesm_tasks=${cesm_tasks:0:-1}
   fi
-  
   # write task distribution file
   cat > $5 << EOF
 ${cosmo_tasks} ./cosmo.sh

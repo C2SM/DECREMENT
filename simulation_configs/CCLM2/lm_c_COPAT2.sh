@@ -243,6 +243,7 @@ lm_c_INPUT_IO(){
   yvarml = ' '
   yvarpl = 'T','QV','FI'
   yvarzl = ' '
+  plev = 200, 500, 600, 700, 800, 850, 950, 1000
   lcheck = .FALSE.
   luvmasspoint = .TRUE.
   lwrite_const = .FALSE.

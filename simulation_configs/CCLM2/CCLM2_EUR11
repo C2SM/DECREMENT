@@ -47,7 +47,7 @@ fi
 export CLM_model_version='"release-clm5.0.35-52-gb3e26f715"'  # tag of the CLM executable (from a CTSM checkout)
 export CLM_COMPILER=gcc
 export CLM_pio_typename='"netcdf"'
-export CLM_C_NTASKS=12                                        # only used on cpu, else use idling cpus, i.e. (2x2)x(12-1)=44 tasks
+export CLM_C_NTASKS=48                                        # only used on cpu (48-168 optimal from scaling), else use idling cpus, i.e. (2x2)x(12-1)=44 tasks
 export CLM_paramfile="clm5_params.c171117.nc"                 # phys="clm5_0" default; clm50_params.c211112.nc is from CTSM-dev
 
 # Link the cesm_input
@@ -107,9 +107,9 @@ export OASIS_PRINTING=0     # printing level in output file cplout: 0 = no print
 export OASIS_OUT=EXPORTED   # output setting for selected coupling fields; EXPORTED = coupling only (default), EXPOUT = produces 2 netcdf files for values sent (before interp) and received (after interp)
 
 # Development settings
-#export OASIS_DEBUG=200      # sets IOASISDEBUGLVL, 0 = less in cesm/cosmo.out and OASIS aux files not produced (masks.nc, grids.nc, areas.nc and rmp files), 200 = lots (testing)
-#export OASIS_PRINTING=2     # printing level in output file cplout: 0 = no printing (default), 1 = main routines and field names when treated, 2 = complete output (testing)
-#export OASIS_OUT=EXPOUT     # output setting for selected coupling fields; EXPORTED = coupling only (default), EXPOUT = produces 2 netcdf files for values sent (before interp) and received (after interp)
+export OASIS_DEBUG=200      # sets IOASISDEBUGLVL, 0 = less in cesm/cosmo.out and OASIS aux files not produced (masks.nc, grids.nc, areas.nc and rmp files), 200 = lots (testing)
+export OASIS_PRINTING=2     # printing level in output file cplout: 0 = no printing (default), 1 = main routines and field names when treated, 2 = complete output (testing)
+export OASIS_OUT=EXPOUT     # output setting for selected coupling fields; EXPORTED = coupling only (default), EXPOUT = produces 2 netcdf files for values sent (before interp) and received (after interp)
 
 # If already generated, link the oasis_input files (masks, areas, grids, rmp*)
 cd 20_cclm2_c
