@@ -3,7 +3,7 @@
 # Transfer decrement and indata to SCRATCH, link the CCLM2 config
 
 # USAGE
-# bash transfer_decrement.sh cclm2_EUR11_3days
+# bash transfer_decrement.sh cclm2_EUR11_hist-spinup
 
 NAME=$1     # name of the decrement directory on scratch, e.g. decrement_EUR11
 PROJ=/project/sm61/psieber

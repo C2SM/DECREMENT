@@ -3,9 +3,9 @@
 # Recommended parameters for COSMO-6 EURO-CORDEX COPAT2
 # itype_albedo = 2 # needed for CCLM2 coupling (also in COPAT2)
 # deviations from COPAT2 on GPU: do NOT set nproma (optimised for cpu/gpu), lgsp_first = .TRUE., y_scalar_advect='BOTT2_STRANG', L_3D_div_damping=.FALSE.
-# To default: hincmxu, ldiagnos, qi0, iadv_order, itype_outflow_qrsg, itype_spubc
+# To default: ldiagnos, qi0, iadv_order, itype_outflow_qrsg, itype_spubc
 # To default: itype_hydmod, lsoil_init_fill, lan_rho_snow, nincwait, nmaxwait
-# New value: ncomm_type, soilhyd, tkhmin, khmmin, rat_sea, c_soil, a_hshr, entr_sc
+# New value: hincmxu, ncomm_type, soilhyd, tkhmin, khmmin, rat_sea, c_soil, a_hshr, entr_sc
 # New value: y_scalar_advect, rdheight, hd_corr_*, l_3D_div_damping, limpltkediff 
 # New value: itype_conv, llake, czml_soil, czbot_w_so, itype_canopy, cskinc, lconf_avg, hincrad
 # New value: nincrad, itype_gscp, ico2_rad, itype_albedo, icapdcycl, lgpshort, nincgp, nincmeanval
@@ -34,6 +34,7 @@ lm_c_INPUT_ORG(){
   dt = $LM_NL_DT_C 
   ydate_ini = '${LM_YYYY_INI}${LM_MM_INI}${LM_DD_INI}${LM_ZZ_INI}0000'
   hincmxt = 24.0
+  hincmxu = 24.0
   itype_pert = ${LM_NL_ITYPE_PERT_C}
   rperturb = ${LM_NL_RPERTURB_C}
   ldump_ascii = .FALSE.
@@ -207,10 +208,9 @@ lm_c_INPUT_IO(){
  &GRIBOUT
   yform_write = '${LM_NL_OUTPUT_FMT_C}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 3
-  yvarml = 'T_2M','T_G','QV_2M','RELHUM_2M','U_10M','V_10M',
-     'ASWDIR_S','ASWDIFD_S','ASWDIFU_S','ATHD_S','ATHU_S',
-     'ALHFL_S','ASHFL_S',
-     'TQV','TQI','TQC','CLCT','PS','PMSL','HPBL',
+  yvarml = 'T_2M','T_G','QV_2M','RELHUM_2M',
+     'TQV','TQI','TQC','CLCT','PS','HPBL',
+     'ASWDIR_S','ASWDIFD_S','ASWDIFU_S','ATHD_S','ATHU_S','ALHFL_S','ASHFL_S'
   yvarpl = ' '
   yvarzl = ' '
   ireset_sums = 2
@@ -224,10 +224,10 @@ lm_c_INPUT_IO(){
  &GRIBOUT
   yform_write = '${LM_NL_OUTPUT_FMT_C}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 24
-  yvarml = 'ASWDIR_S','ASWDIFD_S','ASWDIFU_S','ATHD_S','ATHU_S',
-     'ALHFL_S','ASHFL_S','AEVAP_S',
-     'TOT_PREC','RAIN_CON','SNOW_CON','TMIN_2M','TMAX_2M','T_2M_AV',
-     'VMAX_10M','VABS_10M','U_10M_AV','V_10M_AV'
+  yvarml = 'ASWDIR_S','ASWDIFD_S','ASWDIFU_S','ATHD_S','ATHU_S','ALHFL_S','ASHFL_S',
+     'ASOB_S','ATHB_T','ASOD_T','ASOU_T,
+     'AEVAP_S','TOT_PREC','RAIN_CON','SNOW_CON',
+     'T_2M_AV','TMIN_2M','TMAX_2M','VMAX_10M','VABS_10M','U_10M_AV','V_10M_AV'
   yvarpl = ' '
   yvarzl = ' '
   ireset_sums = 2

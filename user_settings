@@ -4,10 +4,13 @@
 # user_settings > config > defaults
 
 # Settings: CCLM2 production setup (3 days, full chain)
-
+# Test for summer (QIRRIG)
+# Test SWnet
+# Test new settings (e.g. SSP1)
 
 # Experiment info for COSMO's IOCTL and INT2LM's INPUT
 # -----------
+export LM_NL_YNCGLOB_SOURCE='"COSMO6.0 driven by ERA5 / OASIS3-MCT4.0 / CLM5.0"'
 export LM_NL_YNCGLOB_PROJECT_ID='"FeedBaCks"'
 export LM_NL_YNCGLOB_EXPERIMENT_ID='"Test"'
 export LM_NL_YNCGLOB_CONTACT='"Petra Sieber (petra.sieber@env.ethz.ch)"'
@@ -32,9 +35,11 @@ cd ../..
 
 # Global Simulation Dates (YYYY-MM-DDTHH:00)
 # -----------
-export LM_INI_DATE="2011-01-01T00:00"     # Initial date of simualtion
-export LM_START_DATE="2011-01-01T00:00"   # use if you don't want to start from LM_INI_DATE
-export LM_FIN_DATE="2011-01-04T00:00"     # Overall end of simulation
+export LM_INI_DATE="2004-06-01T00:00"     # Initial date of simualtion
+#export LM_START_DATE="2004-01-01T00:00"   # use if you don't want to start from LM_INI_DATE
+export LM_FIN_DATE="2004-08-01T00:00"     # Overall end of simulation
+
+export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.945     # ERA5 soil levels (from 2009 velasque has old data: czml_soil_in=0.035,0.175,0.64,1.775)
 
 # Chaining interval, i.e., how long one simualtion chunk will be. If unset, run in one chunk
 export LM_CHAIN_INTERVAL="" # Anything human readable like "2 hours", "1 month", "1 day", "" to run in one chunk
@@ -49,9 +54,9 @@ export SB_PARTS="00_get_data 10_ifs2lm 20_cclm2_c 60_chain" # generate COSMO bou
 
 # Maximum wall-clock time (HH:mm:ss)
 # ----------------------
-export NQS_ELAPSED_GET_DATA=01:00:00   # default 01:00:00
-export NQS_ELAPSED_IFS2LM=01:00:00     # default 00:30:00
-export NQS_ELAPSED_CCLM2_C=01:00:00    # default 01:00:00
+export NQS_ELAPSED_GET_DATA=24:00:00   # default 01:00:00
+export NQS_ELAPSED_IFS2LM=24:00:00     # default 00:30:00
+export NQS_ELAPSED_CCLM2_C=24:00:00    # default 01:00:00
 
 
 # Link existing cas files instead of running 00_get_data which copies them (possible for Jan 2011)
@@ -61,14 +66,14 @@ export NQS_ELAPSED_CCLM2_C=01:00:00    # default 01:00:00
 #ln -s $SCRATCH/COSMO_inputdata/00_get_data_output_ERA5/* .
 #cd ../..
 
-# Link existing bc files, 6hr EUR11 domain (possible for 7 days in Jan 2011)
-#export SB_PARTS="20_cclm2_c"
-#cd 10_ifs2lm/output
-#rm -f *
-#ln -s $SCRATCH/COSMO_inputdata/10_ifs2lm_output_ERA5-6hr_EUR11/* .
-#cd ../..
+# Link existing bc files
+export SB_PARTS="20_cclm2_c"
+cd 10_ifs2lm/output
+rm -f *
+ln -s /scratch/snx3000/psieber/cclm2_EUR11_hist-spinup/10_ifs2lm/output/* .
+cd ../..
 
-export LM_NL_IDBG_LEVEL_C=6 # 6, increase COSMO debug level for more output in cosmo*.out
+#export LM_NL_IDBG_LEVEL_C=6 # 6, increase COSMO debug level for more output in cosmo*.out
 
 
 #====================================

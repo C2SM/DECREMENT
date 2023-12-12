@@ -74,21 +74,21 @@ export CLM_finidat="clmi.I2000Clm50BgcCrop.2011-01-01.1.9x2.5_gx1v7_gl4_simyr200
 # Tape1 (h0): daily mean (fluxes, surface, temp, incl. T2m min/max)
 # Tape2 (h1): daily min (Tskin)
 # Tape3 (h2): daily max (Tskin)
-# Tape4 (h3): 3hr (E fluxes)
+# Tape4 (h3): 3-hourly instantaneous (E fluxes)
 # Tape5 (h4): monthly mean (temp)
 export CLM_hist_empty_htapes=.true.                     # true = turn off default output variables on h0
-export CLM_hist_fincl1="'FSDS','FSR','FLDS','FIRE','EFLX_LH_TOT','FSH','QFLX_EVAP_TOT','QSOIL','QVEGE','QVEGT','QOVER','QDRAI','SOILLIQ','SOILICE','FSNO','SNOW_DEPTH','TSOI','FPSN','TV','TG','TSKIN','TSA','TREFMNAV','TREFMXAV','TBOT'"
+export CLM_hist_fincl1="'FSDS','FSR','FLDS','FIRE','EFLX_LH_TOT','FSH','QFLX_EVAP_TOT','QSOIL','QVEGE','QVEGT','QOVER','QDRAI','TOTSOILLIQ','TOTSOILICE','SOILWATER_10CM','FSNO','SNOW_DEPTH','TSOI_10CM','FPSN','TV','TG','TSKIN','TSA','TREFMNAV','TREFMXAV','TBOT','QIRRIG'"
 export CLM_hist_fincl2="'TSKIN','TBOT'"
 export CLM_hist_fincl3="'TSKIN','TBOT'"
 export CLM_hist_fincl4="'FSDS','FSR','FLDS','FIRE','EFLX_LH_TOT','FSH'"
-export CLM_hist_fincl5="'TSKIN','TSA','TREFMNAV','TREFMXAV','TBOT'"
+export CLM_hist_fincl5="'TSKIN','TSA','TREFMNAV','TREFMXAV','TBOT','RAIN','SNOW','Q2M','U10','TLAI'"
 
-export CLM_hist_avgflag_pertape="'A','M','X','A','A'"          # averaging over the output interval (A=avg, I=inst, M=min, X=max) 
+export CLM_hist_avgflag_pertape="'A','M','X','I','A'"          # averaging over the output interval (A=avg, I=inst, M=min, X=max) 
 export CLM_hist_dov2xy=".true.,.true.,.true.,.true.,.true."    # true = 2D (grid cell level), false = 1D vector (pft output)
-export CLM_hist_mfilt="365,365,365,2920,12"                    # number of values per file
+export CLM_hist_mfilt="1,1,1,8,12"                             # number of values per file
 export CLM_hist_nhtfrq="-24,-24,-24,-3,0"                      # output frequency (0=monthly, -24=daily, -1=hourly, 1=model-time-step)
 
-# inactive: 'Z0HV','Z0MV','Z0QV'
+# inactive: 'Z0HV','Z0MV','Z0QV','TAF'
 # inactive in SP mode: 'TOTECOSYSC','TOTSOMC'
 
 
@@ -107,9 +107,9 @@ export OASIS_PRINTING=0     # printing level in output file cplout: 0 = no print
 export OASIS_OUT=EXPORTED   # output setting for selected coupling fields; EXPORTED = coupling only (default), EXPOUT = produces 2 netcdf files for values sent (before interp) and received (after interp)
 
 # Development settings
-export OASIS_DEBUG=200      # sets IOASISDEBUGLVL, 0 = less in cesm/cosmo.out and OASIS aux files not produced (masks.nc, grids.nc, areas.nc and rmp files), 200 = lots (testing)
-export OASIS_PRINTING=2     # printing level in output file cplout: 0 = no printing (default), 1 = main routines and field names when treated, 2 = complete output (testing)
-export OASIS_OUT=EXPOUT     # output setting for selected coupling fields; EXPORTED = coupling only (default), EXPOUT = produces 2 netcdf files for values sent (before interp) and received (after interp)
+#export OASIS_DEBUG=200      # sets IOASISDEBUGLVL, 0 = less in cesm/cosmo.out and OASIS aux files not produced (masks.nc, grids.nc, areas.nc and rmp files), 200 = lots (testing)
+#export OASIS_PRINTING=2     # printing level in output file cplout: 0 = no printing (default), 1 = main routines and field names when treated, 2 = complete output (testing)
+#export OASIS_OUT=EXPOUT     # output setting for selected coupling fields; EXPORTED = coupling only (default), EXPOUT = produces 2 netcdf files for values sent (before interp) and received (after interp)
 
 # If already generated, link the oasis_input files (masks, areas, grids, rmp*)
 cd 20_cclm2_c

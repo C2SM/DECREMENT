@@ -35,7 +35,7 @@ export LM_COMPRESS_DIRS="lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev lm_f/1h_2D lm_f/24h
 export NQS_NXIFS2LM=4               # number of CPUs in x direction (12 per node on daint-gpu)
 export NQS_NYIFS2LM=6               # number of CPUs in y direction
 export NQS_NIOIFS2LM=0              # number of CPUs for asyncronous IO
-export NQS_ELAPSED_IFS2LM=00:30:00  # maximum wall-clock time (HH:mm:ss)
+export NQS_ELAPSED_IFS2LM=01:30:00  # maximum wall-clock time (HH:mm:ss)
 
 # 20_lm_c
 if [[ $COSMO_TARGET == "cpu" ]]; then
@@ -73,7 +73,7 @@ export LM_NL_PHILUIFS=19.25058                       # startlat_in_tot
 export LM_NL_PHIROIFS=81.92025                       # endlat_in_tot
 export LM_NL_LAMLUIFS=-68.90625                      # startlon_in_tot
 export LM_NL_LAMROIFS=83.8125                        # endlon_in_tot
-export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.775     # soil levels (updated for ERA5) 
+export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.945     # ERA5 soil levels (from 2009 velasque has old data: czml_soil_in=0.035,0.175,0.64,1.775)
 export LM_NL_LUSE_T_SKIN=.TRUE.                      # use ERA5 T_SKIN for surface, True for COPAT2
 
 # COSMO Levels for INT2LM
@@ -139,14 +139,14 @@ export LM_NL_LLAKE_C=.FALSE.               # turn off lake model (on in COPAT2, 
 export LM_NL_LSSO_C=.TRUE.                 # subgrid scale orographic (SSO) effects
 export LM_NL_HINCRAD_C=0.25                # time interval (hours) to call the radiation scheme
 export LM_NL_ITYPE_GSCP_C=3                # grid scale cloud and precipitation scheme (3=EU)
-export LM_NL_ICO2_RAD_C=8                  # 8=RCP4.5 
+export LM_NL_ICO2_RAD_C=12                 # 7=RCP2.6, 8=RCP4.5, 12=SSP1-2.6
 export LM_NL_ITYPE_ALBEDO_C=2              # has to be 2 for CCLM2 coupling (ALB_DRY, ALB_SAT on laf)
 export LM_NL_CZML_SOIL=0.005,0.025,0.07,0.16,0.34,0.70,1.42,2.86,5.74,11.50 # COSMO soil levels
 
 # INPUT_IO
 # ---------
 #IOCTL (for COSMO and INT2LM) 
-export LM_NL_YNCGLOB_SOURCE='"COSMO6.0-clm1 driven by ERA5 / OASIS3-MCT4.0 / CLM5.0"'
+export LM_NL_YNCGLOB_SOURCE='"COSMO6.0 driven by ERA5 / OASIS3-MCT4.0 / CLM5.0"'
 export LM_NL_YNCGLOB_PROJECT_ID='"FeedBaCks"'
 export LM_NL_YNCGLOB_EXPERIMENT_ID='"Test"'
 export LM_NL_YNCGLOB_CONTACT='"Petra Sieber (petra.sieber@env.ethz.ch)"'
