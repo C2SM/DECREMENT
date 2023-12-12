@@ -74,19 +74,17 @@ export CLM_finidat="clmi.I2000Clm50BgcCrop.2011-01-01.1.9x2.5_gx1v7_gl4_simyr200
 # Tape1 (h0): daily mean (fluxes, surface, temp, incl. T2m min/max)
 # Tape2 (h1): daily min (Tskin)
 # Tape3 (h2): daily max (Tskin)
-# Tape4 (h3): 3-hourly instantaneous (E fluxes)
-# Tape5 (h4): monthly mean (temp)
+# Tape4 (h3): monthly mean (temp, precip, hum, wind, LAI)
 export CLM_hist_empty_htapes=.true.                     # true = turn off default output variables on h0
 export CLM_hist_fincl1="'FSDS','FSR','FLDS','FIRE','EFLX_LH_TOT','FSH','QFLX_EVAP_TOT','QSOIL','QVEGE','QVEGT','QOVER','QDRAI','TOTSOILLIQ','TOTSOILICE','SOILWATER_10CM','FSNO','SNOW_DEPTH','TSOI_10CM','FPSN','TV','TG','TSKIN','TSA','TREFMNAV','TREFMXAV','TBOT','QIRRIG'"
 export CLM_hist_fincl2="'TSKIN','TBOT'"
 export CLM_hist_fincl3="'TSKIN','TBOT'"
-export CLM_hist_fincl4="'FSDS','FSR','FLDS','FIRE','EFLX_LH_TOT','FSH'"
-export CLM_hist_fincl5="'TSKIN','TSA','TREFMNAV','TREFMXAV','TBOT','RAIN','SNOW','Q2M','U10','TLAI'"
+export CLM_hist_fincl4="'TSKIN','TSA','TREFMNAV','TREFMXAV','TBOT','RAIN','SNOW','Q2M','U10','TLAI'"
 
-export CLM_hist_avgflag_pertape="'A','M','X','I','A'"          # averaging over the output interval (A=avg, I=inst, M=min, X=max) 
-export CLM_hist_dov2xy=".true.,.true.,.true.,.true.,.true."    # true = 2D (grid cell level), false = 1D vector (pft output)
-export CLM_hist_mfilt="1,1,1,8,12"                             # number of values per file
-export CLM_hist_nhtfrq="-24,-24,-24,-3,0"                      # output frequency (0=monthly, -24=daily, -1=hourly, 1=model-time-step)
+export CLM_hist_avgflag_pertape="'A','M','X','A'"           # averaging over the output interval (A=avg, I=inst, M=min, X=max) 
+export CLM_hist_dov2xy=".true.,.true.,.true.,.true."        # true = 2D (grid cell level), false = 1D vector (pft output)
+export CLM_hist_mfilt="1,1,1,12"                            # number of values per file
+export CLM_hist_nhtfrq="-24,-24,-24,0"                      # output frequency (0=monthly, -24=daily, -1=hourly, 1=model-time-step)
 
 # inactive: 'Z0HV','Z0MV','Z0QV','TAF'
 # inactive in SP mode: 'TOTECOSYSC','TOTSOMC'
