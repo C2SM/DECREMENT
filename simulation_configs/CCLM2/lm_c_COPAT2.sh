@@ -209,9 +209,7 @@ lm_c_INPUT_IO(){
   yform_write = '${LM_NL_OUTPUT_FMT_C}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 3
   yvarml = 'T_2M','T_G','QV_2M','RELHUM_2M',
-     'TQV','TQI','TQC','CLCT','PS','HPBL',
-     'ASWDIR_S','ASWDIFD_S','ASWDIFU_S','ATHD_S','ATHU_S',
-     'ALHFL_S','ASHFL_S','AEVAP_S'
+     'TQV','TQI','TQC','CLCT','PS','HPBL'
   yvarpl = ' '
   yvarzl = ' '
   ireset_sums = 2
@@ -225,7 +223,9 @@ lm_c_INPUT_IO(){
  &GRIBOUT
   yform_write = '${LM_NL_OUTPUT_FMT_C}'
   hcomb = 0.0, ${LM_NL_HSTOP}, 24
-  yvarml = 'ATHB_T','ASOD_T','ASOU_T',
+  yvarml = 'ASWDIR_S','ASWDIFD_S','ASWDIFU_S','ATHD_S','ATHU_S',
+     'ALHFL_S','ASHFL_S','AEVAP_S',
+     'ATHB_T','ASOD_T','ASOU_T',
      'TOT_PREC','RAIN_CON','SNOW_CON',
      'T_2M_AV','TMIN_2M','TMAX_2M',
      'VMAX_10M','VABS_10M','U_10M_AV','V_10M_AV'

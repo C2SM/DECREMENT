@@ -83,7 +83,7 @@ export CLM_hist_fincl4="'TSKIN','TSA','TREFMNAV','TREFMXAV','TBOT','RAIN','SNOW'
 
 export CLM_hist_avgflag_pertape="'A','M','X','A'"           # averaging over the output interval (A=avg, I=inst, M=min, X=max) 
 export CLM_hist_dov2xy=".true.,.true.,.true.,.true."        # true = 2D (grid cell level), false = 1D vector (pft output)
-export CLM_hist_mfilt="1,1,1,12"                            # number of values per file
+export CLM_hist_mfilt="365,365,365,12"                      # number of values per file (here yearly files)
 export CLM_hist_nhtfrq="-24,-24,-24,0"                      # output frequency (0=monthly, -24=daily, -1=hourly, 1=model-time-step)
 
 # inactive: 'Z0HV','Z0MV','Z0QV','TAF'

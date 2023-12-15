@@ -4,6 +4,8 @@
 
 # USAGE
 # bash transfer_decrement.sh cclm2_EUR11_hist-spinup
+# bash transfer_decrement.sh cclm2_EUR11_2004-summer-final
+
 
 NAME=$1     # name of the decrement directory on scratch, e.g. decrement_EUR11
 PROJ=/project/sm61/psieber
