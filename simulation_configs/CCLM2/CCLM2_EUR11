@@ -14,7 +14,8 @@
 # Grid-specific settings
 # ----------------------
 # COSMO config (source first to avoid overriding CCLM2 settings!)
-source simulation_configs/SIMULATION_COSMO-EUR11_COPAT2  # COPAT2 params, using int2lm with ERA5
+#source simulation_configs/SIMULATION_COSMO-EUR11_ERA5     # COPAT2 params, using int2lm with ERA5 (data available 2004-2021)
+source simulation_configs/SIMULATION_COSMO-EUR11_MPI-ESM  # COPAT2 params, using int2lm with MPI-ESM-HR ssp126 r1i1p1f1 (data available 2030-2071)
 
 # General settings
 # ----------------------
@@ -44,11 +45,15 @@ fi
 
 # General settings
 # ----------------------
+# Names of the executable
+export EXE_CESM="../bin/cesm.exe"
+
 export CLM_model_version='"release-clm5.0.35-52-gb3e26f715"'  # tag of the CLM executable (from a CTSM checkout)
 export CLM_COMPILER=gcc
 export CLM_pio_typename='"netcdf"'
 export CLM_C_NTASKS=48                                        # only used on cpu (48-168 optimal from scaling), else use idling cpus, i.e. (2x2)x(12-1)=44 tasks
 export CLM_paramfile="clm5_params.c171117.nc"                 # phys="clm5_0" default; clm50_params.c211112.nc is from CTSM-dev
+export CLM_fco2="fco2_datm_rcp2.6_1765-2500_c130312.nc"       # for ssp1-2.6; fco2_datm_global_simyr_1750-2014_CMIP6_c180929.nc is default for historical runs
 
 # Link the cesm_input
 cd 20_cclm2_c/cesm_input
@@ -114,6 +119,13 @@ cd 20_cclm2_c
 rm -f areas.nc grids.nc masks.nc rmp*
 ln -s $SCRATCH/cclm2_input_decrement/oasis_input_${RES}_reduced/* .
 cd ..
+
+# Albedo coupling (2alb coupling works only with the new COSMO and CLM executables!)
+# -----------
+cd 20_cclm2_c/Defaults
+rm -f cclm2_namcouple_defaults.sh
+ln -s cclm2_namcouple_defaults_2alb.sh cclm2_namcouple_defaults.sh
+cd ../..
 
 # Parts to be executed
 # ----------------------

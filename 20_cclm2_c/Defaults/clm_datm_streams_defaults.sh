@@ -187,7 +187,7 @@ clm_c_datm_stream_co2tseries(){
      ./cesm_input
   </filePath>
   <fileNames>
-     fco2_datm_global_simyr_1750-2014_CMIP6_c180929.nc
+     ${CLM_fco2}
   </fileNames>
 </domainInfo>
 <fieldInfo>
@@ -198,7 +198,7 @@ clm_c_datm_stream_co2tseries(){
      ./cesm_input
    </filePath>
    <fileNames>
-    fco2_datm_global_simyr_1750-2014_CMIP6_c180929.nc
+    ${CLM_fco2}
    </fileNames>
    <offset>
       0

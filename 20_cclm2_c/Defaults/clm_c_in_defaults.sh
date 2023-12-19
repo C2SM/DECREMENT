@@ -282,6 +282,14 @@ export -f clm_c_drv_in
 #                            datm_in
 # ---------------------------------------------------------------
 clm_c_datm_in(){
+  # CO2 timeseries for future or hist
+  if [[ ${CLM_fco2} =~ "rcp" ]]; then
+    co2_end_date="2500"
+  else
+    co2_end_date="2014"
+  fi
+
+  # Write namelist
   cat > datm_in << EONL
 &datm_nml
   decomp = "1d"
@@ -309,7 +317,7 @@ clm_c_datm_in(){
   streams = "OASIS.stream.txt 1 1 1",
       "datm.streams.txt.presaero.clim_2000 1 2000 2000",
       "datm.streams.txt.topo.observed 1 1 1",
-      "datm.streams.txt.co2tseries.20tr 1850 1850 2014"
+      "datm.streams.txt.co2tseries.20tr 1850 1850 $co2_end_date"
   taxmode = "cycle", "cycle", "cycle", "extend"
   tintalgo = "linear", "linear", "lower", "linear"
   vectors = "null"

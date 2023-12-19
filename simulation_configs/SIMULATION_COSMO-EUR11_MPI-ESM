@@ -1,0 +1,160 @@
+#!/bin/bash
+
+# ===================================================
+#                   GENERAL SETTINGS
+# ===================================================
+
+export COSMO_TARGET="gpu"            # COSMO target architecture, default gpu
+
+# Names of the executables
+export EXE_COSMO="../bin/cosmo_${COSMO_TARGET}"
+export EXE_INT2LM="../bin/int2lm@c2sm-features"
+source simulation_configs/CCLM2/link_spack_env_cclm2.sh # Link the environment files for spack executables for COSMO and INT2LM
+
+# Global Simulation Dates (YYYY-MM-DDTHH:00)
+export LM_INI_DATE="2011-01-01T00:00"
+export LM_FIN_DATE="2012-01-01T00:00"
+
+# Chaining interval
+export LM_CHAIN_INTERVAL=1month     #Current options: "1year", "1month", "1day".
+
+# Parts that will be executed. Same as folder names.
+export SB_PARTS="00_get_data 10_ifs2lm 20_lm_c 30_lm2lm 40_lm_f 50_pack_data 60_chain"
+
+# List of output folders to compress and pack (use spaces between the folders)
+export LM_COMPRESS_DIRS="lm_c/1h_2D lm_c/24h lm_c/3h_3D_zlev lm_f/1h_2D lm_f/24h lm_f/3h_3D_zlev lm_f/1h_2D_LPI lm_f/1h_3D_plev lm_f/5min_2D"
+
+
+# ===================================================
+#                   NODES AND WALL TIME
+# ===================================================
+
+# 10_ifs2lm
+export NQS_NXIFS2LM=4               # number of CPUs in x direction (12 per node on daint-gpu)
+export NQS_NYIFS2LM=6               # number of CPUs in y direction
+export NQS_NIOIFS2LM=0              # number of CPUs for asyncronous IO
+export NQS_ELAPSED_IFS2LM=01:30:00  # maximum wall-clock time (HH:mm:ss)
+
+# 20_lm_c
+if [[ $COSMO_TARGET == "cpu" ]]; then
+    export NQS_NXLM_C=4             # number of CPUs in x direction (12 per node on daint-gpu)
+    export NQS_NYLM_C=3             # number of CPUs in y direction
+    export NQS_NIOLM_C=0            # number of NODEs for asyncronous IO. 4 if async, 0 if sync I/0
+else
+    export NQS_NXLM_C=4             # number of CPUs in x direction (12 per node on daint-gpu)
+    export NQS_NYLM_C=4             # number of CPUs in y direction
+    export NQS_NIOLM_C=1            # number of NODEs for asyncronous IO. >=1 if async, 0 if sync I/0
+fi
+export NQS_ELAPSED_LM_C=24:00:00    # maximum wall-clock time (HH:mm:ss)
+
+# 50_pack_data
+export NQS_ELAPSED_PACK_DATA=07:00:00    # maximum wall-clock time (HH:mm:ss)
+
+# ===================================================
+#                   CONFIGURE COSMO
+# ===================================================
+
+# BC grid (00_get_data and 10_ifs2lm)
+# =========
+
+# MPI-ESM-HR files
+export LM_NL_BC_DATA_TYPE="MPI-ESM-europe"           # MPI-ESM-europe is for European domain
+export LM_NL_BC_DATA_PATH="/project/s1256/shared/gcm_forcing/MPI-ESM-HR/ssp126_r1i1p1f1/europe"
+export LM_NL_POLPHIIFS=90.0                          # pollon
+export LM_NL_POLLAMIFS=180.0                         # pollat
+export LM_NL_IEIFS=163                               # grid points i (lon)
+export LM_NL_JEIFS=68                                # grid points j (lat)
+export LM_NL_KEIFS=95                                # grid points k (vertical)
+export LM_NL_DLAMIFS=0.9375                          # horizontal resolution (lon)
+export LM_NL_DPHIIFS=0.9350459                       # horizontal resolution (lat)
+export LM_NL_PHILUIFS=19.16876                       # startlat_in_tot
+export LM_NL_PHIROIFS=81.81684                       # endlat_in_tot
+export LM_NL_LAMLUIFS=-68.4375                       # startlon_in_tot
+export LM_NL_LAMROIFS=83.4375                        # endlon_in_tot
+export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.945     # soil levels
+export LM_NL_LUSE_T_SKIN=.TRUE.                      # use T_SKIN for surface
+export LM_NL_LANA_QI_C=.FALSE.                       # TRUE if QI is on the cas files; .FALSE. produces segmentation fault, TRUE for COPAT2
+export LM_NL_LANA_QR_QS_C=.FALSE.                    # TRUE if QR and QS are on the cas files
+
+# COSMO Levels for INT2LM
+# if ivctype=2 and kelm_tot=40, vcoord_d is taken from defaults (no need to specify)
+
+# INT2LM (with COPAT2 settings)
+export LM_NL_HINCBOUND_C=6.0                                       # Input frequency of boundary conditions
+export LM_NL_EXTPAR_C=extpar_EUR11_COPAT2.nc                       # EXTPAR file
+export LM_NL_EXT_IE_C=505                                          # Number of grid points (I: zonal, J: meridional)
+export LM_NL_EXT_JE_C=550                                          # in your external parameter file (containing topography etc.)
+
+# LM coarse
+# =========
+
+# INPUT_ORG (EUR-11)
+# ---------
+#LMGRID (for COSMO and INT2LM)               # needs to be within the boundaries of the BC data above AND co-located with the extpar data
+export LM_NL_POLLONLM_C=-162.0               # Longitude of the North pole
+export LM_NL_POLLATLM_C=39.25                # Latitude of the North pole
+export LM_NL_DLONLM_C=0.11                   # Delta longitude (in degrees)
+export LM_NL_DLATLM_C=0.11                   # Delta latitude (in degrees)
+export LM_NL_STARTLON_TOT_C=-29.8050         # Starting longitude left
+export LM_NL_STARTLAT_TOT_C=-24.8050         # Starting latitude south (bottom-left corner of the coarse grid)
+export LM_NL_IELM_C=450                      # Number of grid points (I: zonal, J: meridional)
+export LM_NL_JELM_C=438                      # and number of vertical levels
+export LM_NL_KELM_C=40                       # of the coarse grid
+
+#RUNCTL
+export LM_NL_DT_C=90                         # Time Step (seconds)
+
+#TUNING
+export LM_NL_TKHMIN_C=0.35
+export LM_NL_TKMMIN_C=1.0
+export LM_NL_RLAM_HEAT_C=0.5249
+export LM_NL_TUR_LEN_C=500.0
+export LM_NL_Q_CRIT_C=4.0
+export LM_NL_QC0_C=0.0
+export LM_NL_V0SNOW_C=20.0
+
+# INPUT_DYN
+# ---------
+#DYNCTL
+export LM_NL_RDHEIGHT_C=11000
+export LM_NL_RLWIDTH_C=150000.0
+export LM_NL_NRDTAU_C=6
+export LM_NL_L_DIFF_SMAG_C=.FALSE.
+export LM_NL_LDIFF_COLD_POOLS_C=.TRUE.
+export LM_NL_HD_CORR_U_BD_C=0.25
+export LM_NL_HD_CORR_T_BD_C=0.0
+export LM_NL_HD_CORR_TRCR_BD_C=0.0
+export LM_NL_HD_CORR_P_BD_C=0.0
+export LM_NL_HD_CORR_U_IN_C=0.25
+export LM_NL_HD_CORR_T_IN_C=0.0
+export LM_NL_HD_CORR_TRCR_IN_C=0.0
+export LM_NL_HD_CORR_P_IN_C=0.0
+
+# INPUT_PHY
+# ---------
+#PHYCTL (for COSMO and INT2LM)
+export LM_NL_ITYPE_AEROSOL_C=1             # 2=Tegen climatology, 1=constant (COPAT2)
+export LM_NL_LCONV_C=.TRUE.                # subgrid-scale (deep) convection
+export LM_NL_LLAKE_C=.FALSE.               # turn off lake model (on in COPAT2, not needed for CCLM2)
+export LM_NL_LSSO_C=.TRUE.                 # subgrid scale orographic (SSO) effects
+export LM_NL_HINCRAD_C=0.25                # time interval (hours) to call the radiation scheme
+export LM_NL_ITYPE_GSCP_C=3                # grid scale cloud and precipitation scheme (3=EU)
+export LM_NL_ICO2_RAD_C=12                 # 7=RCP2.6, 8=RCP4.5, 12=SSP1-2.6
+export LM_NL_ITYPE_ALBEDO_C=2              # has to be 2 for CCLM2 coupling (ALB_DRY, ALB_SAT on laf)
+export LM_NL_CZML_SOIL=0.005,0.025,0.07,0.16,0.34,0.70,1.42,2.86,5.74,11.50 # COSMO soil levels
+
+# INPUT_IO
+# ---------
+#IOCTL (for COSMO and INT2LM) 
+export LM_NL_YNCGLOB_SOURCE='"COSMO6.0 driven by ERA5 / OASIS3-MCT4.0 / CLM5.0"'
+export LM_NL_YNCGLOB_PROJECT_ID='"FeedBaCks"'
+export LM_NL_YNCGLOB_EXPERIMENT_ID='"Test"'
+export LM_NL_YNCGLOB_CONTACT='"Petra Sieber (petra.sieber@env.ethz.ch)"'
+export LM_NL_LPREFETCH_C=.FALSE.           # Needs async IO, i.e. NQS_NIOLM_C > 0
+
+#GRIBIN (for COSMO and INT2LM) 
+export LM_NL_LAN_RHO_SNOW_C=.FALSE.
+
+# Other namelist changes not possible through environment variables
+source simulation_configs/CCLM2/lm_c_COPAT2.sh
+source simulation_configs/CCLM2/ifs2lm_COPAT2.sh

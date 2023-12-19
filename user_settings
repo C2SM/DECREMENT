@@ -21,17 +21,6 @@ export ACCOUNT="s1256"
 export CLM_username='"psieber"'
 
 
-# Executables and albedo coupling
-# -----------
-# New executables
-export EXE_COSMO="../bin/cosmo_gpu"
-export EXE_CESM="../bin/cesm.exe"
-cd 20_cclm2_c/Defaults
-rm -f cclm2_namcouple_defaults.sh
-ln -s cclm2_namcouple_defaults_2alb.sh cclm2_namcouple_defaults.sh
-cd ../..
-
-
 # Global Simulation Dates (YYYY-MM-DDTHH:00)
 # -----------
 export LM_INI_DATE="2004-06-01T00:00"     # Initial date of simualtion
@@ -77,6 +66,25 @@ cd ../..
 
 #====================================
 
+# Executables and albedo coupling
+# -----------
+# New executables
+#export EXE_COSMO="../bin/cosmo_gpu"
+#export EXE_CESM="../bin/cesm.exe"
+#cd 20_cclm2_c/Defaults
+#rm -f cclm2_namcouple_defaults.sh
+#ln -s cclm2_namcouple_defaults_2alb.sh cclm2_namcouple_defaults.sh
+#cd ../..
+
+# Old executables
+#export EXE_COSMO="../bin/cosmo_gpu_noIO_1alb"
+#export EXE_CESM="../bin/cesm_1alb.exe"
+#export NQS_NIOLM_C=0                             # IO has to be turned off for the old COSMO exe
+#cd 20_cclm2_c/Defaults
+#rm -f cclm2_namcouple_defaults.sh
+#ln -s cclm2_namcouple_defaults_1alb.sh cclm2_namcouple_defaults.sh
+#cd ../..
+
 # COSMO standalone
 # ----------------------
 # Link simulation config from terminal!
@@ -104,15 +112,6 @@ cd ../..
 #cd 10_ifs2lm/output
 #rm -f *
 #ln -s $SCRATCH/COSMO_inputdata/10_ifs2lm_output_ERA5-6hr/* .
-#cd ../..
-
-# Old executables
-#export EXE_COSMO="../bin/cosmo_gpu_noIO_1alb"
-#export EXE_CESM="../bin/cesm_1alb.exe"
-#export NQS_NIOLM_C=0                             # IO has to be turned off for the old COSMO exe
-#cd 20_cclm2_c/Defaults
-#rm -f cclm2_namcouple_defaults.sh
-#ln -s cclm2_namcouple_defaults_1alb.sh cclm2_namcouple_defaults.sh
 #cd ../..
 
 # INT2LM tests

@@ -1,6 +1,4 @@
 #!/bin/bash
-#Simulation setup of J. Vergara over Europe
-
 
 # ===================================================
 #                   GENERAL SETTINGS
@@ -62,10 +60,10 @@ export NQS_ELAPSED_PACK_DATA=07:00:00    # maximum wall-clock time (HH:mm:ss)
 # ERA5 files
 export LM_NL_BC_DATA_TYPE="ERA5-scClim"              # ERA5-scClim is for European domain
 export LM_NL_BC_DATA_PATH="/store/c2sm/c2sme/ERA5_int2lmready/velasque"
-export LM_NL_POLPHIIFS=90.0
-export LM_NL_POLLAMIFS=180.0
-export LM_NL_IEIFS=544                               # grid points i
-export LM_NL_JEIFS=224                               # grid points j
+export LM_NL_POLPHIIFS=90.0                          # pollon
+export LM_NL_POLLAMIFS=180.0                         # pollat
+export LM_NL_IEIFS=544                               # grid points i (lon)
+export LM_NL_JEIFS=224                               # grid points j (lat)
 export LM_NL_KEIFS=108                               # grid points k (vertical); 98 in COPAT2
 export LM_NL_DLAMIFS=0.28125                         # horizontal resolution
 export LM_NL_DPHIIFS=0.28125
@@ -75,6 +73,8 @@ export LM_NL_LAMLUIFS=-68.90625                      # startlon_in_tot
 export LM_NL_LAMROIFS=83.8125                        # endlon_in_tot
 export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.945     # ERA5 soil levels (from 2009 velasque has old data: czml_soil_in=0.035,0.175,0.64,1.775)
 export LM_NL_LUSE_T_SKIN=.TRUE.                      # use ERA5 T_SKIN for surface, True for COPAT2
+export LM_NL_LANA_QI_C=.TRUE.                        # TRUE if QI is on the cas files; .FALSE. produces segmentation fault, TRUE for COPAT2
+export LM_NL_LANA_QR_QS_C=.TRUE.                     # TRUE if QR and QS are on the cas files
 
 # COSMO Levels for INT2LM
 # if ivctype=2 and kelm_tot=40, vcoord_d is taken from defaults (no need to specify)
@@ -153,8 +153,6 @@ export LM_NL_YNCGLOB_CONTACT='"Petra Sieber (petra.sieber@env.ethz.ch)"'
 export LM_NL_LPREFETCH_C=.FALSE.           # Needs async IO, i.e. NQS_NIOLM_C > 0
 
 #GRIBIN (for COSMO and INT2LM) 
-export LM_NL_LANA_QI_C=.TRUE.              # .FALSE. produces segmentation fault, TRUE for COPAT2
-export LM_NL_LANA_QR_QS_C=.TRUE.
 export LM_NL_LAN_RHO_SNOW_C=.FALSE.
 
 # Other namelist changes not possible through environment variables
