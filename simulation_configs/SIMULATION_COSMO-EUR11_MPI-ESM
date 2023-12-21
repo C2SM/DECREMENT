@@ -54,6 +54,9 @@ export NQS_ELAPSED_PACK_DATA=07:00:00    # maximum wall-clock time (HH:mm:ss)
 #                   CONFIGURE COSMO
 # ===================================================
 
+# Experiment info for COSMO's IOCTL and INT2LM's INPUT
+export LM_NL_YNCGLOB_SOURCE='"COSMO6.0 driven by MPI-ESM-HR_ssp126_r1i1p1f1 / OASIS3-MCT4.0 / CLM5.0"'
+
 # BC grid (00_get_data and 10_ifs2lm)
 # =========
 
@@ -62,15 +65,15 @@ export LM_NL_BC_DATA_TYPE="MPI-ESM-europe"           # MPI-ESM-europe is for Eur
 export LM_NL_BC_DATA_PATH="/project/s1256/shared/gcm_forcing/MPI-ESM-HR/ssp126_r1i1p1f1/europe"
 export LM_NL_POLPHIIFS=90.0                          # pollon
 export LM_NL_POLLAMIFS=180.0                         # pollat
-export LM_NL_IEIFS=163                               # grid points i (lon)
-export LM_NL_JEIFS=68                                # grid points j (lat)
+export LM_NL_IEIFS=139                               # grid points i (lon)
+export LM_NL_JEIFS=70                                # grid points j (lat)
 export LM_NL_KEIFS=95                                # grid points k (vertical)
 export LM_NL_DLAMIFS=0.9375                          # horizontal resolution (lon)
-export LM_NL_DPHIIFS=0.9350459                       # horizontal resolution (lat)
-export LM_NL_PHILUIFS=19.16876                       # startlat_in_tot
-export LM_NL_PHIROIFS=81.81684                       # endlat_in_tot
-export LM_NL_LAMLUIFS=-68.4375                       # startlon_in_tot
-export LM_NL_LAMROIFS=83.4375                        # endlon_in_tot
+export LM_NL_DPHIIFS=0.9350499                       # horizontal resolution (lat)
+export LM_NL_PHILUIFS=15.42852                       # startlat_in_tot
+export LM_NL_PHIROIFS=79.94696                       # endlat_in_tot
+export LM_NL_LAMLUIFS=-54.375                        # startlon_in_tot
+export LM_NL_LAMROIFS=75.000                         # endlon_in_tot
 export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.945     # soil levels
 export LM_NL_LUSE_T_SKIN=.TRUE.                      # use T_SKIN for surface
 export LM_NL_LANA_QI_C=.FALSE.                       # TRUE if QI is on the cas files; .FALSE. produces segmentation fault, TRUE for COPAT2

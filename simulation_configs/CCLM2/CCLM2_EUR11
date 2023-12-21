@@ -48,12 +48,12 @@ fi
 # Names of the executable
 export EXE_CESM="../bin/cesm.exe"
 
-export CLM_model_version='"release-clm5.0.35-52-gb3e26f715"'  # tag of the CLM executable (from a CTSM checkout)
+export CLM_model_version='"release-clm5.0.35-52-gb3e26f715"'                       # tag of the CLM executable (from a CTSM checkout)
 export CLM_COMPILER=gcc
 export CLM_pio_typename='"netcdf"'
-export CLM_C_NTASKS=48                                        # only used on cpu (48-168 optimal from scaling), else use idling cpus, i.e. (2x2)x(12-1)=44 tasks
-export CLM_paramfile="clm5_params.c171117.nc"                 # phys="clm5_0" default; clm50_params.c211112.nc is from CTSM-dev
-export CLM_fco2="fco2_datm_rcp2.6_1765-2500_c130312.nc"       # for ssp1-2.6; fco2_datm_global_simyr_1750-2014_CMIP6_c180929.nc is default for historical runs
+export CLM_C_NTASKS=48                                                             # only used on cpu (48-168 optimal from scaling), else use idling cpus, i.e. (2x2)x(12-1)=44 tasks
+export CLM_paramfile="clm5_params.c171117.nc"                                      # phys="clm5_0" default; clm50_params.c211112.nc is from CTSM-dev
+export CLM_fco2="fco2_datm_globalSSP1-2.6__simyr_2014-2501_CMIP6_c190506.nc"       # for ssp1-2.6; fco2_datm_global_simyr_1750-2014_CMIP6_c180929.nc is default for historical runs
 
 # Link the cesm_input
 cd 20_cclm2_c/cesm_input

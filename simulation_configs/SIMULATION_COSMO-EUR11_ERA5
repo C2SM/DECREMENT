@@ -54,6 +54,9 @@ export NQS_ELAPSED_PACK_DATA=07:00:00    # maximum wall-clock time (HH:mm:ss)
 #                   CONFIGURE COSMO
 # ===================================================
 
+# Experiment info for COSMO's IOCTL and INT2LM's INPUT
+export LM_NL_YNCGLOB_SOURCE='"COSMO6.0 driven by ERA5 / OASIS3-MCT4.0 / CLM5.0"'
+
 # BC grid (00_get_data and 10_ifs2lm)
 # =========
 
