@@ -2,7 +2,9 @@
 
 # Recommended parameters for COSMO-6 EURO-CORDEX COPAT2
 # itype_albedo = 2 # needed for CCLM2 coupling (also in COPAT2)
+# itype_calendar = 2 # needed for CCLM2 coupling because CESM without ESMF supports only calenadar=NO_LEAP
 # deviations from COPAT2 on GPU: do NOT set nproma (optimised for cpu/gpu), lgsp_first = .TRUE., y_scalar_advect='BOTT2_STRANG', L_3D_div_damping=.FALSE.
+
 # To default: ldiagnos, qi0, iadv_order, itype_outflow_qrsg, itype_spubc
 # To default: itype_hydmod, lsoil_init_fill, lan_rho_snow, nincwait, nmaxwait
 # New value: hincmxu, ncomm_type, soilhyd, tkhmin, khmmin, rat_sea, c_soil, a_hshr, entr_sc
@@ -33,6 +35,7 @@ lm_c_INPUT_ORG(){
   hstop = $LM_NL_HSTOP
   dt = $LM_NL_DT_C 
   ydate_ini = '${LM_YYYY_INI}${LM_MM_INI}${LM_DD_INI}${LM_ZZ_INI}0000'
+  itype_calendar = 2
   hincmxt = 24.0
   hincmxu = 24.0
   itype_pert = ${LM_NL_ITYPE_PERT_C}
