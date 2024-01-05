@@ -4,12 +4,12 @@
 # user_settings > config > defaults
 
 # Settings: CCLM2 production setup, future (which MPI-ESM-HR forcing synced and linked)
-
+# INT2LM only
 
 # Experiment info for COSMO's IOCTL and INT2LM's INPUT
 # -----------
 export LM_NL_YNCGLOB_PROJECT_ID='"FeedBaCks"'
-export LM_NL_YNCGLOB_EXPERIMENT_ID='"Test"'
+export LM_NL_YNCGLOB_EXPERIMENT_ID='"EUR-11_nfs"'
 export LM_NL_YNCGLOB_CONTACT='"Petra Sieber (petra.sieber@env.ethz.ch)"'
 
 
@@ -21,9 +21,9 @@ export CLM_username='"psieber"'
 
 # Global Simulation Dates (YYYY-MM-DDTHH:00)
 # -----------
-export LM_INI_DATE="2030-01-01T00:00"     # Initial date of simualtion
-export LM_START_DATE="2030-01-01T00:00"   # Use if you don't want to start from LM_INI_DATE
-export LM_FIN_DATE="2030-03-01T00:00"     # Overall end of simulation
+export LM_INI_DATE="2034-01-01T00:00"     # Initial date of simualtion
+export LM_START_DATE="2034-01-01T00:00"   # Use if you don't want to start from LM_INI_DATE
+export LM_FIN_DATE="2051-01-01T00:00"     # Overall end of simulation
 
 # Chaining interval, i.e., how long one simualtion chunk will be. If unset, run in one chunk
 export LM_CHAIN_INTERVAL="1 year" # Anything human readable like "2 hours", "1 month", "1 day", "" to run in one chunk
@@ -31,21 +31,13 @@ export LM_CHAIN_INTERVAL="1 year" # Anything human readable like "2 hours", "1 m
 
 # Parts to be executed (also in config)
 # ----------------------
-export SB_PARTS="10_ifs2lm 20_cclm2_c 60_chain"
+#export SB_PARTS="10_ifs2lm 20_cclm2_c 60_chain"
 #export SB_PARTS="10_ifs2lm 60_chain"             # generate COSMO boundary conditions with INT2LM
-#export SB_PARTS="20_cclm2_c 60_chain"            # CCLM2 only (chain needed for restarts)
+export SB_PARTS="20_cclm2_c 60_chain"            # CCLM2 only (chain needed for restarts)
 
-# Link cas files instead of running 00_get_data which copies them
-# Modify file name in symlinks to match the expectations of INT2LM (new 14 digit format)
-years="$(seq 2030 2071)"
-months=(01 02 03 04 05 06 07 08 09 10 11 12)
-cd 00_get_data/output
-for y in $years; do
-    for m in ${months[@]}; do
-        ln -sf $SCRATCH/gcm_forcing/MPI-ESM-HR/ssp126_r1i1p1f1/europe/${y}/${m}/* .
-    done
-done
-for filename in *.nc; do mv $filename ${filename%.*}0000.nc; done;
+# Link existing bc files
+cd 10_ifs2lm/output
+ln -sf /scratch/snx3000/psieber/cclm2_EUR11_future_BC/10_ifs2lm/output/* .
 cd ../..
 
 
@@ -64,6 +56,19 @@ export NQS_ELAPSED_CCLM2_C=24:00:00    # default 01:00:00
 #cd 10_ifs2lm/output
 #rm -f *
 #ln -s /scratch/snx3000/psieber/cclm2_EUR11_2004-summer/10_ifs2lm/output/* .
+#cd ../..
+
+# Link cas files instead of running 00_get_data which copies them
+# Modify file name in symlinks to match the expectations of INT2LM (new 14 digit format)
+#years="$(seq 2034 2051)"
+#months=(01 02 03 04 05 06 07 08 09 10 11 12)
+#cd 00_get_data/output
+#for y in $years; do
+#    for m in ${months[@]}; do
+#        ln -sf $SCRATCH/gcm_forcing/MPI-ESM-HR/ssp126_r1i1p1f1/europe/${y}/${m}/* .
+#        for filename in cas${y}${m}*.nc; do mv $filename ${filename%.*}0000.nc; done;
+#    done
+#done
 #cd ../..
 
 #export LM_NL_IDBG_LEVEL_C=6 # 6, increase COSMO debug level for more output in cosmo*.out
