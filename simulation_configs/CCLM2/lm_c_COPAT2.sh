@@ -228,10 +228,10 @@ lm_c_INPUT_IO(){
   hcomb = 0.0, ${LM_NL_HSTOP}, 24
   yvarml = 'ASWDIR_S','ASWDIFD_S','ASWDIFU_S','ATHD_S','ATHU_S',
      'ALHFL_S','ASHFL_S','AEVAP_S',
-     'ATHB_T','ASOD_T','ASOU_T',
+     'ATHB_T','ASOD_T','ASOB_T',
      'TOT_PREC','RAIN_CON','SNOW_CON',
      'T_2M_AV','TMIN_2M','TMAX_2M',
-     'VMAX_10M','VABS_10M','U_10M_AV','V_10M_AV'
+     'VMAX_10M','VABSMX_10M','U_10M_AV','V_10M_AV'
   yvarpl = ' '
   yvarzl = ' '
   ireset_sums = 2
