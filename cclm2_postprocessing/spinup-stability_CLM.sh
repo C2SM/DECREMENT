@@ -69,11 +69,11 @@ cd ${destdir}
 
 # For h3 monthly (yearmonmean for correct weighting)
 file_h3=clm5.0_eur0.1.clm2.h3_${year_start}-${year_end}_yearmean.nc
-cdo --timestat_date last -yearmonmean -shifttime,-1hours -mergetime -apply,-selname,TSKIN,TSA,TREFMNAV,TREFMXAV,TBOT,RAIN,SNOW,Q2M,U10,TLAI [ ${sourcedir}/clm5.0_eur0.1.clm2.h3.*.nc ] ${file_h3}
+cdo --timestat_date first -yearmonmean -shifttime,-1hours -mergetime -apply,-selname,TSKIN,TSA,TREFMNAV,TREFMXAV,TBOT,RAIN,SNOW,Q2M,U10,TLAI [ ${sourcedir}/clm5.0_eur0.1.clm2.h3.*.nc ] ${file_h3}
 
 # For h0, h1, h2 daily (keep only variables that are not on h3, remove single timestamp in 2003 and excess in 2016)
 file_h0=clm5.0_eur0.1.clm2.h0_${year_start}-${year_end}_yearmean.nc
-cdo --timestat_date last -yearmean -shifttime,-1hours -mergetime -apply,-selname,FSDS,FSR,FLDS,FIRE,EFLX_LH_TOT,FSH,QFLX_EVAP_TOT,QSOIL,QVEGE,QVEGT,QOVER,QDRAI,TOTSOILLIQ,TOTSOILICE,SOILWATER_10CM,FSNO,SNOW_DEPTH,TSOI_10CM,FPSN,TV,TG,QIRRIG [ ${sourcedir}/clm5.0_eur0.1.clm2.h0.*.nc ] ${file_h0}
+cdo --timestat_date first -yearmean -shifttime,-1hours -mergetime -apply,-selname,FSDS,FSR,FLDS,FIRE,EFLX_LH_TOT,FSH,QFLX_EVAP_TOT,QSOIL,QVEGE,QVEGT,QOVER,QDRAI,TOTSOILLIQ,TOTSOILICE,SOILWATER_10CM,FSNO,SNOW_DEPTH,TSOI_10CM,FPSN,TV,TG,QIRRIG [ ${sourcedir}/clm5.0_eur0.1.clm2.h0.*.nc ] ${file_h0}
 cdo -selyear,${year_start}/${year_end} ${file_h0} tmp.nc
 mv tmp.nc ${file_h0}
 

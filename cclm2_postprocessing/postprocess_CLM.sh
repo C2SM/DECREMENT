@@ -46,6 +46,8 @@ sourcedir=$SCRATCH/${case_source}/20_cclm2_c
 #          (1) CLM DAILY
 #==========================================
 
+echo -e "\n *** (1) CLM DAILY *** \n"
+
 # Track duration
 SECONDS=0
 
@@ -108,7 +110,7 @@ lonmin=-44.55
 lonmax=64.95
 latmin=21.95
 latmax=72.65 # +0.1 for NCO to clip at 72.55
-ncks -O -h -d lon,${lonmin},${lonmax} -d lat,${latmin},${latmax} tmp2.nc tmp3.nc
+ncks -O -d lon,${lonmin},${lonmax} -d lat,${latmin},${latmax} tmp2.nc tmp3.nc
 
 mv tmp3.nc $infile
 rm tmp*.nc
@@ -120,25 +122,19 @@ rm tmp*.nc
 cdo splityear $outfile clm5.0_eur0.1.clm2.hx_daily_
 #rm $outfile
 
-#==========================================
-# Rsync to project
-#==========================================
-
-rsync -av --progress $scriptdir/cclm2_output_processed $PROJECT/
-
-#==========================================
 # Finish
-#==========================================
-
 cd $scriptdir
 
 # Evaluate duration and print to log file
 duration=$SECONDS
+echo -e "\n Finished (1) CLM DAILY"
 echo "$(($duration / 3600)) hours and $(($duration % 3600 /60)) minutes elapsed."
 
 #==========================================
 #          (2) CLM MONTHLY
 #==========================================
+
+echo -e "\n *** (2) CLM MONTHLY *** \n"
 
 # Track duration (ca 2 min)
 SECONDS=0
@@ -158,7 +154,7 @@ cd ${destdir}
 # Merge time and select variables per tape
 # Shift timestamp to the beginning of the accumulation interval to mark the correct day for averaging and splitting
 # h3 (mean), creates 2.5 GB file
-outfile=clm5.0_eur0.1.clm2.h3_2006-2015_monthly.nc
+outfile=clm5.0_eur0.1.clm2.h3_${year_start}-${year_end}_monthly.nc
 cdo -shifttime,-1month -mergetime -apply,-selname,TSKIN,TSA,TREFMNAV,TREFMXAV,TBOT,RAIN,SNOW,Q2M,U10,TLAI [ $(ls ${sourcedir}/clm5.0_eur0.1.clm2.h3.*.nc | tail -n 10) ] tmp1.nc
 
 # Remove the time bounds which are incorrect afer shifting (first variable attribute, then variable)
@@ -196,25 +192,19 @@ rm tmp*.nc
 
 # No need to split years for monthly output
 
-#==========================================
-# Rsync to project
-#==========================================
-
-rsync -av --progress $scriptdir/cclm2_output_processed $PROJECT/
-
-#==========================================
 # Finish
-#==========================================
-
 cd $scriptdir
 
 # Evaluate duration and print to log file
 duration=$SECONDS
+echo -e "\n Finished (2) CLM MONTHLY"
 echo "$(($duration / 3600)) hours and $(($duration % 3600 /60)) minutes elapsed."
 
 #==========================================
 #          (3) CLM CASE_DOCS
 #==========================================
+
+echo -e "\n *** (3) CLM CASE_DOCS *** \n"
 
 # Track duration (ca 2 min)
 SECONDS=0
@@ -247,19 +237,18 @@ else
 fi
 rsync -av $casedir/user_settings $destdir/config/
 
-#==========================================
-# Rsync to project
-#==========================================
-
-rsync -av --progress $scriptdir/cclm2_output_processed $PROJECT/
-
-#==========================================
 # Finish
-#==========================================
-
 cd $scriptdir
 
 # Evaluate duration and print to log file
 duration=$SECONDS
+echo -e "\n Finished (3) CLM CASE_DOCS"
 echo "$(($duration / 3600)) hours and $(($duration % 3600 /60)) minutes elapsed."
+
+#==========================================
+# Rsync to PROJECT
+#==========================================
+
+echo -e "\n *** RSYNC *** \n"
+rsync -av --progress $scriptdir/cclm2_output_processed $PROJECT/
 
