@@ -2,7 +2,7 @@
 #
 #SBATCH --job-name="postproc"
 #SBATCH --account="s1256"
-#SBATCH --time=24:00:00
+#SBATCH --time=02:00:00
 #SBATCH --partition=normal
 #SBATCH --constraint=gpu
 #SBATCH --hint=nomultithread
@@ -10,8 +10,8 @@
 #SBATCH --ntasks-per-core=1
 #SBATCH --ntasks-per-node=12
 #SBATCH --cpus-per-task=1
-#SBATCH --output=log_postproc.out
-#SBATCH --error=log_postproc.err
+#SBATCH --output=log_spinup.out
+#SBATCH --error=log_spinup.err
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export CRAY_CUDA_MPS=1
@@ -30,7 +30,8 @@ export CRAY_CUDA_MPS=1
 #var_long = ['Sensible heat flux', 'Latent heat flux', 'Shortwave down', 'GPP', 'Soil temperature top 10cm', 'Total soil moisture', 'Soil moisture top 10cm', 'Snow fraction', 'Snow depth', 'LAI']
 
 # Create yearly means of all CLM monthly (h3) and daily (h0) output variables
-# Launch from scratch because of writing permission (to log)
+# Launch from and work on scratch to have writing permission  (project is read-only for slurm jobs)
+# Transfer from scratch to project for permanent storage with rsync in the end
 # Petra Sieber 2024-01-16
 
 # Track duration
@@ -54,7 +55,7 @@ case_dest=cclm2_EUR11_historical # case name on PROJECT
 
 scriptdir=$PWD
 sourcedir=$SCRATCH/${case_source}/20_cclm2_c
-destdir=$PROJECT/CCLM2_output/processed/${case_dest}/yearly/clm
+destdir=$scriptdir/cclm2_output_processed/${case_dest}/clm/yearly
 mkdir -p $destdir
 
 # Work locally in the destination directory (affects netcdf history)
@@ -94,7 +95,6 @@ infile=$outfile
 ncatted -O -h -a source,global,m,c,"Community Land Model CLM5.0" $infile tmp1.nc
 
 # Rearrange longitude variable from 0..360 deg to -180..180 deg
-# cdo -O -sellonlatbox,-180,180,-90,90 $infile $tmpfile
 # Use ncap2 arithmetics with rounding to preserve 2 digit precision
 ncap2 -O -s 'where(lon>180) lon=round((lon-360)*100)/100' tmp1.nc tmp2.nc
 
@@ -109,8 +109,18 @@ ncks -O -h -d lon,${lonmin},${lonmax} -d lat,${latmin},${latmax} tmp2.nc tmp3.nc
 mv tmp3.nc $infile
 rm tmp*.nc
 
+#==========================================
+# Rsync to project
+#==========================================
+
+rsync -av --progress $scriptdir/cclm2_output_processed $PROJECT/
+
+#==========================================
+# Finish
+#==========================================
+
 cd $scriptdir
 
 # Evaluate duration and print to log file
 duration=$SECONDS
-echo "$(($duration / 3600)) hours and $(($duration % 3660)) minutes elapsed."
+echo "$(($duration / 3600)) hours and $(($duration % 3600 /60)) minutes elapsed."
