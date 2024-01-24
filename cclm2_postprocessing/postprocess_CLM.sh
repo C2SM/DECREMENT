@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #
-#SBATCH --job-name="postproc"
+#SBATCH --job-name="post_clm"
 #SBATCH --account="s1256"
 #SBATCH --time=10:00:00
 #SBATCH --partition=normal
@@ -21,25 +21,13 @@ export CRAY_CUDA_MPS=1
 # Transfer from scratch to project for permanent storage with rsync in the end
 # Petra Sieber 2024-01-17
 
-module load cray-hdf5
-module load cray-netcdf
 module load CDO
 module load NCO
 
-#==========================================
-# Case settings
-#==========================================
+set -e # failing commands will cause the shell script to exit
 
-#case_source=cclm2_EUR11_hist-spinup          # case name on SCRATCH
-case_source=$(basename "$(dirname "${PWD}")") # extract case name
-year_ini=2004                                 # initial date of the simulation, incl spin-up
-year_start=2006                               # start of the analysis period, excl spin-up or min 10 years
-year_end=2015                                 # end of the analysis period
-case_dest=cclm2_EUR11_historical              # case name on PROJECT
-#case_dest=$case_source
+source functions.sh # load functions and general case settings
 
-scriptdir=$PWD
-casedir=$SCRATCH/${case_source}
 sourcedir=$SCRATCH/${case_source}/20_cclm2_c
 
 #==========================================
@@ -54,39 +42,43 @@ SECONDS=0
 destdir=$scriptdir/cclm2_output_processed/${case_dest}/clm/daily
 mkdir -p $destdir
 
-# Work locally in the destination directory (affects netcdf history)
-cd ${destdir}
-
 #==========================================
 # Save time-invariant auxiliary variables
 #==========================================
 
-cdo -selname,area,landfrac,landmask,pftmask,nbedrock,ZSOI,DZSOI,WATSAT,SUCSAT,BSW,HKSAT,ZLAKE,DZLAKE ${sourcedir}/clm5.0_eur0.1.clm2.h0.${year_start}-01-01-00000.nc clm5.0_eur0.1.clm2.hx_auxiliaries.nc
+cd ${sourcedir}
+cdo -selname,area,landfrac,landmask,pftmask,nbedrock,ZSOI,DZSOI,WATSAT,SUCSAT,BSW,HKSAT,ZLAKE,DZLAKE clm5.0_eur0.1.clm2.h0.${year_start}-01-01-00000.nc ${destdir}/clm_auxiliaries.nc
 
 #==========================================
 # Merge time, merge tapes, fix calendar
 #==========================================
 
+cd ${sourcedir}
+
 # Merge time and select variables per tape
 # h0 (mean), creates 250 GB file and takes ca 30 min
-cdo -chname,TREFMNAV,TSA_MIN,TREFMXAV,TSA_MAX -mergetime -apply,-selname,FSDS,FSR,FLDS,FIRE,EFLX_LH_TOT,FSH,QFLX_EVAP_TOT,QSOIL,QVEGE,QVEGT,QOVER,QDRAI,TOTSOILLIQ,TOTSOILICE,SOILWATER_10CM,FSNO,SNOW_DEPTH,TSOI_10CM,FPSN,TV,TG,TSKIN,TSA,TREFMNAV,TREFMXAV,TBOT,QIRRIG [ $(ls ${sourcedir}/clm5.0_eur0.1.clm2.h0.*.nc | tail -n 11) ] tmp_h0.nc
+cdo -chname,TREFMNAV,TSA_MIN,TREFMXAV,TSA_MAX -mergetime -apply,-selname,FSDS,FSR,FLDS,FIRE,EFLX_LH_TOT,FSH,QFLX_EVAP_TOT,QSOIL,QVEGE,QVEGT,QOVER,QDRAI,TOTSOILLIQ,TOTSOILICE,SOILWATER_10CM,FSNO,SNOW_DEPTH,TSOI_10CM,FPSN,TV,TG,TSKIN,TSA,TREFMNAV,TREFMXAV,TBOT,QIRRIG [ $(ls clm5.0_eur0.1.clm2.h0.*.nc | tail -n 11) ] ${destdir}/tmp_h0.nc
 
 # h1 (min)
-cdo -chname,TBOT,TBOT_MIN,TSKIN,TSKIN_MIN -mergetime -apply,-selname,TBOT,TSKIN [ $(ls ${sourcedir}/clm5.0_eur0.1.clm2.h1.*.nc | tail -n 11) ] tmp_h1.nc
+cdo -chname,TBOT,TBOT_MIN,TSKIN,TSKIN_MIN -mergetime -apply,-selname,TBOT,TSKIN [ $(ls ${sourcedir}/clm5.0_eur0.1.clm2.h1.*.nc | tail -n 11) ] ${destdir}/tmp_h1.nc
 
 # h2 (max)
-cdo -chname,TBOT,TBOT_MAX,TSKIN,TSKIN_MAX -mergetime -apply,-selname,TBOT,TSKIN [ $(ls ${sourcedir}/clm5.0_eur0.1.clm2.h2.*.nc | tail -n 11) ] tmp_h2.nc
+cdo -chname,TBOT,TBOT_MAX,TSKIN,TSKIN_MAX -mergetime -apply,-selname,TBOT,TSKIN [ $(ls ${sourcedir}/clm5.0_eur0.1.clm2.h2.*.nc | tail -n 11) ] ${destdir}/tmp_h2.nc
+
+cd ${destdir}
 
 # Merge tapes, creates 285 GB file and takes ca 30 min
 # Shift timestamp to the beginning of the accumulation interval to mark the correct day for averaging and splitting
 outfile=clm5.0_eur0.1.clm2.hx_2006-2015_daily.nc
 cdo -shifttime,-1day -merge [ tmp_h0.nc tmp_h1.nc tmp_h2.nc ] tmp_$outfile
 
+# Fix calendar (removes time_bnds)
 # Set calendar from 365_day (=noleap, goes to 2016-01-04) to proleptic_gregorian (leap, goes to 2016-01-01)
+ncatted -a calendar,time,m,c,proleptic_gregorian tmp_$outfile tmp_calendar.nc
+# Copy as absolute calendar
+cdo -a copy tmp_calendar.nc tmp_$outfile
 # Change time format to relative for reading with e.g. xarray
 # Clip to the analysis period
-ncatted -a calendar,time,m,c,proleptic_gregorian tmp_$outfile tmp_calendar.nc
-cdo -a copy tmp_calendar.nc tmp_$outfile
 cdo -selyear,${year_start}/${year_end} -setreftime,${year_ini}-01-01,00:00:00,days tmp_$outfile $outfile
 
 rm tmp*.nc
@@ -95,39 +87,24 @@ rm tmp*.nc
 # Basic post-processing of CLM output
 #==========================================
 
-infile=$outfile
-
-# Modify global file attribute
-ncatted -O -h -a source,global,m,c,"Community Land Model CLM5.0" $infile tmp1.nc
-
-# Rearrange longitude variable from 0..360 deg to -180..180 deg
-# Use ncap2 arithmetics with rounding to preserve 2 digit precision
-ncap2 -O -s 'where(lon>180) lon=round((lon-360)*100)/100' tmp1.nc tmp2.nc
-
-# Cut away sponge zone
-# EUR11 lonlat bounds excl. sponge zone for clipping
-lonmin=-44.55
-lonmax=64.95
-latmin=21.95
-latmax=72.65 # +0.1 for NCO to clip at 72.55
-ncks -O -d lon,${lonmin},${lonmax} -d lat,${latmin},${latmax} tmp2.nc tmp3.nc
-
-mv tmp3.nc $infile
-rm tmp*.nc
+postproc_clm $outfile
 
 #==========================================
 # Split into yearly files
 #==========================================
 
 cdo splityear $outfile clm5.0_eur0.1.clm2.hx_daily_
-#rm $outfile
+rm $outfile
 
-# Finish
-cd $scriptdir
+# Compress daily files, replacing the original (reduces from 25 to 5 GB)
+#for f in clm5.0_eur0.1.clm2.hx_daily_*.nc; do
+#    ncks -4 -L 1 $f tmp_$f
+#    mv tmp_$f $f
+#done
 
 # Evaluate duration and print to log file
 duration=$SECONDS
-echo -e "\n Finished (1) CLM DAILY"
+echo -e "Finished (1) CLM DAILY"
 echo "$(($duration / 3600)) hours and $(($duration % 3600 /60)) minutes elapsed."
 
 #==========================================
@@ -142,20 +119,21 @@ SECONDS=0
 destdir=$scriptdir/cclm2_output_processed/${case_dest}/clm/monthly
 mkdir -p $destdir
 
-# Work locally in the destination directory (affects netcdf history)
-cd ${destdir}
-
 # No additional time-invariant auxiliary variables compared to daily files
 
 #==========================================
 # Merge time
 #==========================================
 
+cd ${sourcedir}
+
 # Merge time and select variables per tape
 # Shift timestamp to the beginning of the accumulation interval to mark the correct day for averaging and splitting
 # h3 (mean), creates 2.5 GB file
 outfile=clm5.0_eur0.1.clm2.h3_${year_start}-${year_end}_monthly.nc
-cdo -shifttime,-1month -mergetime -apply,-selname,TSKIN,TSA,TREFMNAV,TREFMXAV,TBOT,RAIN,SNOW,Q2M,U10,TLAI [ $(ls ${sourcedir}/clm5.0_eur0.1.clm2.h3.*.nc | tail -n 10) ] tmp1.nc
+cdo -shifttime,-1month -mergetime -apply,-selname,TSKIN,TSA,TREFMNAV,TREFMXAV,TBOT,RAIN,SNOW,Q2M,U10,TLAI [ $(ls clm5.0_eur0.1.clm2.h3.*.nc | tail -n 10) ] ${destdir}/tmp1.nc
+
+cd ${destdir}
 
 # Remove the time bounds which are incorrect afer shifting (first variable attribute, then variable)
 ncatted -O -a bounds,time,d,, tmp1.nc tmp2.nc
@@ -164,40 +142,19 @@ cdo -delname,time_bnds tmp2.nc $outfile
 # Set the time bounds to set them correctly at timestamp-timestamp+1
 #ncap2 -O -s 'time@bounds="time_bnds";defdim("bnds",2);time_bnds[$time,$bnds]=0.0;*time_dff=(time(1)-time(0));time_bnds(:,0)=time;time_bnds(:,1)=time+time_dff;' tmp.nc $outfile
 
-# Fixing the calendar doesn't help for monthly files
+# Fixing the calendar doesn't help correcting monthly files
+
+rm tmp*.nc
 
 #==========================================
 # Basic post-processing of CLM output
 #==========================================
 
-infile=$outfile
-
-# Modify global file attribute
-ncatted -O -h -a source,global,m,c,"Community Land Model CLM5.0" $infile tmp1.nc
-
-# Rearrange longitude variable from 0..360 deg to -180..180 deg
-# Use ncap2 arithmetics with rounding to preserve 2 digit precision
-ncap2 -O -s 'where(lon>180) lon=round((lon-360)*100)/100' tmp1.nc tmp2.nc
-
-# Cut away sponge zone
-# EUR11 lonlat bounds excl. sponge zone for clipping
-lonmin=-44.55
-lonmax=64.95
-latmin=21.95
-latmax=72.65 # +0.1 for NCO to clip at 72.55
-ncks -O -h -d lon,${lonmin},${lonmax} -d lat,${latmin},${latmax} tmp2.nc tmp3.nc
-
-mv tmp3.nc $infile
-rm tmp*.nc
-
-# No need to split years for monthly output
-
-# Finish
-cd $scriptdir
+postproc_clm $outfile
 
 # Evaluate duration and print to log file
 duration=$SECONDS
-echo -e "\n Finished (2) CLM MONTHLY"
+echo -e "Finished (2) CLM MONTHLY"
 echo "$(($duration / 3600)) hours and $(($duration % 3600 /60)) minutes elapsed."
 
 #==========================================
@@ -237,18 +194,20 @@ else
 fi
 rsync -av $casedir/user_settings $destdir/config/
 
-# Finish
-cd $scriptdir
-
 # Evaluate duration and print to log file
 duration=$SECONDS
-echo -e "\n Finished (3) CLM CASE_DOCS"
+echo -e "Finished (3) CLM CASE_DOCS"
 echo "$(($duration / 3600)) hours and $(($duration % 3600 /60)) minutes elapsed."
+
+# Finish
+cd $scriptdir
 
 #==========================================
 # Rsync to PROJECT
 #==========================================
 
-echo -e "\n *** RSYNC *** \n"
-rsync -av --progress $scriptdir/cclm2_output_processed $PROJECT/
+# Do this in a separate xfer job!
+
+#echo -e "\n *** RSYNC *** \n"
+#rsync -av --progress $scriptdir/cclm2_output_processed $PROJECT/
 

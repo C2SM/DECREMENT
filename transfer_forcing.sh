@@ -36,4 +36,4 @@ rsync -av --progress $SCRATCH/cclm2_EUR11_future_BC/10_ifs2lm/output/* /project/
 
 # Evaluate duration and print to log file
 duration=$SECONDS
-echo "$(($duration / 3600)) hours and $(($duration % 3660)) minutes elapsed."
+echo "$(($duration / 3600)) hours and $(($duration % 3600 /60)) minutes elapsed."
