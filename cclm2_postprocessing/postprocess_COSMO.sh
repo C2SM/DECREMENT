@@ -2,7 +2,7 @@
 #
 #SBATCH --job-name="post_cosmo"
 #SBATCH --account="s1256"
-#SBATCH --time=16:00:00
+#SBATCH --time=09:00:00
 #SBATCH --partition=normal
 #SBATCH --constraint=gpu
 #SBATCH --hint=nomultithread
@@ -34,7 +34,7 @@ source functions.sh # load functions and general case settings
 
 echo -e "\n *** (1) COSMO DAILY *** \n"
 
-# Track duration
+# Track duration (ca 2h)
 SECONDS=0
 
 sourcedir=$SCRATCH/${case_source}/20_cclm2_c/cosmo_output/daily_2D
@@ -87,7 +87,7 @@ echo "$(($duration / 3600)) hours and $(($duration % 3600 /60)) minutes elapsed.
 
 echo -e "\n *** (2) COSMO 3h 2D *** \n"
 
-# Track duration
+# Track duration (ca 1.5 h)
 SECONDS=0
 
 sourcedir=$SCRATCH/${case_source}/20_cclm2_c/cosmo_output/3h_2D
@@ -134,7 +134,7 @@ echo "$(($duration / 3600)) hours and $(($duration % 3600 /60)) minutes elapsed.
 
 echo -e "\n *** (3) COSMO 3h PLEV *** \n"
 
-# Track duration
+# Track duration (ca 3h)
 SECONDS=0
 
 sourcedir=$SCRATCH/${case_source}/20_cclm2_c/cosmo_output/3h_plev
@@ -198,6 +198,8 @@ cdo -L --timestat_date first -monmean -mergetime [ lffd* ] ${destdir}/tmp_daily.
 cd $scriptdir/cclm2_output_processed/${case_dest}/cosmo/daily_avg
 cdo -L --timestat_date first -monmean -mergetime [ lffd* ] ${destdir}/tmp_daily_avg.nc
 
+cd ${destdir}
+
 # Merge tapes
 outfile=lffd_${year_start}-${year_end}_monmean.nc
 cdo -merge [ tmp_daily.nc tmp_daily_avg.nc ] $outfile
@@ -240,8 +242,7 @@ rsync -av $fconfig $destdir/config/
 if [[ $fconfig =~ "ssp1" ]]; then
     rsync -av $casedir/simulation_configs/SIMULATION_COSMO-EUR11_MPI-ESM $destdir/config/
 else
-    #rsync -av $casedir/simulation_configs/SIMULATION_COSMO-EUR11_ERA5 $destdir/config/
-    rsync -av $casedir/simulation_configs/SIMULATION_COSMO-EUR11_COPAT2 $destdir/config/
+    rsync -av $casedir/simulation_configs/SIMULATION_COSMO-EUR11_ERA5 $destdir/config/
 fi
 rsync -av $casedir/user_settings $destdir/config/
 

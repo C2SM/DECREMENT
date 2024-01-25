@@ -1,0 +1,30 @@
+cd /project/s1256/psieber/decrement
+cp -r cclm2_postprocessing $SCRATCH/cclm2_EUR11_FB_nac
+cp -r cclm2_postprocessing $SCRATCH/cclm2_EUR11_FB_nfn
+cp -r cclm2_postprocessing $SCRATCH/cclm2_EUR11_FB_nfs
+cp -r cclm2_postprocessing $SCRATCH/cclm2_EUR11_FB_ssp1
+
+cd $SCRATCH/cclm2_EUR11_FB_nac/cclm2_postprocessing
+sbatch spinup-stability_CLM.sh
+sbatch postprocess_CLM.sh
+sbatch postprocess_COSMO.sh
+sbatch postprocess_xfer.sh
+
+cd $SCRATCH/cclm2_EUR11_FB_nfn/cclm2_postprocessing
+sbatch spinup-stability_CLM.sh
+sbatch postprocess_CLM.sh
+sbatch postprocess_COSMO.sh
+sbatch postprocess_xfer.sh
+
+cd $SCRATCH/cclm2_EUR11_FB_nfs/cclm2_postprocessing
+sbatch spinup-stability_CLM.sh
+sbatch postprocess_CLM.sh
+sbatch postprocess_COSMO.sh
+sbatch postprocess_xfer.sh
+
+cd $SCRATCH/cclm2_EUR11_FB_ssp1/cclm2_postprocessing
+sbatch spinup-stability_CLM.sh
+sbatch postprocess_CLM.sh
+sbatch postprocess_COSMO.sh
+sbatch postprocess_xfer.sh
+

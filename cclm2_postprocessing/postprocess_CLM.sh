@@ -2,7 +2,7 @@
 #
 #SBATCH --job-name="post_clm"
 #SBATCH --account="s1256"
-#SBATCH --time=10:00:00
+#SBATCH --time=09:00:00
 #SBATCH --partition=normal
 #SBATCH --constraint=gpu
 #SBATCH --hint=nomultithread
@@ -16,7 +16,7 @@
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export CRAY_CUDA_MPS=1
 
-# Postprocessing of CCLM2 output from CLM (takes ca 7h)
+# Postprocessing of CCLM2 output from CLM (takes ca 8h)
 # Launch from and work on scratch to have writing permission  (project is read-only for slurm jobs)
 # Transfer from scratch to project for permanent storage with rsync in the end
 # Petra Sieber 2024-01-17
@@ -36,7 +36,7 @@ sourcedir=$SCRATCH/${case_source}/20_cclm2_c
 
 echo -e "\n *** (1) CLM DAILY *** \n"
 
-# Track duration
+# Track duration (ca 7.5 h)
 SECONDS=0
 
 destdir=$scriptdir/cclm2_output_processed/${case_dest}/clm/daily
@@ -163,7 +163,7 @@ echo "$(($duration / 3600)) hours and $(($duration % 3600 /60)) minutes elapsed.
 
 echo -e "\n *** (3) CLM CASE_DOCS *** \n"
 
-# Track duration (ca 2 min)
+# Track duration (ca 1 min)
 SECONDS=0
 
 destdir=$scriptdir/cclm2_output_processed/${case_dest}/clm/case_docs
