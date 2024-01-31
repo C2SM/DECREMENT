@@ -3,14 +3,17 @@
 # These settings will take precedence over any other:
 # user_settings > config > defaults
 
-# Settings: CCLM2 production setup, future (which MPI-ESM-HR forcing synced and linked)
-# INT2LM only
+# Settings: CCLM2 production setup, future (with MPI-ESM-HR ssp1 BC synced and linked)
+# CCLM2 only
 
 # Experiment info for COSMO's IOCTL and INT2LM's INPUT
 # -----------
 export LM_NL_YNCGLOB_PROJECT_ID='"FeedBaCks"'
-export LM_NL_YNCGLOB_EXPERIMENT_ID='"EUR-11_nfs"'
+export LM_NL_YNCGLOB_EXPERIMENT_ID='"EUR-11_ssp1"'
 export LM_NL_YNCGLOB_CONTACT='"Petra Sieber (petra.sieber@env.ethz.ch)"'
+
+# CLM surface dataset
+export CLM_fsurdat="surfdata_0.1x0.1_EUR11_hist_16pfts_Irrig_CMIP6_simyr2005_c230523_eunisl3_ssp1_corr.nc"
 
 
 # Scheduler account and user

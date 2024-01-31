@@ -70,9 +70,7 @@ export CLM_ny=560 # latitudes (nj)
 export CLM_domainfile="domain_EUR11_lon360_reduced.nc" # "reduced" has to correspond to oasis aux files
 export CLM_oasisdummy="OASIS_dummy_EUR11_lon360.nc"
 export CLM_finidat="clmi.I2000Clm50BgcCrop.2011-01-01.1.9x2.5_gx1v7_gl4_simyr2000_c190312.nc"
-export CLM_fsurdat="surfdata_0.1x0.1_EUR11_hist_16pfts_Irrig_CMIP6_simyr2005_c230523_eunisl3_nfs_corr.nc"
-
-# "surfdata_0.1x0.1_EUR11_hist_16pfts_Irrig_CMIP6_simyr2005_c230523.nc" # default
+export CLM_fsurdat="surfdata_0.1x0.1_EUR11_hist_16pfts_Irrig_CMIP6_simyr2005_c230523.nc" # default
 
 # surfdata_0.1x0.1_EUR11_hist_16pfts_Irrig_CMIP6_simyr2005_c230523_eunisl3_ssp1_corr.nc
 # surfdata_0.1x0.1_EUR11_hist_16pfts_Irrig_CMIP6_simyr2005_c230523_eunisl3_nac_corr.nc
