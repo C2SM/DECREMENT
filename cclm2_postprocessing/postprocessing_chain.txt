@@ -1,44 +1,48 @@
 # Stuff to do for each experiment
 
-cd /project/s1256/psieber/decrement
-cp -r cclm2_postprocessing $SCRATCH/cclm2_EUR11_FB_nac
-cp -r cclm2_postprocessing $SCRATCH/cclm2_EUR11_FB_nfn
-cp -r cclm2_postprocessing $SCRATCH/cclm2_EUR11_FB_nfs
-cp -r cclm2_postprocessing $SCRATCH/cclm2_EUR11_FB_ssp1
+cases="cclm2_EUR11_FB_nac cclm2_EUR11_FB_nfn cclm2_EUR11_FB_nfs cclm2_EUR11_FB_ssp1"
 
-cd $SCRATCH/cclm2_EUR11_FB_nac/cclm2_postprocessing
-sbatch spinup-stability_CLM.sh
-sbatch postprocess_CLM.sh
-sbatch postprocess_COSMO.sh
-sbatch postprocess_xfer.sh
+#-----------------------------
+# POSTPROCESSING
+#-----------------------------
 
-cd $SCRATCH/cclm2_EUR11_FB_nfn/cclm2_postprocessing
-sbatch spinup-stability_CLM.sh
-sbatch postprocess_CLM.sh
-sbatch postprocess_COSMO.sh
-sbatch postprocess_xfer.sh
-
-cd $SCRATCH/cclm2_EUR11_FB_nfs/cclm2_postprocessing
-sbatch spinup-stability_CLM.sh
-sbatch postprocess_CLM.sh
-sbatch postprocess_COSMO.sh
-sbatch postprocess_xfer.sh
-
-cd $SCRATCH/cclm2_EUR11_FB_ssp1/cclm2_postprocessing
-sbatch spinup-stability_CLM.sh
-sbatch postprocess_CLM.sh
-sbatch postprocess_COSMO.sh
-sbatch postprocess_xfer.sh
-
-
-cases="nac nfn nfs ssp1"
 for case in $cases; do
-    cd /scratch/snx3000/psieber/cclm2_EUR11_FB_${case}/cclm2_postprocessing
-    cp /project/s1256/psieber/decrement/cclm2_postprocessing/postprocess_xfer.sh .
+    # Copy the postprocessing scripts to scratch
+    cd $PROJECT/decrement
+    cp -r cclm2_postprocessing $SCRATCH/${case}
+
+    # Submit the postprocessing jobs
+    cd $SCRATCH/${case}/cclm2_postprocessing
+    sbatch spinup-stability_CLM.sh
+    sbatch postprocess_CLM.sh
+    sbatch postprocess_COSMO.sh
+done
+
+# When all postprocessing is done, sumit the xfer jobs
+for case in $cases; do
+    cd $SCRATCH/${case}/cclm2_postprocessing
     sbatch postprocess_xfer.sh
 done
 
-cases="nac nfn nfs ssp1"
+
+#-----------------------------
+# ARCHIVING
+#-----------------------------
+
 for case in $cases; do
-    rm /project/s1256/psieber/cclm2_output_processed/cclm2_EUR11_FB_${case}/clm/yearly/clm5.0_eur0.1.clm2.hx_2041-2050_yearmean.nc
+    # Copy user settings and scripts to scratch
+    mv $SCRATCH/${case}/user_settings $SCRATCH/${case}/user_settings_future
+    cp $PROJECT/decrement/user_settings_archiving $SCRATCH/${case}/user_settings
+    rsync -av $PROJECT/decrement/50_pack_data $SCRATCH/${case}/
+
+    # Run (submits the jobs chained)
+    cd $SCRATCH/${case}
+    bash run_daint.sh
+done
+
+# When all compressing/packing is done, sumit the xfer jobs
+for case in $cases; do
+    cp $PROJECT/decrement/cclm2_postprocessing/archive_xfer.sh $SCRATCH/${case}/cclm2_postprocessing/.
+    cd $PROJECT/decrement/cclm2_postprocessing
+    sbatch archive_xfer.sh
 done
