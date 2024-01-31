@@ -6,19 +6,77 @@ update_status "running"
 # clean
 ./clean
 
-#Check if output folder exists
+# Check if output folder exists
 mkdir -p $(readlink output)
 
 # Load modules
 export OMP_NUM_THREADS=$CORES_PER_NODE
 export CRAY_CUDA_MPS=1
+
 module load daint-gpu
 module load NCO
+
+# Move CLM output files to cesm_output/* directory
+mkdir -p ../20_cclm2_c/cesm_output/daily
+mkdir -p ../20_cclm2_c/cesm_output/daily_min
+mkdir -p ../20_cclm2_c/cesm_output/daily_max
+mkdir -p ../20_cclm2_c/cesm_output/monthly
+mv ../20_cclm2_c/clm5.0_eur0.1.clm2.h0.*.nc ../20_cclm2_c/cesm_output/daily/
+mv ../20_cclm2_c/clm5.0_eur0.1.clm2.h1.*.nc ../20_cclm2_c/cesm_output/daily_min/
+mv ../20_cclm2_c/clm5.0_eur0.1.clm2.h2.*.nc ../20_cclm2_c/cesm_output/daily_max/
+mv ../20_cclm2_c/clm5.0_eur0.1.clm2.h3.*.nc ../20_cclm2_c/cesm_output/monthly/
+
+# Move CLM restart files to cesm_output/restart directory
+mkdir -p ../20_cclm2_c/cesm_output/restart
+mv ../20_cclm2_c/clm5.0_eur0.1.clm2.r*.*.nc ../20_cclm2_c/cesm_output/restart
+mv ../20_cclm2_c/clm5.0_eur0.1.cpl.r.*.nc ../20_cclm2_c/cesm_output/restart
+mv ../20_cclm2_c/clm5.0_eur0.1.datm.rs1.*.bin ../20_cclm2_c/cesm_output/restart
 
 # Go to input dir
 cd input
 
-# Compress, archive and remove originals
+# For CLM: Compress and remove originals
+# Assuming yearly output files, no need to archive into yearly tarballs
+for direc in ${CLM_COMPRESS_DIRS}; do
+    echo ${direc}
+    mkdir -p ../output/${direc}
+    
+    # compress files
+    echo "Compressing files"
+    nfiles=0
+    nerr=0
+    nz_list=""
+    for file in ${direc}/clm5.0_eur0.1.clm2.h*.${LM_YYYY_BEGIN}-*.nc; do
+        ((nfiles++))
+        echo "  $file"
+        ofile=../output/${file}
+        ncks -4 -L ${PACK_COMPRESS_LEVEL} --no_abc -O ${file} ${ofile}
+        status=$?
+        [[ -e ${ofile} && $status == 0 ]] && nz_list+=" ${ofile}" || ((nerr++))
+    done
+    if (( nerr > 0 )); then
+        echo "something went wrong when compressing ${nerr}/${nfiles} files, exiting"
+        exit 1
+    fi
+
+    # remove original files
+    if [[ ${PACK_REMOVE_ORIGINAL} == true ]]; then
+        echo "removing original files"
+        nfiles=0
+        nerr=0
+        for file in ${direc}/clm5.0_eur0.1.clm2.h*.${LM_YYYY_BEGIN}-*.nc; do
+            ((nfiles++))
+            rm -f ${file}
+            [[ $? != 0 ]] && ((nerr++))
+        done
+        if (( nerr > 0 )); then
+            echo "something went wrong when removing ${nerr}/${nfiles} original files, exiting"
+            exit 1
+        fi
+    fi
+done
+
+# FOR COSMO: Compress, archive and remove originals
 for direc in ${LM_COMPRESS_DIRS}; do
     echo ${direc}
     nc_list=$(cosmo_file_list "${direc}" ">=" "${LM_BEGIN_DATE}" "<" "${LM_END_DATE}")
@@ -45,7 +103,8 @@ for direc in ${LM_COMPRESS_DIRS}; do
             # create archive
             part=$(dirname ${direc})
             stream=$(basename ${direc})
-            tar_file="../output/${part}__${stream}__${LM_BEGIN_DATE_DG}-${LM_END_DATE_DG}.tar"
+            mkdir -p ../output/${direc}
+            tar_file="../output/${direc}/${part}__${stream}__${LM_BEGIN_DATE_DG}-${LM_END_DATE_DG}.tar"
             echo "building archive file ${tar_file}"
             printf '%s\n' ${nz_list} > .nz_list.txt
             tar --transform='s/.nz/.nc/' -cvf ${tar_file} --files-from .nz_list.txt

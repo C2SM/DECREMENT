@@ -1,0 +1,44 @@
+#!/bin/bash
+
+# These settings will take precedence over any other:
+# user_settings > config > defaults
+
+# Settings: CCLM2 archiving
+# Pack_data only
+
+
+# Scheduler account and user
+# -----------
+export ACCOUNT="s1256"
+export CLM_username='"psieber"'
+
+
+# Global Simulation Dates (YYYY-MM-DDTHH:00)
+# -----------
+export LM_INI_DATE="2034-01-01T00:00"     # Initial date of simualtion
+export LM_START_DATE="2034-01-01T00:00"   # Use if you don't want to start from LM_INI_DATE
+export LM_FIN_DATE="2036-01-01T00:00"     # Overall end of simulation
+
+# Chaining interval, i.e., how long one simualtion chunk will be. If unset, run in one chunk
+export LM_CHAIN_INTERVAL="1 year" # Anything human readable like "2 hours", "1 month", "1 day", "" to run in one chunk
+
+
+# Parts to be executed (also in config)
+# ----------------------
+export SB_PARTS="50_pack_data 60_chain"
+export chain_deps="previous_lm_c previous_lm_f"   # Setting chain_deps="" will submit all chunks at once
+
+export LM_COMPRESS_DIRS="cclm2_cosmo/daily_2D cclm2_cosmo/3h_2D cclm2_cosmo/3h_plev"
+export CLM_COMPRESS_DIRS="cclm2_clm/monthly cclm2_clm/daily cclm2_clm/daily_min cclm2_clm/daily_max"
+
+export PACK_COMPRESS_LEVEL=1
+export PACK_CREATE_ARCHIVE=true
+export PACK_REMOVE_ORIGINAL=false
+
+
+# Maximum wall-clock time (HH:mm:ss) - per chunk
+# ----------------------
+export NQS_ELAPSED_PACK_DATA=12:00:00    # maximum wall-clock time (HH:mm:ss)
+
+
+
