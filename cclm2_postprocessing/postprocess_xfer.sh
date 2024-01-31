@@ -15,7 +15,7 @@ SECONDS=0
 # Transfer from scratch to project for permanent storage
 #---------------------------------------------------------------
 
-rsync -av --progress cclm2_output_processed $PROJECT/
+rsync -av cclm2_output_processed $PROJECT/
 
 
 # Evaluate duration and print to log file

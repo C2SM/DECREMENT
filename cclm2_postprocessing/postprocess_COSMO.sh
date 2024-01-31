@@ -204,6 +204,10 @@ cd ${destdir}
 outfile=lffd_${year_start}-${year_end}_monmean.nc
 cdo -merge [ tmp_daily.nc tmp_daily_avg.nc ] $outfile
 
+# plev
+cd $scriptdir/cclm2_output_processed/${case_dest}/cosmo/daily_avg_plev
+cdo -L --timestat_date first -monmean -mergetime [ lffd* ] ${destdir}/lffd_${year_start}-${year_end}_monmean_plev.nc
+
 rm tmp*.nc
 
 # Evaluate duration and print to log file

@@ -1,3 +1,5 @@
+# Stuff to do for each experiment
+
 cd /project/s1256/psieber/decrement
 cp -r cclm2_postprocessing $SCRATCH/cclm2_EUR11_FB_nac
 cp -r cclm2_postprocessing $SCRATCH/cclm2_EUR11_FB_nfn
@@ -28,3 +30,15 @@ sbatch postprocess_CLM.sh
 sbatch postprocess_COSMO.sh
 sbatch postprocess_xfer.sh
 
+
+cases="nac nfn nfs ssp1"
+for case in $cases; do
+    cd /scratch/snx3000/psieber/cclm2_EUR11_FB_${case}/cclm2_postprocessing
+    cp /project/s1256/psieber/decrement/cclm2_postprocessing/postprocess_xfer.sh .
+    sbatch postprocess_xfer.sh
+done
+
+cases="nac nfn nfs ssp1"
+for case in $cases; do
+    rm /project/s1256/psieber/cclm2_output_processed/cclm2_EUR11_FB_${case}/clm/yearly/clm5.0_eur0.1.clm2.hx_2041-2050_yearmean.nc
+done

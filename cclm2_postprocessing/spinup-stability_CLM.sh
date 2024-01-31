@@ -58,19 +58,19 @@ cd ${sourcedir}
 # Keep only unique variables
 
 # For h3 monthly (yearmonmean for correct weighting)
-file_h3=clm5.0_eur0.1.clm2.h3_${year_start}-${year_end}_yearmean.nc
+file_h3=clm5.0_eur0.1.clm2.h3_${year_ini}-${year_end}_yearmean.nc
 cdo --timestat_date first -yearmonmean -shifttime,-1hours -mergetime -apply,-selname,TSKIN,TSA,TREFMNAV,TREFMXAV,TBOT,RAIN,SNOW,Q2M,U10,TLAI [ clm5.0_eur0.1.clm2.h3.*.nc ] ${destdir}/${file_h3}
 
 # For h0, h1, h2 daily (keep only variables that are not on h3, remove single timestamp in 2003 and excess in 2016)
-file_h0=clm5.0_eur0.1.clm2.h0_${year_start}-${year_end}_yearmean.nc
+file_h0=clm5.0_eur0.1.clm2.h0_${year_ini}-${year_end}_yearmean.nc
 cdo --timestat_date first -yearmean -shifttime,-1hours -mergetime -apply,-selname,FSDS,FSR,FLDS,FIRE,EFLX_LH_TOT,FSH,QFLX_EVAP_TOT,QSOIL,QVEGE,QVEGT,QOVER,QDRAI,TOTSOILLIQ,TOTSOILICE,SOILWATER_10CM,FSNO,SNOW_DEPTH,TSOI_10CM,FPSN,TV,TG,QIRRIG [ clm5.0_eur0.1.clm2.h0.*.nc ] ${destdir}/${file_h0}
 cd ${destdir}
-cdo -selyear,${year_start}/${year_end} ${file_h0} tmp.nc
+cdo -selyear,${year_ini}/${year_end} ${file_h0} tmp.nc
 mv tmp.nc ${file_h0}
 
 # Combine h3 and h0, and remove individual files
 # Set time axis to create identical timestamps (at the beginning, e.g. 2004-01-01-00:00)
-outfile=clm5.0_eur0.1.clm2.hx_${year_start}-${year_end}_yearmean.nc
+outfile=clm5.0_eur0.1.clm2.hx_${year_ini}-${year_end}_yearmean.nc
 cdo -merge -apply,"-setmon,1 -setday,1 -settime,00:00:00" [ ${file_h3} ${file_h0} ] $outfile
 
 rm ${file_h3} ${file_h0}
