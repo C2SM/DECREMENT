@@ -17,7 +17,7 @@ export CLM_username='"psieber"'
 # -----------
 export LM_INI_DATE="2034-01-01T00:00"     # Initial date of simualtion
 export LM_START_DATE="2034-01-01T00:00"   # Use if you don't want to start from LM_INI_DATE
-export LM_FIN_DATE="2036-01-01T00:00"     # Overall end of simulation
+export LM_FIN_DATE="2051-01-01T00:00"     # Overall end of simulation
 
 # Chaining interval, i.e., how long one simualtion chunk will be. If unset, run in one chunk
 export LM_CHAIN_INTERVAL="1 year" # Anything human readable like "2 hours", "1 month", "1 day", "" to run in one chunk
@@ -26,19 +26,20 @@ export LM_CHAIN_INTERVAL="1 year" # Anything human readable like "2 hours", "1 m
 # Parts to be executed (also in config)
 # ----------------------
 export SB_PARTS="50_pack_data 60_chain"
-export chain_deps="previous_lm_c previous_lm_f"   # Setting chain_deps="" will submit all chunks at once
+export chain_deps=""   # Setting chain_deps="" will submit all chunks at once
 
 export LM_COMPRESS_DIRS="cclm2_cosmo/daily_2D cclm2_cosmo/3h_2D cclm2_cosmo/3h_plev"
 export CLM_COMPRESS_DIRS="cclm2_clm/monthly cclm2_clm/daily cclm2_clm/daily_min cclm2_clm/daily_max"
 
-export PACK_COMPRESS_LEVEL=1
-export PACK_CREATE_ARCHIVE=true
-export PACK_REMOVE_ORIGINAL=false
+export PACK_COMPRESS_LEVEL=1            # compression level for ncks
+export PACK_CREATE_ARCHIVE=true         # create a tarball per chunk from COSMO files; if false, original files will be replaced by compressed files
+export PACK_REMOVE_ORIGINAL=false       # remove original nc files and compressed nz files after archiving COSMO files
+export PACK_REMOVE_COMPRESSED=true      # remove compressed nz files (for testing)
 
 
 # Maximum wall-clock time (HH:mm:ss) - per chunk
 # ----------------------
-export NQS_ELAPSED_PACK_DATA=12:00:00    # maximum wall-clock time (HH:mm:ss)
+export NQS_ELAPSED_PACK_DATA=04:00:00    # maximum wall-clock time (HH:mm:ss)
 
 
 

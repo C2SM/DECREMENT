@@ -35,9 +35,9 @@ cosmo_file_list(){
     begin_sec=$(date -d "$date_1" +%s)
     end_sec=$(date -d "$date_2" +%s)
 
-    # Get list
+    # Get list (sorted by date)
     list=""
-    for f in $(find ${direc} -name *.nc); do
+    for f in $(find ${direc} -name *.nc | sort); do
         # Capture digits reprensting the date in the file name
         digits=$(sed 's/l.\{1,2\}fd\([[:digit:]]*\).*\.nc/\1/' <<< $(basename ${f}))
         # Form date string

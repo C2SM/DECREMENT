@@ -33,6 +33,7 @@ for case in $cases; do
     # Copy user settings and scripts to scratch
     mv $SCRATCH/${case}/user_settings $SCRATCH/${case}/user_settings_future
     cp $PROJECT/decrement/user_settings_archiving $SCRATCH/${case}/user_settings
+    cp $PROJECT/decrement/tools.sh $SCRATCH/${case}/
     rsync -av $PROJECT/decrement/50_pack_data $SCRATCH/${case}/
 
     # Run (submits the jobs chained)
@@ -46,3 +47,8 @@ for case in $cases; do
     cd $PROJECT/decrement/cclm2_postprocessing
     sbatch archive_xfer.sh
 done
+
+
+
+
+
