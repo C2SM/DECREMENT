@@ -52,11 +52,10 @@ clm_c_drv_flds_in
 clm_c_lnd_in
 clm_c_mosart_in
 # data atmosphere streams
-clm_c_datm_stream_Precip
-clm_c_datm_stream_Solar
-clm_c_datm_stream_TPQW
+clm_c_OASIS_stream
 clm_c_datm_stream_presaero
 clm_c_datm_stream_topo
+clm_c_datm_stream_co2tseries
 # I/O namelists
 clm_c_atm_modelio
 clm_c_cpl_modelio

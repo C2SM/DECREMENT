@@ -75,7 +75,7 @@ inside them to keep a good level of readability.
       `./bin`. When using an executable built with spack, it's
       recommanded to specify the corresponding spack environment. To
       this end, generate the environment file with, e.g. for COSMO
-      ```bash
+        ```bash
         spack load --sh cosmo@c2sm-features %nvhpc cosmo_target=gpu +cppdycore ^mpich%nvhpc > spack_env_cosmo.sh
         ```
       and place the `spack_env_cosmo.sh` file in both directories
@@ -93,9 +93,9 @@ inside them to keep a good level of readability.
       `LM_NL_EXTPAR_?` environment variables accordingly.
 
 2. Link the simulation configuration file like
-   ```bash
+    ```bash
     ln -s simulation_configs/SIMULATION_EU_CORDEX_50km config
-   ```
+    ```
 
 3. Copy the user settings example (`cp user_settings_example
    user_settings`) where some common settings are commented out with

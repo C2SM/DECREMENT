@@ -54,10 +54,20 @@ while ((current_date_sec <= end_date_sec)); do
     echo "running ${tar_cmd}"
     eval ${tar_cmd}
 
-    # cyle dates
-    current_date=$(date -d "${current_date} + 1 month")
+    # cyle dates (Matthieu's fix)
+    current_date=$(date -d "${current_date} + 1 month" +%c)
     echo "current_date = $current_date"
     current_date_sec=$(date -d "${current_date}" +%s)
+
+    # cycle dates and make sure the next date lands in the next month (Petra's hack)
+    #next_date=$(date -d "${current_date} + 1 month");
+    #while (($(date -d "${next_date}" +%-m) == $(date -d "${current_date}" +%-m))); do
+    #    next_date=$(date -d "${next_date} + 1 hour")
+    #done
+    #current_date=$next_date
+    #echo "current_date = $current_date"
+    #current_date_sec=$(date -d "${current_date}" +%s)
+
 done
 
 # Update job status

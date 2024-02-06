@@ -1,0 +1,144 @@
+#!/bin/bash
+
+# CCLM2 EURO-CORDEX 12km (0.1° for CLM) configuration
+# COSMO, INT2LM, EXTPAR: implement COPAT2 recommended parameterisation and EUR11 grid
+
+# CAUTION: Sourcing is done from the DECREMENT root dir
+#          so path for sourcing are relative to there.
+
+
+# ===================================================
+#                   COSMO
+# ===================================================
+
+# Grid-specific settings
+# ----------------------
+# COSMO config (source first to avoid overriding CCLM2 settings!)
+source simulation_configs/SIMULATION_COSMO-EUR11_MPI-ESM  # COPAT2 params, using int2lm with MPI-ESM-HR ssp126 r1i1p1f1 (data available 2030-2071)
+
+# General settings
+# ----------------------
+export COSMO_TARGET="gpu"            # COSMO target architecture, default gpu
+
+# Names of the executables
+export EXE_COSMO="../bin/cosmo_${COSMO_TARGET}"
+export EXE_INT2LM="../bin/int2lm@c2sm-features"
+source simulation_configs/CCLM2/link_spack_env_cclm2.sh # Link the environment files for spack executables for COSMO and INT2LM
+
+# List of output folders to compress and pack (use spaces between the folders)
+export LM_COMPRESS_DIRS="cclm2_c/1h_2D cclm2_c/24h cclm2_c/3h_3D_zlev" # should point to cclm2_c/cosmo_output/... ?
+
+if [[ $COSMO_TARGET == "cpu" ]]; then
+    export NQS_NXLM_C=6               # number of CPUs in x direction (12 per node on daint-gpu)
+    export NQS_NYLM_C=6               # number of CPUs in y direction
+else
+    export NQS_NXLM_C=4               # number of NODEs in x direction (max 4x4=16 for COSMO-CLM2 because CLM crashes with >187 idling CPUs)
+    export NQS_NYLM_C=4               # number of NODEs in y direction
+    export NQS_NIOLM_C=1              # number of NODEs for asyncronous IO (is is sufficient for EUR11)
+fi
+
+
+# ===================================================
+#                   CESM
+# ===================================================
+
+# General settings
+# ----------------------
+# Names of the executable
+export EXE_CESM="../bin/cesm.exe"
+
+export CLM_model_version='"release-clm5.0.35-52-gb3e26f715"'                       # tag of the CLM executable (from a CTSM checkout)
+export CLM_COMPILER=gcc
+export CLM_pio_typename='"netcdf"'
+export CLM_C_NTASKS=48                                                             # only used on cpu (48-168 optimal from scaling), else use idling cpus, i.e. (2x2)x(12-1)=44 tasks
+export CLM_paramfile="clm5_params.c171117.nc"                                      # phys="clm5_0" default; clm50_params.c211112.nc is from CTSM-dev
+export CLM_fco2="fco2_datm_globalSSP1-2.6__simyr_2014-2501_CMIP6_c190506.nc"       # for ssp1-2.6; fco2_datm_global_simyr_1750-2014_CMIP6_c180929.nc is default for historical runs
+
+# Link the cesm_input
+cd 20_cclm2_c/cesm_input
+rm -f *
+ln -s $SCRATCH/cclm2_input_decrement/cesm_input/* .
+cd ../..
+
+# Grid-specific settings
+# ----------------------
+export CLM_case_title='"clm5.0.gnu-oasis.I2000Clm50SpGs.CLM_USRDAT.eur_0.1.cclm2"' # case name of the CLM exe, ends up in netcdf attributes
+export CLM_case_id='"clm5.0_eur0.1"'                                               # ends up in output file name and netcdf attributes
+export CLM_nx=1204 # longitudes (ni) 
+export CLM_ny=560 # latitudes (nj)
+
+export CLM_domainfile="domain_EUR11_lon360_reduced.nc" # "reduced" has to correspond to oasis aux files
+export CLM_oasisdummy="OASIS_dummy_EUR11_lon360.nc"
+export CLM_finidat="clmi.I2000Clm50BgcCrop.2011-01-01.1.9x2.5_gx1v7_gl4_simyr2000_c190312.nc"
+export CLM_fsurdat="surfdata_0.1x0.1_EUR11_hist_16pfts_Irrig_CMIP6_simyr2005_c230523.nc" # default
+
+# surfdata_0.1x0.1_EUR11_hist_16pfts_Irrig_CMIP6_simyr2005_c230523_eunisl3_ssp1_corr.nc
+# surfdata_0.1x0.1_EUR11_hist_16pfts_Irrig_CMIP6_simyr2005_c230523_eunisl3_nac_corr.nc
+# surfdata_0.1x0.1_EUR11_hist_16pfts_Irrig_CMIP6_simyr2005_c230523_eunisl3_nfn_corr.nc
+# surfdata_0.1x0.1_EUR11_hist_16pfts_Irrig_CMIP6_simyr2005_c230523_eunisl3_nfs_corr.nc
+
+
+# Output variables, frequency and averaging
+# ----------------------
+# For other than 4 tapes, change the namelist function!
+# Tape1 (h0): daily mean (fluxes, surface, temp, incl. T2m min/max)
+# Tape2 (h1): daily min (Tskin)
+# Tape3 (h2): daily max (Tskin)
+# Tape4 (h3): monthly mean (temp, precip, hum, wind, LAI)
+export CLM_hist_empty_htapes=.true.                     # true = turn off default output variables on h0
+export CLM_hist_fincl1="'FSDS','FSR','FLDS','FIRE','EFLX_LH_TOT','FSH','QFLX_EVAP_TOT','QSOIL','QVEGE','QVEGT','QOVER','QDRAI','TOTSOILLIQ','TOTSOILICE','SOILWATER_10CM','FSNO','SNOW_DEPTH','TSOI_10CM','FPSN','TV','TG','TSKIN','TSA','TREFMNAV','TREFMXAV','TBOT','QIRRIG'"
+export CLM_hist_fincl2="'TSKIN','TBOT'"
+export CLM_hist_fincl3="'TSKIN','TBOT'"
+export CLM_hist_fincl4="'TSKIN','TSA','TREFMNAV','TREFMXAV','TBOT','RAIN','SNOW','Q2M','U10','TLAI'"
+
+export CLM_hist_avgflag_pertape="'A','M','X','A'"           # averaging over the output interval (A=avg, I=inst, M=min, X=max) 
+export CLM_hist_dov2xy=".true.,.true.,.true.,.true."        # true = 2D (grid cell level), false = 1D vector (pft output)
+export CLM_hist_mfilt="365,365,365,12"                      # number of values per file (here yearly files)
+export CLM_hist_nhtfrq="-24,-24,-24,0"                      # output frequency (0=monthly, -24=daily, -1=hourly, 1=model-time-step)
+
+# inactive: 'Z0HV','Z0MV','Z0QV','TAF'
+# inactive in SP mode: 'TOTECOSYSC','TOTSOMC'
+
+
+# ===================================================
+#                   CCLM2
+# ===================================================
+
+export RES="EUR11"                     # needed for input files
+export NQS_ELAPSED_CCLM2_C=01:00:00    # maximum wall-clock time (HH:mm:ss)
+
+# OASIS output and verbosity
+# -----------
+# Production settings
+export OASIS_DEBUG=0        # sets IOASISDEBUGLVL, 0 = less in cesm/cosmo.out and OASIS aux files not produced (masks.nc, grids.nc, areas.nc and rmp files), 200 = lots (testing)
+export OASIS_PRINTING=0     # printing level in output file cplout: 0 = no printing (default), 1 = main routines and field names when treated, 2 = complete output (testing)
+export OASIS_OUT=EXPORTED   # output setting for selected coupling fields; EXPORTED = coupling only (default), EXPOUT = produces 2 netcdf files for values sent (before interp) and received (after interp)
+
+# Development settings
+#export OASIS_DEBUG=200      # sets IOASISDEBUGLVL, 0 = less in cesm/cosmo.out and OASIS aux files not produced (masks.nc, grids.nc, areas.nc and rmp files), 200 = lots (testing)
+#export OASIS_PRINTING=2     # printing level in output file cplout: 0 = no printing (default), 1 = main routines and field names when treated, 2 = complete output (testing)
+#export OASIS_OUT=EXPOUT     # output setting for selected coupling fields; EXPORTED = coupling only (default), EXPOUT = produces 2 netcdf files for values sent (before interp) and received (after interp)
+
+# If already generated, link the oasis_input files (masks, areas, grids, rmp*)
+cd 20_cclm2_c
+rm -f areas.nc grids.nc masks.nc rmp*
+ln -s $SCRATCH/cclm2_input_decrement/oasis_input_${RES}_reduced/* .
+cd ..
+
+# Albedo coupling (2alb coupling works only with the new COSMO and CLM executables!)
+# -----------
+cd 20_cclm2_c/Defaults
+rm -f cclm2_namcouple_defaults.sh
+ln -s cclm2_namcouple_defaults_2alb.sh cclm2_namcouple_defaults.sh
+cd ../..
+
+# Parts to be executed
+# ----------------------
+#export SB_PARTS="00_get_data 10_ifs2lm 20_cclm2_c 50_pack_data 60_chain"
+
+# Generate COSMO boundary conditions with INT2LM
+export SB_PARTS="00_get_data 10_ifs2lm 20_cclm2_c 60_chain"
+
+# Dependencies
+export cclm2_c_deps="previous_cclm2_c current_ifs2lm"
+export chain_deps="previous_cclm2_c"

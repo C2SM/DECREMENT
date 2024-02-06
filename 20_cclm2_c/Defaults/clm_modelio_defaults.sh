@@ -16,7 +16,7 @@ clm_c_atm_modelio(){
   pio_rearranger = 1
   pio_root = 1
   pio_stride = 12
-  pio_typename = "pnetcdf"
+  pio_typename = ${CLM_pio_typename}
 /
 EONL
 }
@@ -38,7 +38,7 @@ clm_c_cpl_modelio(){
   pio_rearranger = 1
   pio_root = 1
   pio_stride = 12
-  pio_typename = "pnetcdf"
+  pio_typename = ${CLM_pio_typename}
 /
 EONL
 }
@@ -82,7 +82,7 @@ clm_c_glc_modelio(){
   pio_rearranger = 1
   pio_root = 1
   pio_stride = 12
-  pio_typename = "pnetcdf"
+  pio_typename = ${CLM_pio_typename}
 /
 EONL
 }
@@ -104,7 +104,7 @@ clm_c_ice_modelio(){
   pio_rearranger = 1
   pio_root = 1
   pio_stride = 12
-  pio_typename = "pnetcdf"
+  pio_typename = ${CLM_pio_typename}
 /
 EONL
 }
@@ -126,7 +126,7 @@ clm_c_lnd_modelio(){
   pio_rearranger = 1
   pio_root = 1
   pio_stride = 12
-  pio_typename = "pnetcdf"
+  pio_typename = ${CLM_pio_typename}
 /
 EONL
 }
@@ -148,7 +148,7 @@ clm_c_ocn_modelio(){
   pio_rearranger = 1
   pio_root = 1
   pio_stride = 12
-  pio_typename = "pnetcdf"
+  pio_typename = ${CLM_pio_typename}
 /
 EONL
 }
@@ -170,7 +170,7 @@ clm_c_rof_modelio(){
   pio_rearranger = 1
   pio_root = 1
   pio_stride = 12
-  pio_typename = "pnetcdf"
+  pio_typename = ${CLM_pio_typename}
 /
 EONL
 }
@@ -192,7 +192,7 @@ clm_c_wav_modelio(){
   pio_rearranger = 1
   pio_root = 1
   pio_stride = 12
-  pio_typename = "pnetcdf"
+  pio_typename = ${CLM_pio_typename}
 /
 EONL
 }

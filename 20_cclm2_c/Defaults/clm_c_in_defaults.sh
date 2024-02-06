@@ -102,7 +102,7 @@ clm_c_drv_in(){
 &seq_cplflds_inparm
   flds_bgc_oi = .false.
   flds_co2_dmsa = .false.
-  flds_co2a = .false.
+  flds_co2a = .true.
   flds_co2b = .false.
   flds_co2c = .false.
   flds_wiso = .false.
@@ -123,7 +123,7 @@ clm_c_drv_in(){
   aoflux_grid = "ocn"
   aqua_planet = .false.
   aqua_planet_sst = 1
-  atm_gnam = "360x720cru"
+  atm_gnam = "CLM_USRDAT"
   bfbflag = .false.
   brnch_retain_casename = .false.
   budget_ann = 1
@@ -132,8 +132,8 @@ clm_c_drv_in(){
   budget_ltann = 1
   budget_ltend = 0
   budget_month = 1
-  case_desc = "UNSET"
-  case_name = "CCLM2_EU-CORDEX_50km_test"
+  case_desc = ${CLM_case_title}
+  case_name = ${CLM_case_id}
   cime_model = "cesm"
   coldair_outbreak_mod = .true.
   cpl_decomp = 0
@@ -177,14 +177,14 @@ clm_c_drv_in(){
   histavg_xao = .true.
   hostname = "pizdaint"
   ice_gnam = "null"
-  info_debug = 3
-  lnd_gnam = "360x720cru"
+  info_debug = 1
+  lnd_gnam = "CLM_USRDAT"
   logfilepostfix = ".log"
   max_cplstep_time = 0.0
   mct_usealltoall = .false.
   mct_usevector = .false.
   model_doi_url = "https://doi.org/10.5065/D67H1H0V"
-  model_version = "release-clm5.0.35-44-g2d0b43b93"
+  model_version = ${CLM_model_version}
   ocn_gnam = "null"
   orb_eccen = 1.e36
   orb_iyear = 2000
@@ -197,7 +197,7 @@ clm_c_drv_in(){
   reprosum_recompute = .false.
   reprosum_use_ddpdd = .false.
   restart_file = "str_undefined"
-  rof_gnam = "r05"
+  rof_gnam = "null"
   run_barriers = .false.
   scmlat = -999.
   scmlon = -999.
@@ -282,6 +282,14 @@ export -f clm_c_drv_in
 #                            datm_in
 # ---------------------------------------------------------------
 clm_c_datm_in(){
+  # CO2 timeseries for future or hist
+  if [[ ${CLM_fco2} =~ "rcp" ]]; then
+    co2_end_date="2500"
+  else
+    co2_end_date="2014"
+  fi
+
+  # Write namelist
   cat > datm_in << EONL
 &datm_nml
   decomp = "1d"
@@ -295,24 +303,23 @@ clm_c_datm_in(){
 /
 &shr_strdata_nml
   datamode = "CLMNCEP"
-  domainfile = "./cesm_input/domain_EU-CORDEX_0.5_lon360.nc"
-  dtlimit = 1.5, 1.5, 1.5, 1.5, 1.5
-  fillalgo = "nn", "nn", "nn", "nn", "nn"
-  fillmask = "nomask", "nomask", "nomask", "nomask", "nomask"
-  fillread = "NOT_SET", "NOT_SET", "NOT_SET", "NOT_SET", "NOT_SET"
-  fillwrite = "NOT_SET", "NOT_SET", "NOT_SET", "NOT_SET", "NOT_SET"
-  mapalgo = "bilinear", "bilinear", "bilinear", "bilinear", "bilinear"
-  mapmask = "nomask", "nomask", "nomask", "nomask", "nomask"
-  mapread = "NOT_SET", "NOT_SET", "NOT_SET", "NOT_SET", "NOT_SET"
-  mapwrite = "NOT_SET", "NOT_SET", "NOT_SET", "NOT_SET", "NOT_SET"
-  readmode = "single", "single", "single", "single", "single"
-  streams = "datm.streams.txt.CLMGSWP3v1.Solar 2011 2011 2011",
-      "datm.streams.txt.CLMGSWP3v1.Precip 2011 2011 2011",
-      "datm.streams.txt.CLMGSWP3v1.TPQW 2011 2011 2011",
+  domainfile = "./cesm_input/${CLM_domainfile}"
+  dtlimit = 1.5, 1.5, 1.5, 1.5
+  fillalgo = "nn", "nn", "nn", "nn"
+  fillmask = "nomask", "nomask", "nomask", "nomask"
+  fillread = "NOT_SET", "NOT_SET", "NOT_SET", "NOT_SET"
+  fillwrite = "NOT_SET", "NOT_SET", "NOT_SET", "NOT_SET"
+  mapalgo = "bilinear", "bilinear", "bilinear", "nn"
+  mapmask = "nomask", "nomask", "nomask", "nomask"
+  mapread = "NOT_SET", "NOT_SET", "NOT_SET", "NOT_SET"
+  mapwrite = "NOT_SET", "NOT_SET", "NOT_SET", "NOT_SET"
+  readmode = "single", "single", "single", "single"
+  streams = "OASIS.stream.txt 1 1 1",
       "datm.streams.txt.presaero.clim_2000 1 2000 2000",
-      "datm.streams.txt.topo.observed 1 1 1"
-  taxmode = "cycle", "cycle", "cycle", "cycle", "cycle"
-  tintalgo = "coszen", "nearest", "linear", "linear", "lower"
+      "datm.streams.txt.topo.observed 1 1 1",
+      "datm.streams.txt.co2tseries.20tr 1850 1850 $co2_end_date"
+  taxmode = "cycle", "cycle", "cycle", "extend"
+  tintalgo = "linear", "linear", "lower", "linear"
   vectors = "null"
 /
 EONL
@@ -342,18 +349,26 @@ clm_c_lnd_in(){
   cat > lnd_in << EONL
 &clm_inparm
  albice = 0.50,0.30
- co2_ppmv = 367.0
- co2_type = 'constant'
+ co2_type = 'diagnostic'
  create_crop_landunit = .true.
  dtime = 1800
- fatmlndfrc = './cesm_input/domain_EU-CORDEX_0.5_lon360.nc'
- finidat = './cesm_input/clmi.I2000Clm50BgcCrop.2011-01-01.1.9x2.5_gx1v7_gl4_simyr2000_c190312.nc'
+ fatmlndfrc = './cesm_input/${CLM_domainfile}'
+ finidat = './cesm_input/${CLM_finidat}'
  fsnowaging = './cesm_input/snicar_drdt_bst_fit_60_c070416.nc'
  fsnowoptics = './cesm_input/snicar_optics_5bnd_c090915.nc'
- fsurdat = "./cesm_input/surfdata_0.5x0.5_hist_16pfts_Irrig_CMIP6_simyr2000_c190418.nc"
+ fsurdat = "./cesm_input/${CLM_fsurdat}"
  glc_do_dynglacier = .false.
  glc_snow_persistence_max_days = 0
  h2osno_max = 10000.0
+ hist_avgflag_pertape = ${CLM_hist_avgflag_pertape}
+ hist_dov2xy = ${CLM_hist_dov2xy}
+ hist_empty_htapes = ${CLM_hist_empty_htapes}
+ hist_fincl1 = ${CLM_hist_fincl1}
+ hist_fincl2 = ${CLM_hist_fincl2}
+ hist_fincl3 = ${CLM_hist_fincl3}
+ hist_fincl4 = ${CLM_hist_fincl4}
+ hist_mfilt = ${CLM_hist_mfilt}
+ hist_nhtfrq = ${CLM_hist_nhtfrq}
  int_snow_max = 2000.
  irrigate = .true.
  maxpatch_glcmec = 10
@@ -361,7 +376,7 @@ clm_c_lnd_in(){
  n_melt_glcmec = 10.0d00
  nlevsno = 12
  nsegspc = 35
- paramfile = "./cesm_input/clm5_params.cpbiomass.c190103.nc"
+ paramfile = "./cesm_input/${CLM_paramfile}"
  run_zero_weight_urban = .false.
  soil_layerstruct = '20SL_8.5m'
  use_bedrock = .true.
@@ -397,6 +412,11 @@ clm_c_lnd_in(){
 &soil_moisture_streams
 /
 &lai_streams
+ lai_mapalgo = 'bilinear'
+ model_year_align_lai = 2001
+ stream_fldfilename_lai = 'cesm_input/MODISPFTLAI_0.5x0.5_c140711.nc'
+ stream_year_first_lai = 2001
+ stream_year_last_lai = 2013
 /
 &atm2lnd_inparm
  glcmec_downscale_longwave = .true.
@@ -554,7 +574,7 @@ clm_c_mosart_in(){
   do_rtm = .false.
   do_rtmflood = .false.
   finidat_rtm = " "
-  frivinp_rtm = "./cesm_input/MOSART_routing_Global_0.5x0.5_c170601.nc"
+  frivinp_rtm = "./cesm_input/"
   ice_runoff = .true.
   qgwl_runoff_option = "threshold"
   rtmhist_fexcl1 = ""
