@@ -18,6 +18,9 @@ module load NCO
 # Go to input dir
 cd input
 
+chunk_id=${LM_BEGIN_DATE_DG}-${LM_END_DATE_DG}
+nz_list_file=nz_list_${chunk_id}.txt
+
 # Compress, archive and remove originals
 for direc in ${LM_COMPRESS_DIRS}; do
     echo ${direc}
@@ -45,10 +48,10 @@ for direc in ${LM_COMPRESS_DIRS}; do
             # create archive
             part=$(dirname ${direc})
             stream=$(basename ${direc})
-            tar_file="../output/${part}__${stream}__${LM_BEGIN_DATE_DG}-${LM_END_DATE_DG}.tar"
+            tar_file="../output/${part}__${stream}__${chunk_id}.tar"
             echo "building archive file ${tar_file}"
-            printf '%s\n' ${nz_list} > .nz_list.txt
-            tar --transform='s/.nz/.nc/' -cvf ${tar_file} --files-from .nz_list.txt
+            printf '%s\n' ${nz_list} > ${nz_list_file}
+            tar --transform='s/.nz/.nc/' -cvf ${tar_file} --files-from ${nz_list_file}
             status=$?
             if [[ $status != 0 ]]; then
                 echo "something went wrong when creating archive, exiting"
