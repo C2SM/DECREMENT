@@ -82,7 +82,6 @@ done
 chunk_id=${LM_BEGIN_DATE_DG}-${LM_END_DATE_DG}
 nz_list_file=nz_list_${chunk_id}.txt
 
-# Compress, archive and remove originals
 for direc in ${LM_COMPRESS_DIRS}; do
     echo ${direc}
     mkdir -p $scriptdir/output/${direc}
@@ -162,8 +161,9 @@ for direc in ${LM_COMPRESS_DIRS}; do
                     exit 1
                 fi
             fi
+
         else
-            # Replace original nc files by compressed files
+            # Replace original nc files by compressed files (if not creating an archive)
             echo "replacing original nc files by compressed files"
             cd $scriptdir
             nfiles=0

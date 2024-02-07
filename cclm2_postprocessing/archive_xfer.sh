@@ -8,6 +8,8 @@
 #SBATCH --output=log_archive_xfer.out
 #SBATCH --error=log_archive_xfer.err
 
+set -e # failing commands will cause the shell script to exit
+
 # Track duration
 SECONDS=0
 
@@ -22,13 +24,14 @@ destdir=/store/c2sm/landclim/psieber/cclm2_output_raw/${case_dest}
 mkdir -p ${destdir}
 
 # Compressed and packed nc files
-rsync -av ../50_pack_data/output/* ${destdir}/
+rsync -av --exclude='*/.ipynb_checkpoints' ../50_pack_data/output/* ${destdir}/
+
 
 # Namelists
 mkdir -p ${destdir}/cclm2_clm/clm_namelists
 mkdir -p ${destdir}/cclm2_cosmo/cosmo_namelists
-rsync -v cclm2_output_processed/${case_dest}/clm/case_docs/namelists/* ${destdir}/cclm2_clm/clm_namelists/
-rsync -v cclm2_output_processed/${case_dest}/cosmo/case_docs/namelists/* ${destdir}/cclm2_cosmo/cosmo_namelists/
+rsync -av cclm2_output_processed/${case_dest}/clm/case_docs/namelists/* ${destdir}/cclm2_clm/clm_namelists/
+rsync -av cclm2_output_processed/${case_dest}/cosmo/case_docs/namelists/* ${destdir}/cclm2_cosmo/cosmo_namelists/
 
 
 # Evaluate duration and print to log file
