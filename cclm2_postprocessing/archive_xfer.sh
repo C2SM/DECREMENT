@@ -1,7 +1,7 @@
 #!/bin/bash -l
 #
 #SBATCH --job-name="arch_xfer"
-#SBATCH --time=01:00:00
+#SBATCH --time=01:15:00
 #SBATCH --partition=xfer
 #SBATCH --hint=nomultithread
 #SBATCH --nodes=1

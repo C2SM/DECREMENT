@@ -1,4 +1,5 @@
 # Stuff to do for each experiment
+# Some steps are already integrated in DECREMENT by now, adapt as needed
 
 cases="cclm2_EUR11_FB_nac cclm2_EUR11_FB_nfn cclm2_EUR11_FB_nfs cclm2_EUR11_FB_ssp1"
 
@@ -7,7 +8,7 @@ cases="cclm2_EUR11_FB_nac cclm2_EUR11_FB_nfn cclm2_EUR11_FB_nfs cclm2_EUR11_FB_s
 #-----------------------------
 
 for case in $cases; do
-    # Copy the postprocessing scripts to scratch
+    # Copy the postprocessing scripts to scratch (now integrated in DECREMENT)
     cd $PROJECT/decrement
     cp -r cclm2_postprocessing $SCRATCH/${case}
 
@@ -22,6 +23,12 @@ done
 for case in $cases; do
     cd $SCRATCH/${case}/cclm2_postprocessing
     sbatch postprocess_xfer.sh
+done
+
+## Add a missing postprocessing step (now integrated in postprocess_CLM.sh)
+for case in $cases; do
+    cd $PROJECT/cclm2_output_processed/${case}/clm/daily
+    cdo -L --timestat_date first -monmean -mergetime [ clm5.0_eur0.1.clm2.hx_daily_*.nc ] ../monthly/clm5.0_eur0.1.clm2.hx_2041-2050_monthly.nc
 done
 
 
@@ -44,9 +51,10 @@ done
 # When all compressing/packing is done, sumit the xfer jobs
 for case in $cases; do
     cp $PROJECT/decrement/cclm2_postprocessing/archive_xfer.sh $SCRATCH/${case}/cclm2_postprocessing/.
-    cd $PROJECT/decrement/cclm2_postprocessing
+    cd $SCRATCH/${case}/cclm2_postprocessing
     sbatch archive_xfer.sh
 done
+
 
 
 

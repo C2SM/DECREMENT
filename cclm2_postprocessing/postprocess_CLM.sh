@@ -158,6 +158,13 @@ echo -e "Finished (2) CLM MONTHLY"
 echo "$(($duration / 3600)) hours and $(($duration % 3600 /60)) minutes elapsed."
 
 #==========================================
+# Average processed daily data
+#==========================================
+
+cd $scriptdir/cclm2_output_processed/${case_dest}/clm/daily
+cdo -L --timestat_date first -monmean -mergetime [ clm5.0_eur0.1.clm2.hx_daily_*.nc ] ${destdir}/clm5.0_eur0.1.clm2.hx_2041-2050_monthly.nc
+
+#==========================================
 #          (3) CLM CASE_DOCS
 #==========================================
 
