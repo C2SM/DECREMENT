@@ -161,8 +161,15 @@ echo "$(($duration / 3600)) hours and $(($duration % 3600 /60)) minutes elapsed.
 # Average processed daily data
 #==========================================
 
+# Monthly mean of daily data
 cd $scriptdir/cclm2_output_processed/${case_dest}/clm/daily
 cdo -L --timestat_date first -monmean -mergetime [ clm5.0_eur0.1.clm2.hx_daily_*.nc ] ${destdir}/clm5.0_eur0.1.clm2.hx_2041-2050_monthly.nc
+
+# Merge monthly tapes
+cd ${destdir}
+cdo -delvar,TBOT,TSKIN,TSA,TSA_MIN,TSA_MAX clm5.0_eur0.1.clm2.hx_2041-2050_monthly.nc tmp.nc
+cdo -merge [ clm5.0_eur0.1.clm2.h3_2041-2050_monthly.nc tmp.nc ] clm5.0_eur0.1.clm2.hxx_2041-2050_monthly.nc
+rm tmp.nc clm5.0_eur0.1.clm2.hx_2041-2050_monthly.nc
 
 #==========================================
 #          (3) CLM CASE_DOCS
