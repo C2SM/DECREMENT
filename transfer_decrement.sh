@@ -15,13 +15,21 @@ mkdir -p $SCRATCH/$NAME
 rsync -av $PROJECT/decrement/* $SCRATCH/$NAME/.
 
 # Link the appropriate simulation_config; make sure that this one links the desired COSMO config (ERA5 vs. MPI-ESM-HR)
+# CCLM2 historical ERA5
+rm -f $SCRATCH/$NAME/config
+ln -s ./simulation_configs/CCLM2/CCLM2_EUR11_historical $SCRATCH/$NAME/config
+
+# CCLM2 future ssp1 MPI-ESM-HR
 rm -f $SCRATCH/$NAME/config
 ln -s ./simulation_configs/CCLM2/CCLM2_EUR11_ssp1 $SCRATCH/$NAME/config
 
-# COSMO standalone
+# COSMO standalone historical
 #rm -f $SCRATCH/$NAME/config
-#ln -s ./simulation_configs/SIMULATION_EU_12km_COSMO_COPAT2 $SCRATCH/$NAME/config
+#ln -s ./simulation_configs/SIMULATION_EU_12km_COSMO_ERA5 $SCRATCH/$NAME/config
 
+# COSMO standalone ssp1 MPI-ESM-HR
+#rm -f $SCRATCH/$NAME/config
+#ln -s ./simulation_configs/SIMULATION_EU_12km_COSMO_MPI-ESM $SCRATCH/$NAME/config
 
 # ---------------------------------------------------------------------------
 # Sync cesm and oasis input data
