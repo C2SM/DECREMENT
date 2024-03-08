@@ -11,6 +11,13 @@
 # Track duration
 SECONDS=0
 
+# CAUTION!!
+# with the new no_leap / 365_d calendar, the cas or laf/lbfd files need to be modified!
+#for f in *.nc; do
+#ncatted -a calendar,time,m,c,365_day $f tmp_$f
+#mv tmp_$f $f
+#done
+
 #---------------------------------------------------------------
 # Transfer from scratch to project for permanent storage
 #---------------------------------------------------------------
