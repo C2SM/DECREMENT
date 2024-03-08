@@ -21,9 +21,9 @@ export CLM_username='"psieber"'
 
 # Global Simulation Dates (YYYY-MM-DDTHH:00)
 # -----------
-export LM_INI_DATE="2004-06-01T00:00"     # Initial date of simualtion
+export LM_INI_DATE="2004-01-01T00:00"     # Initial date of simualtion
 #export LM_START_DATE="2004-01-01T00:00"   # use if you don't want to start from LM_INI_DATE
-export LM_FIN_DATE="2004-08-01T00:00"     # Overall end of simulation
+export LM_FIN_DATE="2004-01-05T00:00"     # Overall end of simulation
 
 export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.945       # ERA5 soil levels
 #export LM_NL_CZML_SOIL_IN=0.035,0.175,0.64,1.775      # 2007-2020 velasque has old data: czml_soil_in=0.035,0.175,0.64,1.775
@@ -43,7 +43,7 @@ export LM_CHAIN_INTERVAL="6 months" # Anything human readable like "2 hours", "1
 # ----------------------
 export NQS_ELAPSED_GET_DATA=06:00:00   # default 01:00:00
 export NQS_ELAPSED_IFS2LM=20:00:00     # default 00:30:00
-export NQS_ELAPSED_CCLM2_C=16:00:00    # default 01:00:00
+export NQS_ELAPSED_CCLM2_C=01:00:00    # default 01:00:00
 
 
 #====================================
@@ -52,15 +52,13 @@ export NQS_ELAPSED_CCLM2_C=16:00:00    # default 01:00:00
 # Link existing cas files instead of running 00_get_data which copies them (possible for Jan 2011)
 #export SB_PARTS="10_ifs2lm" # generate COSMO boundary conditions with INT2LM
 #cd 00_get_data/output
-#rm -f *
-#ln -s $SCRATCH/COSMO_inputdata/00_get_data_output_ERA5/* .
+#ln -sf $SCRATCH/COSMO_inputdata/00_get_data_output_ERA5/* .
 #cd ../..
 
 # Link existing bc files
 export SB_PARTS="20_cclm2_c"
 cd 10_ifs2lm/output
-rm -f *
-ln -s /scratch/snx3000/psieber/cclm2_EUR11_2004-summer/10_ifs2lm/output/* .
+ln -sf /scratch/snx3000/psieber/COSMO_boundary/INT2LM_output_ERA5/* .
 cd ../..
 
 #export LM_NL_IDBG_LEVEL_C=6 # 6, increase COSMO debug level for more output in cosmo*.out
@@ -75,8 +73,7 @@ cd ../..
 #export EXE_COSMO="../bin/cosmo_gpu"
 #export EXE_CESM="../bin/cesm.exe"
 #cd 20_cclm2_c/Defaults
-#rm -f cclm2_namcouple_defaults.sh
-#ln -s cclm2_namcouple_defaults_2alb.sh cclm2_namcouple_defaults.sh
+#ln -sf cclm2_namcouple_defaults_2alb.sh cclm2_namcouple_defaults.sh
 #cd ../..
 
 # Old executables
@@ -84,15 +81,13 @@ cd ../..
 #export EXE_CESM="../bin/cesm_1alb.exe"
 #export NQS_NIOLM_C=0                             # IO has to be turned off for the old COSMO exe
 #cd 20_cclm2_c/Defaults
-#rm -f cclm2_namcouple_defaults.sh
-#ln -s cclm2_namcouple_defaults_1alb.sh cclm2_namcouple_defaults.sh
+#ln -sf cclm2_namcouple_defaults_1alb.sh cclm2_namcouple_defaults.sh
 #cd ../..
 
 # COSMO standalone
 # ----------------------
 # Link simulation config from terminal!
-# rm -f config
-# ln -s ./simulation_configs/SIMULATION_EU_12km_COSMO_COPAT2
+# ln -sf ./simulation_configs/SIMULATION_COSMO-EUR11_ERA5 config
 
 #export SB_PARTS="10_ifs2lm 20_lm_c 60_chain"
 #export SB_PARTS="20_lm_c"
@@ -113,8 +108,7 @@ cd ../..
 # Link existing bc files, 6hr (ETH domain)
 #export SB_PARTS="20_cclm2_c 60_chain"
 #cd 10_ifs2lm/output
-#rm -f *
-#ln -s $SCRATCH/COSMO_inputdata/10_ifs2lm_output_ERA5-6hr/* .
+#ln -sf $SCRATCH/COSMO_inputdata/10_ifs2lm_output_ERA5-6hr/* .
 #cd ../..
 
 # INT2LM tests

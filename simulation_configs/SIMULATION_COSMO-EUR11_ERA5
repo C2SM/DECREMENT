@@ -54,9 +54,6 @@ export NQS_ELAPSED_PACK_DATA=07:00:00    # maximum wall-clock time (HH:mm:ss)
 #                   CONFIGURE COSMO
 # ===================================================
 
-# Experiment info for COSMO's IOCTL and INT2LM's INPUT
-export LM_NL_YNCGLOB_SOURCE='"COSMO6 driven by ERA5 / OASIS3-MCT4.0 / CLM5.0"'
-
 # BC grid (00_get_data and 10_ifs2lm)
 # =========
 
@@ -87,6 +84,7 @@ export LM_NL_HINCBOUND_C=6.0                                       # Input frequ
 export LM_NL_EXTPAR_C=extpar_EUR11_COPAT2.nc                       # EXTPAR file
 export LM_NL_EXT_IE_C=505                                          # Number of grid points (I: zonal, J: meridional)
 export LM_NL_EXT_JE_C=550                                          # in your external parameter file (containing topography etc.)
+export INT2LM_SORO=.FALSE.                                         # TRUE running with subgrid-scale orography (SORO), add S_ORO_MAX if missing (FALSE for COPAT2)
 
 # LM coarse
 # =========
@@ -106,6 +104,7 @@ export LM_NL_KELM_C=40                       # of the coarse grid
 
 #RUNCTL
 export LM_NL_DT_C=90                         # Time Step (seconds)
+export LM_NL_ITYPE_CALENDAR=2                # No-leap calendar compatible with CLM (for INT2LM and COSMO!)
 
 #TUNING
 export LM_NL_TKHMIN_C=0.35
@@ -149,11 +148,11 @@ export LM_NL_CZML_SOIL=0.005,0.025,0.07,0.16,0.34,0.70,1.42,2.86,5.74,11.50 # CO
 # INPUT_IO
 # ---------
 #IOCTL (for COSMO and INT2LM) 
-export LM_NL_YNCGLOB_SOURCE='"COSMO6.0 driven by ERA5 / OASIS3-MCT4.0 / CLM5.0"'
+export LM_NL_YNCGLOB_SOURCE='"COSMO6.0 driven by ERA5 / OASIS3-MCT4.0 / CLM5.0"' # Experiment info for COSMO's IOCTL and INT2LM's INPUT
 export LM_NL_YNCGLOB_PROJECT_ID='"FeedBaCks"'
 export LM_NL_YNCGLOB_EXPERIMENT_ID='"Test"'
 export LM_NL_YNCGLOB_CONTACT='"Petra Sieber (petra.sieber@env.ethz.ch)"'
-export LM_NL_LPREFETCH_C=.FALSE.           # Needs async IO, i.e. NQS_NIOLM_C > 0
+export LM_NL_LPREFETCH_C=.FALSE.                                                 # Needs async IO, i.e. NQS_NIOLM_C > 0
 
 #GRIBIN (for COSMO and INT2LM) 
 export LM_NL_LAN_RHO_SNOW_C=.FALSE.

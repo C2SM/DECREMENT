@@ -46,15 +46,18 @@ ${RUNCMD} -u ${EXE_INT2LM}
 grep -q 'CLEANUP' ${LM_RUN_OUTPUT}
 status=$?
 
-# Add S_ORO_MAX if missing
+# When done, if running with subgrid-scale orography (SORO), add S_ORO_MAX if missing
+# Not for COPAT2, here we run without subgrid-scale orography (SORO)
 if [[ $? == 0 ]]; then
-    module load NCO
-    cd output
-    for laf_file in laf*.nc; do
-        add_s_oro_max ${laf_file}
-        status=$?
-    done
-    cd - 1>/dev/null 2>/dev/null
+    if [[ $INT2LM_SORO == .TRUE. ]]; then
+        module load NCO
+        cd output
+        for laf_file in laf*.nc; do
+            add_s_oro_max ${laf_file}
+            status=$?
+        done
+        cd - 1>/dev/null 2>/dev/null
+    fi
 fi
 
 # echo date

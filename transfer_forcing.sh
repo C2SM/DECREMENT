@@ -19,7 +19,7 @@ SECONDS=0
 #rsync -av --progress $SCRATCH/cclm2_EUR11_hist-spinup/10_ifs2lm/output/* /project/s1256/psieber/CCLM2_preprocessing/COSMO_boundary/INT2LM_output_ERA5
 
 # Future SSP1 2034-2050 (ca 6h)
-rsync -av --progress $SCRATCH/cclm2_EUR11_future_BC/10_ifs2lm/output/* /project/s1256/psieber/CCLM2_preprocessing/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp126
+#rsync -av --progress $SCRATCH/cclm2_EUR11_future_BC/10_ifs2lm/output/* /project/s1256/psieber/CCLM2_preprocessing/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp126
 
 #---------------------------------------------------------------
 # Transfer from project to scratch for runtime access
@@ -32,6 +32,7 @@ rsync -av --progress $SCRATCH/cclm2_EUR11_future_BC/10_ifs2lm/output/* /project/
 
 # laf/lbfd input files for COSMO (output of INT2LM)
 #rsync -av --progress /project/s1256/psieber/CCLM2_preprocessing/COSMO_boundary/INT2LM_output_ERA5 $SCRATCH/COSMO_boundary/
+rsync -av --progress /project/s1256/psieber/CCLM2_preprocessing/COSMO_boundary/INT2LM_output_ERA5/*200401* $SCRATCH/COSMO_boundary/INT2LM_output_ERA5/
 #rsync -av --progress /project/s1256/psieber/CCLM2_preprocessing/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp126 $SCRATCH/COSMO_boundary/
 
 # Evaluate duration and print to log file

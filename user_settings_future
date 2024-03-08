@@ -57,8 +57,7 @@ export NQS_ELAPSED_CCLM2_C=24:00:00    # default 01:00:00
 # Link existing bc files
 #export SB_PARTS="20_cclm2_c"
 #cd 10_ifs2lm/output
-#rm -f *
-#ln -s /scratch/snx3000/psieber/cclm2_EUR11_2004-summer/10_ifs2lm/output/* .
+#ln -sf /scratch/snx3000/psieber/cclm2_EUR11_2004-summer/10_ifs2lm/output/* .
 #cd ../..
 
 # Link cas files instead of running 00_get_data which copies them
@@ -80,55 +79,17 @@ export NQS_ELAPSED_CCLM2_C=24:00:00    # default 01:00:00
 #====================================
 #====================================
 
-# Executables and albedo coupling
-# -----------
-# New executables
-#export EXE_COSMO="../bin/cosmo_gpu"
-#export EXE_CESM="../bin/cesm.exe"
-#cd 20_cclm2_c/Defaults
-#rm -f cclm2_namcouple_defaults.sh
-#ln -s cclm2_namcouple_defaults_2alb.sh cclm2_namcouple_defaults.sh
-#cd ../..
-
-# Old executables
-#export EXE_COSMO="../bin/cosmo_gpu_noIO_1alb"
-#export EXE_CESM="../bin/cesm_1alb.exe"
-#export NQS_NIOLM_C=0                             # IO has to be turned off for the old COSMO exe
-#cd 20_cclm2_c/Defaults
-#rm -f cclm2_namcouple_defaults.sh
-#ln -s cclm2_namcouple_defaults_1alb.sh cclm2_namcouple_defaults.sh
-#cd ../..
-
 # COSMO standalone
 # ----------------------
 # Link simulation config from terminal!
-# rm -f config
-# ln -s ./simulation_configs/SIMULATION_EU_12km_COSMO_COPAT2
+# ln -sf ./simulation_configs/SIMULATION_EU_12km_COSMO_COPAT2 config
 
 #export SB_PARTS="10_ifs2lm 20_lm_c 60_chain"
 #export SB_PARTS="20_lm_c"
 #export NQS_ELAPSED_LM_C=00:30:00
 
-# Tests
-# -----------
-# Try using Eric's cosmo executable for cpu (did not work, missing access to eccodes lib on pr133)
-#export EXE_COSMO="/scratch/snx3000/emaison/COSMO-CLM2_sandbox/EU-CORDEX_50km/cosmo"
-#export COSMO_TARGET="cpu"            # COSMO target architecture, default gpu
-
-# 10_ifs2lm and 20_cclm2_c
-#export LM_NL_EXTPAR_C=extpar_euro_12km_771x771.nc                 # int2lm@2.5.1_demorym
-#export LM_NL_EXTPAR_C=extpar_euro_12km_771x771_TCL_S_ORO_MAX.nc   # int2lm@c2sm-features and scClim
-#export LM_NL_EXTPAR_C=extpar_12km_europe_771x771.nc                # CCLM2 for itype_albedo=2
-#export LM_NL_ITYPE_ALBEDO_C=2                                      # CCLM2 for coupling
-
-# Link existing bc files, 6hr (ETH domain)
-#export SB_PARTS="20_cclm2_c 60_chain"
-#cd 10_ifs2lm/output
-#rm -f *
-#ln -s $SCRATCH/COSMO_inputdata/10_ifs2lm_output_ERA5-6hr/* .
-#cd ../..
-
 # INT2LM tests
+# -----------
 #export NQS_ELAPSED_IFS2LM=01:30:00  # maximum wall-clock time (HH:mm:ss)
 #export NQS_NXIFS2LM=4               # number of CPUs in x direction (12 per node on daint-gpu)
 #export NQS_NYIFS2LM=6               # number of CPUs in y direction
@@ -145,22 +106,6 @@ export NQS_ELAPSED_CCLM2_C=24:00:00    # default 01:00:00
 #export LM_NL_IDBG_LEVEL_C=6 # 6, increase COSMO debug level for more output in cosmo*.out
 #export NQS_NIOLM_C=0        # 1 for production, 0 to generate rmp files
 
-
-# Dependencies
-# -----------
-# The format is xxx_deps="current_yyy previous_zzz ..."
-# where xxx, yyy and zzz are valid "short names" of parts to be ran,
-# i.e without the "kk_" leading digits of the name.
-#export get_data_deps=""
-#export ifs2lm_deps="previous_ifs2lm current_get_data"
-#export lm_c_deps="previous_lm_c current_ifs2lm"
-#export chain_deps="previous_lm_c"
-
-# Ensemble settings
-# -----------
-#export LM_NL_ITYPE_PERT_C=1
-#export LM_NL_RPERTURB_C=0.00001
-#export LM_NL_ENS_NUMBER_C=10 #Set the number of ensemble members. Leave commented to use normal mode.
 
 
 

@@ -20,8 +20,8 @@ rm -f $SCRATCH/$NAME/config
 ln -s ./simulation_configs/CCLM2/CCLM2_EUR11_historical $SCRATCH/$NAME/config
 
 # CCLM2 future ssp1 MPI-ESM-HR
-rm -f $SCRATCH/$NAME/config
-ln -s ./simulation_configs/CCLM2/CCLM2_EUR11_ssp1 $SCRATCH/$NAME/config
+#rm -f $SCRATCH/$NAME/config
+#ln -s ./simulation_configs/CCLM2/CCLM2_EUR11_ssp1 $SCRATCH/$NAME/config
 
 # COSMO standalone historical
 #rm -f $SCRATCH/$NAME/config
@@ -36,7 +36,8 @@ ln -s ./simulation_configs/CCLM2/CCLM2_EUR11_ssp1 $SCRATCH/$NAME/config
 # ---------------------------------------------------------------------------
 
 # Sync all input data to scratch
-rsync -av $PROJECT/cclm2_input_decrement $SCRATCH/
+rsync -av /project/s1256/psieber/cclm2_input_decrement $SCRATCH/
+#rsync -av $PROJECT/cclm2_input_decrement $SCRATCH/
 
 # Linking cesm_input files and oasis_input files (masks, areas, grids; rmp once generated) is done in the CCLM2 config
 

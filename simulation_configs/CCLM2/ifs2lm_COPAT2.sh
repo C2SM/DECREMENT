@@ -11,6 +11,7 @@ ifs2lm_INPUT(){
   hstop = $LM_NL_HSTOP
   hincbound = $LM_NL_HINCBOUND_C
   ydate_ini = '${LM_YYYY_INI}${LM_MM_INI}${LM_DD_INI}${LM_ZZ_INI}0000'
+  itype_calendar = $LM_NL_ITYPE_CALENDAR
   linitial = .TRUE.
   lboundaries = .TRUE.
   ltime_mean = .TRUE.

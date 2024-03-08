@@ -35,7 +35,7 @@ lm_c_INPUT_ORG(){
   hstop = $LM_NL_HSTOP
   dt = $LM_NL_DT_C 
   ydate_ini = '${LM_YYYY_INI}${LM_MM_INI}${LM_DD_INI}${LM_ZZ_INI}0000'
-  itype_calendar = 2
+  itype_calendar = $LM_NL_ITYPE_CALENDAR
   hincmxt = 24.0
   hincmxu = 24.0
   itype_pert = ${LM_NL_ITYPE_PERT_C}
