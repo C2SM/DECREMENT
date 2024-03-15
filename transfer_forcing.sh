@@ -39,8 +39,15 @@ SECONDS=0
 
 # laf/lbfd input files for COSMO (output of INT2LM)
 #rsync -av --progress /project/s1256/psieber/CCLM2_preprocessing/COSMO_boundary/INT2LM_output_ERA5 $SCRATCH/COSMO_boundary/
-rsync -av --progress /project/s1256/psieber/CCLM2_preprocessing/COSMO_boundary/INT2LM_output_ERA5/*200401* $SCRATCH/COSMO_boundary/INT2LM_output_ERA5/
+#rsync -av --progress /project/s1256/psieber/CCLM2_preprocessing/COSMO_boundary/INT2LM_output_ERA5/*200401* $SCRATCH/COSMO_boundary/INT2LM_output_ERA5/
 #rsync -av --progress /project/s1256/psieber/CCLM2_preprocessing/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp126 $SCRATCH/COSMO_boundary/
+
+# Future SSP1
+# laf/lbfd input files for COSMO (output of INT2LM)
+rsync -av --progress /project/s1256/yyao/COSMO-boundary/MPI-ssp370/* $SCRATCH/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp370/
+cd $SCRATCH/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp370
+rm laf20340101000000.nc laf20490101000000.nc
+rm lbfd2034*.nc
 
 # Evaluate duration and print to log file
 duration=$SECONDS

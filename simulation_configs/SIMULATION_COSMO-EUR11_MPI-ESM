@@ -141,7 +141,7 @@ export LM_NL_LLAKE_C=.FALSE.               # turn off lake model (on in COPAT2, 
 export LM_NL_LSSO_C=.TRUE.                 # subgrid scale orographic (SSO) effects
 export LM_NL_HINCRAD_C=0.25                # time interval (hours) to call the radiation scheme
 export LM_NL_ITYPE_GSCP_C=3                # grid scale cloud and precipitation scheme (3=EU)
-export LM_NL_ICO2_RAD_C=12                 # 7=RCP2.6, 8=RCP4.5, 12=SSP1-2.6
+export LM_NL_ICO2_RAD_C=12                 # 7=RCP2.6, 8=RCP4.5, 12=SSP1-2.6, 14=SSP3-7.0
 export LM_NL_ITYPE_ALBEDO_C=2              # has to be 2 for CCLM2 coupling (ALB_DRY, ALB_SAT on laf)
 export LM_NL_CZML_SOIL=0.005,0.025,0.07,0.16,0.34,0.70,1.42,2.86,5.74,11.50 # COSMO soil levels
 

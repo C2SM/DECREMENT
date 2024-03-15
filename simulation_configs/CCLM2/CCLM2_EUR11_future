@@ -6,6 +6,16 @@
 # CAUTION: Sourcing is done from the DECREMENT root dir
 #          so path for sourcing are relative to there.
 
+# Ensure consistent SSP settings for CLM and COSMO! Default is SSP1-2.6, put SSP3-7.0 variables in the user_settings
+# SSP1-2.6
+# CLM_fco2="fco2_datm_globalSSP1-2.6__simyr_2014-2501_CMIP6_c190506.nc"
+# LM_NL_ICO2_RAD_C=12
+# LM_NL_YNCGLOB_SOURCE='"COSMO6.0 driven by MPI-ESM-HR_ssp126_r1i1p1f1 / OASIS3-MCT4.0 / CLM5.0"' # Experiment info for COSMO's IOCTL and INT2LM's INPUT
+
+# SSP3-7.0
+# CLM_fco2="fco2_datm_globalSSP3-7.0__simyr_2014-2501_CMIP6_c190506.nc"
+# LM_NL_ICO2_RAD_C=14
+# LM_NL_YNCGLOB_SOURCE='"COSMO6.0 driven by MPI-ESM-HR_ssp370_r1i1p1f1 / OASIS3-MCT4.0 / CLM5.0"' # Experiment info for COSMO's IOCTL and INT2LM's INPUT
 
 # ===================================================
 #                   COSMO
@@ -14,7 +24,7 @@
 # Grid-specific settings
 # ----------------------
 # COSMO config (source first to avoid overriding CCLM2 settings!)
-source simulation_configs/SIMULATION_COSMO-EUR11_MPI-ESM  # COPAT2 params, using int2lm with MPI-ESM-HR ssp126 r1i1p1f1 (data available 2030-2071)
+source simulation_configs/SIMULATION_COSMO-EUR11_MPI-ESM  # COPAT2 params, using int2lm with MPI-ESM-HR, default is SSP1-2.6 r1i1p1f1 (data available 2030-2071)
 
 # General settings
 # ----------------------
@@ -71,12 +81,6 @@ export CLM_domainfile="domain_EUR11_lon360_reduced.nc" # "reduced" has to corres
 export CLM_oasisdummy="OASIS_dummy_EUR11_lon360.nc"
 export CLM_finidat="clmi.I2000Clm50BgcCrop.2011-01-01.1.9x2.5_gx1v7_gl4_simyr2000_c190312.nc"
 export CLM_fsurdat="surfdata_0.1x0.1_EUR11_hist_16pfts_Irrig_CMIP6_simyr2005_c230523.nc" # default
-
-# surfdata_0.1x0.1_EUR11_hist_16pfts_Irrig_CMIP6_simyr2005_c230523_eunisl3_ssp1_corr.nc
-# surfdata_0.1x0.1_EUR11_hist_16pfts_Irrig_CMIP6_simyr2005_c230523_eunisl3_nac_corr.nc
-# surfdata_0.1x0.1_EUR11_hist_16pfts_Irrig_CMIP6_simyr2005_c230523_eunisl3_nfn_corr.nc
-# surfdata_0.1x0.1_EUR11_hist_16pfts_Irrig_CMIP6_simyr2005_c230523_eunisl3_nfs_corr.nc
-
 
 # Output variables, frequency and averaging
 # ----------------------

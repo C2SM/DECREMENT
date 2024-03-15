@@ -5,6 +5,7 @@
 # USAGE
 # bash transfer_decrement.sh cclm2_EUR11_hist-spinup
 # bash transfer_decrement.sh cclm2_EUR11_FB_ssp1
+# bash transfer_decrement.sh cclm2_EUR11_ssp3_ref
 
 NAME=$1     # name of the decrement directory on scratch, e.g. decrement_EUR11
 
@@ -16,12 +17,12 @@ rsync -av $PROJECT/decrement/* $SCRATCH/$NAME/.
 
 # Link the appropriate simulation_config; make sure that this one links the desired COSMO config (ERA5 vs. MPI-ESM-HR)
 # CCLM2 historical ERA5
-rm -f $SCRATCH/$NAME/config
-ln -s ./simulation_configs/CCLM2/CCLM2_EUR11_historical $SCRATCH/$NAME/config
-
-# CCLM2 future ssp1 MPI-ESM-HR
 #rm -f $SCRATCH/$NAME/config
-#ln -s ./simulation_configs/CCLM2/CCLM2_EUR11_ssp1 $SCRATCH/$NAME/config
+#ln -s ./simulation_configs/CCLM2/CCLM2_EUR11_historical $SCRATCH/$NAME/config
+
+# CCLM2 future MPI-ESM-HR
+rm -f $SCRATCH/$NAME/config
+ln -s ./simulation_configs/CCLM2/CCLM2_EUR11_future $SCRATCH/$NAME/config
 
 # COSMO standalone historical
 #rm -f $SCRATCH/$NAME/config
