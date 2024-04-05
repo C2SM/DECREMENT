@@ -1,6 +1,6 @@
 #!/bin/bash -l
 #
-#SBATCH --job-name="postproc"
+#SBATCH --job-name="postproc_spinup"
 #SBATCH --account="s1256"
 #SBATCH --time=00:30:00
 #SBATCH --partition=normal
@@ -31,7 +31,7 @@ export CRAY_CUDA_MPS=1
 
 # Create yearly means of all CLM monthly (h3) and daily (h0) output variables
 # Launch from and work on scratch to have writing permission  (project is read-only for slurm jobs)
-# Transfer from scratch to project for permanent storage with rsync in the end
+# Transfer from scratch to project for permanent storage with rsync afterwards
 # Petra Sieber 2024-01-16
 
 # Track duration

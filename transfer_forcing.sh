@@ -1,12 +1,12 @@
 #!/bin/bash -l
 #
-#SBATCH --job-name="transfer_ssp1"
+#SBATCH --job-name="transfer_forcing"
 #SBATCH --time=24:00:00
 #SBATCH --partition=xfer
 #SBATCH --hint=nomultithread
 #SBATCH --nodes=1
-#SBATCH --output=log_transfer_ssp1.out
-#SBATCH --error=log_transfer_ssp1.err
+#SBATCH --output=log_transfer_forcing.out
+#SBATCH --error=log_transfer_forcing.err
 
 # Track duration
 SECONDS=0
@@ -44,6 +44,7 @@ SECONDS=0
 
 # Future SSP1
 # laf/lbfd input files for COSMO (output of INT2LM)
+mkdir -p /scratch/snx3000/psieber/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp370
 rsync -av --progress /project/s1256/yyao/COSMO-boundary/MPI-ssp370/* $SCRATCH/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp370/
 cd $SCRATCH/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp370
 rm laf20340101000000.nc laf20490101000000.nc

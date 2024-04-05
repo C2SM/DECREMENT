@@ -2,7 +2,7 @@
 #
 #SBATCH --job-name="post_clm"
 #SBATCH --account="s1256"
-#SBATCH --time=09:00:00
+#SBATCH --time=12:00:00
 #SBATCH --partition=normal
 #SBATCH --constraint=gpu
 #SBATCH --hint=nomultithread
@@ -50,7 +50,7 @@ cd ${sourcedir}
 cdo -selname,area,landfrac,landmask,pftmask,nbedrock,ZSOI,DZSOI,WATSAT,SUCSAT,BSW,HKSAT,ZLAKE,DZLAKE clm5.0_eur0.1.clm2.h0.${year_start}-01-01-00000.nc ${destdir}/clm_auxiliaries.nc
 
 #==========================================
-# Merge time, merge tapes, fix calendar
+# Merge time, merge tapes
 #==========================================
 
 cd ${sourcedir}
@@ -72,15 +72,6 @@ cd ${destdir}
 outfile=clm5.0_eur0.1.clm2.hx_2006-2015_daily.nc
 cdo -shifttime,-1day -merge [ tmp_h0.nc tmp_h1.nc tmp_h2.nc ] tmp_$outfile
 
-# Fix calendar (removes time_bnds)
-# Set calendar from 365_day (=noleap, goes to 2016-01-04) to proleptic_gregorian (leap, goes to 2016-01-01)
-ncatted -a calendar,time,m,c,proleptic_gregorian tmp_$outfile tmp_calendar.nc
-# Copy as absolute calendar
-cdo -a copy tmp_calendar.nc tmp_$outfile
-# Change time format to relative for reading with e.g. xarray
-# Clip to the analysis period
-cdo -selyear,${year_start}/${year_end} -setreftime,${year_ini}-01-01,00:00:00,days tmp_$outfile $outfile
-
 rm tmp*.nc
 
 #==========================================
@@ -101,6 +92,9 @@ rm $outfile
 #    ncks -4 -L 1 $f tmp_$f
 #    mv tmp_$f $f
 #done
+
+# Create daily timeseries of T2m av, min, max for DTR and q99
+cdo -mergetime -apply,-selname,T_2M_AV,TMIN_2M,TMAX_2M [ lffd_*_daily.nc ] lffd_2041-2050_daily_T2m.nc
 
 # Evaluate duration and print to log file
 duration=$SECONDS
@@ -141,8 +135,6 @@ cdo -delname,time_bnds tmp2.nc $outfile
 
 # Set the time bounds to set them correctly at timestamp-timestamp+1
 #ncap2 -O -s 'time@bounds="time_bnds";defdim("bnds",2);time_bnds[$time,$bnds]=0.0;*time_dff=(time(1)-time(0));time_bnds(:,0)=time;time_bnds(:,1)=time+time_dff;' tmp.nc $outfile
-
-# Fixing the calendar doesn't help correcting monthly files
 
 rm tmp*.nc
 

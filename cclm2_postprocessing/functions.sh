@@ -10,9 +10,9 @@
 #export year_end=2015                                 # end of the analysis period
 
 # FUTURE
-export year_ini=2034                                 # initial date of the simulation, incl spin-up
-export year_start=2041                               # start of the analysis period, excl spin-up or min 10 years
-export year_end=2050                                 # end of the analysis period
+export year_ini=2048                                 # initial date of the simulation, incl spin-up
+export year_start=2055                               # start of the analysis period, excl spin-up or min 10 years
+export year_end=2064                                 # end of the analysis period
 
 export case_source=$(basename "$(dirname "${PWD}")") # extract case name
 export case_dest=$case_source                        # case name on PROJECT
@@ -48,22 +48,23 @@ postproc_clm(){
 }
 
 # Grid description and weights for bilinear re-gridding to the CLM regular lonlat grid
-scriptdir=$PWD
-clmfile=$(ls ../20_cclm2_c/clm5.0_eur0.1.clm2.h0.*-01-01-00000.nc | head -n 1)
-cosmofile=$(ls ../20_cclm2_c/cosmo_output/daily_2D/lffd*.nc | head -n 1)
+# Uncomment to re-generate for a new domain, resolution, grid or spatial extent
+# scriptdir=$PWD
+# clmfile=$(ls ../20_cclm2_c/clm5.0_eur0.1.clm2.h0.*-01-01-00000.nc | head -n 1)
+# cosmofile=$(ls ../20_cclm2_c/cosmo_output/daily_2D/lffd*.nc | head -n 1)
 
-export gridfile=${scriptdir}/grid_EUR11_lonlat_griddes.txt
-if [ ! -f "$gridfile" ]; then
-    cdo griddes $clmfile > $gridfile
-fi
+# export gridfile=${scriptdir}/grid_EUR11_lonlat_griddes.txt
+# if [ ! -f "$gridfile" ]; then
+#     cdo griddes $clmfile > $gridfile
+# fi
 
-export weightsfile=${scriptdir}/grid_EUR11_lonlat_genbil.nc
-if [ ! -f "$weightsfile" ]; then
-    cdo -selname,T_2M_AV $cosmofile tmp1_cosmo.nc
-    ncks -O -d rlon,14,-13 -d rlat,14,-13 tmp1_cosmo.nc tmp2_cosmo.nc
-    cdo genbil,$gridfile tmp2_cosmo.nc $weightsfile
-    rm tmp*_cosmo.nc
-fi
+# export weightsfile=${scriptdir}/grid_EUR11_lonlat_genbil.nc
+# if [ ! -f "$weightsfile" ]; then
+#     cdo -selname,T_2M_AV $cosmofile tmp1_cosmo.nc
+#     ncks -O -d rlon,14,-13 -d rlat,14,-13 tmp1_cosmo.nc tmp2_cosmo.nc
+#     cdo genbil,$gridfile tmp2_cosmo.nc $weightsfile
+#     rm tmp*_cosmo.nc
+# fi
 
 # Basic post-processing of COSMO output
 postproc_cosmo(){
