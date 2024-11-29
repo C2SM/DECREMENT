@@ -1,7 +1,7 @@
 #!/bin/bash -l
 #
 #SBATCH --job-name="transfer_forcing"
-#SBATCH --time=24:00:00
+#SBATCH --time=12:00:00
 #SBATCH --partition=xfer
 #SBATCH --hint=nomultithread
 #SBATCH --nodes=1
@@ -28,6 +28,9 @@ SECONDS=0
 # Future SSP1 2034-2050 (ca 6h)
 #rsync -av --progress $SCRATCH/cclm2_EUR11_future_BC/10_ifs2lm/output/* /project/s1256/psieber/CCLM2_preprocessing/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp126
 
+# Future SSP3 2048-2064 (ca 6h)
+rsync -av --progress $SCRATCH/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp370/* /project/s1256/psieber/CCLM2_preprocessing/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp370/
+
 #---------------------------------------------------------------
 # Transfer from project to scratch for runtime access
 #---------------------------------------------------------------
@@ -42,13 +45,13 @@ SECONDS=0
 #rsync -av --progress /project/s1256/psieber/CCLM2_preprocessing/COSMO_boundary/INT2LM_output_ERA5/*200401* $SCRATCH/COSMO_boundary/INT2LM_output_ERA5/
 #rsync -av --progress /project/s1256/psieber/CCLM2_preprocessing/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp126 $SCRATCH/COSMO_boundary/
 
-# Future SSP1
+# Future SSP3
 # laf/lbfd input files for COSMO (output of INT2LM)
-mkdir -p /scratch/snx3000/psieber/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp370
-rsync -av --progress /project/s1256/yyao/COSMO-boundary/MPI-ssp370/* $SCRATCH/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp370/
-cd $SCRATCH/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp370
-rm laf20340101000000.nc laf20490101000000.nc
-rm lbfd2034*.nc
+# mkdir -p /scratch/snx3000/psieber/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp370
+# rsync -av --progress /project/s1256/yyao/COSMO-boundary/MPI-ssp370/* $SCRATCH/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp370/
+# cd $SCRATCH/COSMO_boundary/INT2LM_output_MPI-ESM-HR_ssp370
+# rm laf20340101000000.nc laf20490101000000.nc
+# rm lbfd2034*.nc
 
 # Evaluate duration and print to log file
 duration=$SECONDS

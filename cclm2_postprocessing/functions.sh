@@ -48,23 +48,23 @@ postproc_clm(){
 }
 
 # Grid description and weights for bilinear re-gridding to the CLM regular lonlat grid
-# Uncomment to re-generate for a new domain, resolution, grid or spatial extent
-# scriptdir=$PWD
-# clmfile=$(ls ../20_cclm2_c/clm5.0_eur0.1.clm2.h0.*-01-01-00000.nc | head -n 1)
-# cosmofile=$(ls ../20_cclm2_c/cosmo_output/daily_2D/lffd*.nc | head -n 1)
+# Generated newly only if they do not yet exist
+scriptdir=$PWD
+clmfile=$(ls ../20_cclm2_c/clm5.0_eur0.1.clm2.h0.*-01-01-00000.nc | head -n 1)
+cosmofile=$(ls ../20_cclm2_c/cosmo_output/daily_2D/lffd*.nc | head -n 1)
 
-# export gridfile=${scriptdir}/grid_EUR11_lonlat_griddes.txt
-# if [ ! -f "$gridfile" ]; then
-#     cdo griddes $clmfile > $gridfile
-# fi
+export gridfile=${scriptdir}/grid_EUR11_lonlat_griddes.txt
+if [ ! -f "$gridfile" ]; then
+    cdo griddes $clmfile > $gridfile
+fi
 
-# export weightsfile=${scriptdir}/grid_EUR11_lonlat_genbil.nc
-# if [ ! -f "$weightsfile" ]; then
-#     cdo -selname,T_2M_AV $cosmofile tmp1_cosmo.nc
-#     ncks -O -d rlon,14,-13 -d rlat,14,-13 tmp1_cosmo.nc tmp2_cosmo.nc
-#     cdo genbil,$gridfile tmp2_cosmo.nc $weightsfile
-#     rm tmp*_cosmo.nc
-# fi
+export weightsfile=${scriptdir}/grid_EUR11_lonlat_genbil.nc
+if [ ! -f "$weightsfile" ]; then
+    cdo -selname,T_2M_AV $cosmofile tmp1_cosmo.nc
+    ncks -O -d rlon,14,-13 -d rlat,14,-13 tmp1_cosmo.nc tmp2_cosmo.nc
+    cdo genbil,$gridfile tmp2_cosmo.nc $weightsfile
+    rm tmp*_cosmo.nc
+fi
 
 # Basic post-processing of COSMO output
 postproc_cosmo(){

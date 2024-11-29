@@ -15,9 +15,9 @@ export CLM_username='"psieber"'
 
 # Global Simulation Dates (YYYY-MM-DDTHH:00)
 # -----------
-export LM_INI_DATE="2034-01-01T00:00"     # Initial date of simualtion
-export LM_START_DATE="2034-01-01T00:00"   # Use if you don't want to start from LM_INI_DATE
-export LM_FIN_DATE="2051-01-01T00:00"     # Overall end of simulation
+export LM_INI_DATE="2048-01-01T00:00"     # Initial date of simualtion
+export LM_START_DATE="2048-01-01T00:00"   # Use if you don't want to start from LM_INI_DATE
+export LM_FIN_DATE="2065-01-01T00:00"     # Overall end of simulation
 
 # Chaining interval, i.e., how long one simualtion chunk will be. If unset, run in one chunk
 export LM_CHAIN_INTERVAL="1 year" # Anything human readable like "2 hours", "1 month", "1 day", "" to run in one chunk

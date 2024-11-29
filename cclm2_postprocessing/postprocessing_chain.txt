@@ -6,56 +6,120 @@ cases="cclm2_EUR11_ssp3_ref cclm2_EUR11_ssp3_dieback cclm2_EUR11_ssp3_mgmt"
 
 
 #-----------------------------
+# Add params file to case_docs
+#-----------------------------
+cases="cclm2_EUR11_FB_nac cclm2_EUR11_FB_nfn cclm2_EUR11_FB_nfs cclm2_EUR11_FB_ssp1 cclm2_EUR11_ssp3_ref cclm2_EUR11_ssp3_dieback cclm2_EUR11_ssp3_mgmt"
+for case in $cases; do
+    cp clm5_params.c171117.nc ${case}/clm/case_docs/indata/.
+done
+
+
+#-----------------------------
+# REMOVE EMPTY FILE AFTER THE END OF THE SIM PERIOD (produced with 0 timestamps after changing to no-leap calendar)
+# This file would create problems during postprocessing
+#-----------------------------
+
+cases="cclm2_EUR11_ssp3_ref cclm2_EUR11_ssp3_dieback cclm2_EUR11_ssp3_mgmt"
+for case in $cases; do
+    rm $SCRATCH/${case}/20_cclm2_c/clm5.0_eur0.1.clm2.h*.2065-01-01-00000.nc
+done
+
+
+#-----------------------------
 # POSTPROCESSING
 #-----------------------------
 
 for case in $cases; do
-    # Copy the postprocessing scripts to scratch (now integrated in DECREMENT)
+    # Copy the postprocessing scripts to scratch (now integrated in DECREMENT, still useful for updates)
     cd $PROJECT/decrement
-    cp -r cclm2_postprocessing $SCRATCH/${case}
+    rsync -av cclm2_postprocessing $SCRATCH/${case}
 
     # Submit the postprocessing jobs
     cd $SCRATCH/${case}/cclm2_postprocessing
-    sbatch spinup-stability_CLM.sh
+    #sbatch spinup-stability_CLM.sh
     sbatch postprocess_CLM.sh
     sbatch postprocess_COSMO.sh
 done
 
 # When all postprocessing is done, sumit the xfer jobs
 for case in $cases; do
+    rsync -av $PROJECT/decrement/cclm2_postprocessing/postprocess_xfer.sh $SCRATCH/${case}/cclm2_postprocessing/
     cd $SCRATCH/${case}/cclm2_postprocessing
     sbatch postprocess_xfer.sh
 done
 
-## Add a missing postprocessing step (now integrated in postprocess_CLM.sh)
+
+#-----------------------------
+# ADD MISSING POSTPROC STEPS (now integrated in postprocess_CLM.sh)
+#-----------------------------
+#cases="cclm2_EUR11_FB_nac cclm2_EUR11_FB_nfn cclm2_EUR11_FB_nfs cclm2_EUR11_FB_ssp1"
+#year_start=2041
+#year_end=2050
+cases="cclm2_EUR11_historical"
+year_start=2006
+year_end=2015
+
+# Monthly mean of daily data
 for case in $cases; do
     cd $PROJECT/cclm2_output_processed/${case}/clm/daily
-    cdo -L --timestat_date first -monmean -mergetime [ clm5.0_eur0.1.clm2.hx_daily_*.nc ] ../monthly/clm5.0_eur0.1.clm2.hx_2041-2050_monthly.nc
+    cdo -L --timestat_date first -monmean -mergetime [ clm5.0_eur0.1.clm2.hx_daily_*.nc ] ../monthly/clm5.0_eur0.1.clm2.hx_${year_start}-${year_end}_monthly.nc
 done
 
-# Merge tapes
+# Merge monthly tapes
 for case in $cases; do
-    #rm $PROJECT/cclm2_output_processed/${case}/clm/monthly/tmp.nc
-    rm $PROJECT/cclm2_output_processed/${case}/clm/monthly/clm5.0_eur0.1.clm2.hx_2041-2050_monthly.nc
+    cd $PROJECT/cclm2_output_processed/${case}/clm/monthly
+    cdo -delvar,TBOT,TSKIN,TSA,TSA_MIN,TSA_MAX clm5.0_eur0.1.clm2.hx_${year_start}-${year_end}_monthly.nc tmp.nc
+    cdo -merge [ clm5.0_eur0.1.clm2.h3_${year_start}-${year_end}_monthly.nc tmp.nc ] clm5.0_eur0.1.clm2.hxx_${year_start}-${year_end}_monthly.nc
+    rm tmp.nc
+    #rm clm5.0_eur0.1.clm2.hx_${year_start}-${year_end}_monthly.nc
 done
 
 # Create daily timeseries of T2m av, min, max for DTR and q99 (now integrated in postprocess_CLM.sh)
-cases="cclm2_EUR11_FB_nac cclm2_EUR11_FB_nfn cclm2_EUR11_FB_nfs cclm2_EUR11_FB_ssp1"
 for case in $cases; do
     cd $PROJECT/cclm2_output_processed/${case}/cosmo/daily
-    cdo -mergetime -apply,-selname,T_2M_AV,TMIN_2M,TMAX_2M [ lffd_*_daily.nc ] lffd_2041-2050_daily_T2m.nc
+    cdo -mergetime -apply,-selname,T_2M_AV,TMIN_2M,TMAX_2M [ lffd_*_daily.nc ] lffd_${year_start}-${year_end}_daily_T2m.nc
 done
+
+#-----------------------------
+# RE-DO FAILED OR TIMED-OUT POSTPROCESSING STEPS
+#-----------------------------
+
+cases="cclm2_EUR11_ssp3_ref cclm2_EUR11_ssp3_dieback cclm2_EUR11_ssp3_mgmt"
+for case in $cases; do
+    cd $SCRATCH/${case}/cclm2_postprocessing
+
+    casedir=$SCRATCH/${case}
+    scriptdir=$PWD
+
+    # CLM case_docs
+    destdir=$scriptdir/cclm2_output_processed/${case}/clm/case_docs    
+    rsync -av $casedir/simulation_configs/SIMULATION_COSMO-EUR11_MPI-ESM $destdir/config/
+    rsync -av $casedir/user_settings $destdir/config/
+    rsync -av postprocess_CLM.sh $destdir/
+
+    # COSMO timed-out rest (comment out completed parts and re-submit)
+    sbatch postprocess_COSMO.sh
+done
+
+cases="cclm2_EUR11_ssp3_ref cclm2_EUR11_ssp3_dieback cclm2_EUR11_ssp3_mgmt"
+for case in $cases; do
+    cd $SCRATCH/${case}/cclm2_postprocessing/cclm2_output_processed/${case}/cosmo/monthly    
+    rm tmp*.nc
+
+    cd $SCRATCH/${case}/cclm2_postprocessing
+    sbatch postprocess_COSMO.sh
+done
+
 
 #-----------------------------
 # ARCHIVING
 #-----------------------------
 
+cases="cclm2_EUR11_ssp3_ref cclm2_EUR11_ssp3_dieback cclm2_EUR11_ssp3_mgmt"
 for case in $cases; do
     # Copy user settings and scripts to scratch
     mv $SCRATCH/${case}/user_settings $SCRATCH/${case}/user_settings_future
     cp $PROJECT/decrement/user_settings_archiving $SCRATCH/${case}/user_settings
-    cp $PROJECT/decrement/tools.sh $SCRATCH/${case}/
-    rsync -av $PROJECT/decrement/50_pack_data $SCRATCH/${case}/
 
     # Run (submits the jobs chained)
     cd $SCRATCH/${case}

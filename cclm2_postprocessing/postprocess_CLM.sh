@@ -16,7 +16,7 @@
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export CRAY_CUDA_MPS=1
 
-# Postprocessing of CCLM2 output from CLM (takes ca 8h)
+# Postprocessing of CCLM2 output from CLM (takes ca 10h)
 # Launch from and work on scratch to have writing permission  (project is read-only for slurm jobs)
 # Transfer from scratch to project for permanent storage with rsync in the end
 # Petra Sieber 2024-01-17
@@ -69,8 +69,8 @@ cd ${destdir}
 
 # Merge tapes, creates 285 GB file and takes ca 30 min
 # Shift timestamp to the beginning of the accumulation interval to mark the correct day for averaging and splitting
-outfile=clm5.0_eur0.1.clm2.hx_2006-2015_daily.nc
-cdo -shifttime,-1day -merge [ tmp_h0.nc tmp_h1.nc tmp_h2.nc ] tmp_$outfile
+outfile=clm5.0_eur0.1.clm2.hx_${year_start}-${year_end}_daily.nc
+cdo -shifttime,-1day -merge [ tmp_h0.nc tmp_h1.nc tmp_h2.nc ] $outfile
 
 rm tmp*.nc
 
@@ -92,9 +92,6 @@ rm $outfile
 #    ncks -4 -L 1 $f tmp_$f
 #    mv tmp_$f $f
 #done
-
-# Create daily timeseries of T2m av, min, max for DTR and q99
-cdo -mergetime -apply,-selname,T_2M_AV,TMIN_2M,TMAX_2M [ lffd_*_daily.nc ] lffd_2041-2050_daily_T2m.nc
 
 # Evaluate duration and print to log file
 duration=$SECONDS
@@ -155,13 +152,13 @@ echo "$(($duration / 3600)) hours and $(($duration % 3600 /60)) minutes elapsed.
 
 # Monthly mean of daily data
 cd $scriptdir/cclm2_output_processed/${case_dest}/clm/daily
-cdo -L --timestat_date first -monmean -mergetime [ clm5.0_eur0.1.clm2.hx_daily_*.nc ] ${destdir}/clm5.0_eur0.1.clm2.hx_2041-2050_monthly.nc
+cdo -L --timestat_date first -monmean -mergetime [ clm5.0_eur0.1.clm2.hx_daily_*.nc ] ${destdir}/clm5.0_eur0.1.clm2.hx_${year_start}-${year_end}_monthly.nc
 
 # Merge monthly tapes
 cd ${destdir}
-cdo -delvar,TBOT,TSKIN,TSA,TSA_MIN,TSA_MAX clm5.0_eur0.1.clm2.hx_2041-2050_monthly.nc tmp.nc
-cdo -merge [ clm5.0_eur0.1.clm2.h3_2041-2050_monthly.nc tmp.nc ] clm5.0_eur0.1.clm2.hxx_2041-2050_monthly.nc
-rm tmp.nc clm5.0_eur0.1.clm2.hx_2041-2050_monthly.nc
+cdo -delvar,TBOT,TSKIN,TSA,TSA_MIN,TSA_MAX clm5.0_eur0.1.clm2.hx_${year_start}-${year_end}_monthly.nc tmp.nc
+cdo -merge [ clm5.0_eur0.1.clm2.h3_${year_start}-${year_end}_monthly.nc tmp.nc ] clm5.0_eur0.1.clm2.hxx_${year_start}-${year_end}_monthly.nc
+rm tmp.nc clm5.0_eur0.1.clm2.hx_${year_start}-${year_end}_monthly.nc
 
 #==========================================
 #          (3) CLM CASE_DOCS
@@ -192,13 +189,15 @@ rsync -av $sourcedir/*_in $destdir/namelists/
 # Config files
 fconfig=$(readlink -f $casedir/config)
 rsync -av $fconfig $destdir/config/
-if [[ $fconfig =~ "ssp1" ]]; then
+if [[ $fconfig =~ "future" ]]; then
     rsync -av $casedir/simulation_configs/SIMULATION_COSMO-EUR11_MPI-ESM $destdir/config/
 else
-    #rsync -av $casedir/simulation_configs/SIMULATION_COSMO-EUR11_ERA5 $destdir/config/
-    rsync -av $casedir/simulation_configs/SIMULATION_COSMO-EUR11_COPAT2 $destdir/config/
+    rsync -av $casedir/simulation_configs/SIMULATION_COSMO-EUR11_ERA5 $destdir/config/
 fi
 rsync -av $casedir/user_settings $destdir/config/
+
+# Postprocessing script (this file)
+rsync -av postprocess_CLM.sh $destdir/
 
 # Evaluate duration and print to log file
 duration=$SECONDS

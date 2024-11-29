@@ -2,7 +2,7 @@
 #
 #SBATCH --job-name="post_cosmo"
 #SBATCH --account="s1256"
-#SBATCH --time=09:00:00
+#SBATCH --time=12:00:00
 #SBATCH --partition=normal
 #SBATCH --constraint=gpu
 #SBATCH --hint=nomultithread
@@ -76,6 +76,9 @@ done
 
 rm tmp*.nc
 
+# Create daily timeseries of T2m av, min, max for DTR and q99
+cdo -mergetime -apply,-selname,T_2M_AV,TMIN_2M,TMAX_2M [ lffd_*_daily.nc ] lffd_${year_start}-${year_end}_daily_T2m.nc
+
 # Evaluate duration and print to log file
 duration=$SECONDS
 echo -e "Finished (1) COSMO DAILY"
@@ -87,7 +90,7 @@ echo "$(($duration / 3600)) hours and $(($duration % 3600 /60)) minutes elapsed.
 
 echo -e "\n *** (2) COSMO 3h 2D *** \n"
 
-# Track duration (ca 1.5 h)
+# Track duration (ca 2 h)
 SECONDS=0
 
 sourcedir=$SCRATCH/${case_source}/20_cclm2_c/cosmo_output/3h_2D
@@ -194,21 +197,18 @@ mkdir -p $destdir
 # Daily and daily_avg (not plev), average the already processed data
 # Merge time per tape and average
 cd $scriptdir/cclm2_output_processed/${case_dest}/cosmo/daily
-cdo -L --timestat_date first -monmean -mergetime [ lffd* ] ${destdir}/tmp_daily.nc
+cdo -L --timestat_date first -monmean -mergetime [ lffd_*_daily.nc ] ${destdir}/tmp_daily.nc
 cd $scriptdir/cclm2_output_processed/${case_dest}/cosmo/daily_avg
-cdo -L --timestat_date first -monmean -mergetime [ lffd* ] ${destdir}/tmp_daily_avg.nc
-
-cd ${destdir}
+cdo -L --timestat_date first -monmean -mergetime [ lffd_*_daymean.nc ] ${destdir}/tmp_daily_avg.nc
 
 # Merge tapes
-outfile=lffd_${year_start}-${year_end}_monmean.nc
-cdo -merge [ tmp_daily.nc tmp_daily_avg.nc ] $outfile
+cd ${destdir}
+cdo -merge [ tmp_daily.nc tmp_daily_avg.nc ] lffd_${year_start}-${year_end}_monmean.nc
+rm tmp*.nc
 
 # plev
 cd $scriptdir/cclm2_output_processed/${case_dest}/cosmo/daily_avg_plev
-cdo -L --timestat_date first -monmean -mergetime [ lffd* ] ${destdir}/lffd_${year_start}-${year_end}_monmean_plev.nc
-
-rm tmp*.nc
+cdo -L --timestat_date first -monmean -mergetime [ lffd_*_daymean.nc ] ${destdir}/lffd_${year_start}-${year_end}_monmean_plev.nc
 
 # Evaluate duration and print to log file
 duration=$SECONDS
@@ -243,12 +243,15 @@ rsync -av $casedir/20_cclm2_c/YU* $destdir/namelists/
 # Config files
 fconfig=$(readlink -f $casedir/config)
 rsync -av $fconfig $destdir/config/
-if [[ $fconfig =~ "ssp1" ]]; then
+if [[ $fconfig =~ "future" ]]; then
     rsync -av $casedir/simulation_configs/SIMULATION_COSMO-EUR11_MPI-ESM $destdir/config/
 else
     rsync -av $casedir/simulation_configs/SIMULATION_COSMO-EUR11_ERA5 $destdir/config/
 fi
 rsync -av $casedir/user_settings $destdir/config/
+
+# Postprocessing script (this file)
+rsync -av postprocess_COSMO.sh $destdir/
 
 # Evaluate duration and print to log file
 duration=$SECONDS
@@ -264,6 +267,6 @@ cd $scriptdir
 
 # Do this in a separate xfer job!
 
-echo -e "\n *** RSYNC *** \n"
-rsync -av --progress $scriptdir/cclm2_output_processed $PROJECT/
+#echo -e "\n *** RSYNC *** \n"
+#rsync -av --progress $scriptdir/cclm2_output_processed $PROJECT/
 
